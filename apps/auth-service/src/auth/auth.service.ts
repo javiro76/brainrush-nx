@@ -1,74 +1,168 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
-import { firstValueFrom } from 'rxjs';
+import { Injectable, Logger, NotFoundException, ConflictException } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
-import { NATS_SERVICE } from '../nats/nats.module';
-
-// Definir interfaces para los datos de respuesta
-interface UserCreatedResponse {
-  id: string;
-  email: string;
-  name: string;
-  // otros campos que devuelva el users-service
-}
-
-export interface AuthResponse {
-  message: string;
-  user?: UserCreatedResponse;
-  error?: string;
-}
 
 @Injectable()
 export class AuthService {
-  constructor(
-    @Inject(NATS_SERVICE) private readonly client: ClientProxy,
-  ) {}
+  private readonly logger = new Logger('AuthService');
 
-  async create(createAuthDto: CreateAuthDto): Promise<AuthResponse> {
-    // Aquí iría la lógica de autenticación (registro)
-    
-    // Ejemplo: Crear usuario en users-service después del registro
-    // Esto envía un mensaje a users-service a través de NATS
+  constructor(private readonly prisma: PrismaService) {}
+
+  async create(createAuthDto: CreateAuthDto) {
     try {
-      const userCreated = await firstValueFrom<UserCreatedResponse>(
-        this.client.send<UserCreatedResponse>('createUser', {
-          email: createAuthDto.email,
-          name: createAuthDto.name,
-          // otros campos necesarios
-        })
-      );
-      
+      // Verificar si el usuario ya existe
+      const existingUser = await this.prisma.user.findUnique({
+        where: { email: createAuthDto.email }
+      });
+
+      if (existingUser) {
+        throw new ConflictException(`User with email ${createAuthDto.email} already exists`);
+      }
+
+      // Crear el nuevo usuario
+      const newUser = await this.prisma.user.create({
+        data: createAuthDto
+      });
+
+      this.logger.log(`User created: ${newUser.email}`);
+
+      // Retorna el usuario sin la contraseña
+      const { password, ...result } = newUser;
+
       return {
-        message: 'Usuario registrado correctamente',
-        user: userCreated
+        statusCode: 201,
+        message: 'User created successfully',
+        data: result
       };
-    } catch (error: unknown) {
-      // Manejar error de forma segura con verificación de tipo
-      const errorMessage = error instanceof Error 
-        ? error.message 
-        : 'Error desconocido';
-      
-      return {
-        message: 'Error al registrar usuario',
-        error: errorMessage
-      };
+    } catch (error) {
+      if (error instanceof ConflictException) {
+        throw error;
+      }
+      this.logger.error(`Error creating user: ${error.message}`);
+      throw error;
     }
   }
 
-  findAll(): string {
-    return `This action returns all auth`;
+  async findAll() {
+    try {
+      const users = await this.prisma.user.findMany({
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          createdAt: true,
+          updatedAt: true
+        }
+      });
+
+      return {
+        statusCode: 200,
+        message: 'Users retrieved successfully',
+        data: users
+      };
+    } catch (error) {
+      this.logger.error(`Error retrieving users: ${error.message}`);
+      throw error;
+    }
   }
 
-  findOne(id: number): string {
-    return `This action returns a #${id} auth`;
+  async findOne(id: string) {
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: { id },
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          createdAt: true,
+          updatedAt: true
+        }
+      });
+
+      if (!user) {
+        throw new NotFoundException(`User with ID ${id} not found`);
+      }
+
+      return {
+        statusCode: 200,
+        message: 'User retrieved successfully',
+        data: user
+      };
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      this.logger.error(`Error finding user: ${error.message}`);
+      throw error;
+    }
   }
 
-  update(id: number, updateAuthDto: UpdateAuthDto): string {
-    return `This action updates a #${id} auth`;
+  async update(id: string, updateAuthDto: UpdateAuthDto) {
+    try {
+      // Verificar si el usuario existe
+      const user = await this.prisma.user.findUnique({
+        where: { id }
+      });
+
+      if (!user) {
+        throw new NotFoundException(`User with ID ${id} not found`);
+      }
+
+      // Actualizar el usuario
+      const updatedUser = await this.prisma.user.update({
+        where: { id },
+        data: updateAuthDto,
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          createdAt: true,
+          updatedAt: true
+        }
+      });
+
+      return {
+        statusCode: 200,
+        message: 'User updated successfully',
+        data: updatedUser
+      };
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      this.logger.error(`Error updating user: ${error.message}`);
+      throw error;
+    }
   }
 
-  remove(id: number): string {
-    return `This action removes a #${id} auth`;
+  async remove(id: string) {
+    try {
+      // Verificar si el usuario existe
+      const user = await this.prisma.user.findUnique({
+        where: { id }
+      });
+
+      if (!user) {
+        throw new NotFoundException(`User with ID ${id} not found`);
+      }
+
+      // Eliminar el usuario
+      await this.prisma.user.delete({
+        where: { id }
+      });
+
+      return {
+        statusCode: 200,
+        message: 'User deleted successfully',
+        data: { id }
+      };
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      this.logger.error(`Error deleting user: ${error.message}`);
+      throw error;
+    }
   }
 }

@@ -1,4 +1,4 @@
-import { ExceptionFilter, Catch, ArgumentsHost, HttpException } from '@nestjs/common';
+import { ExceptionFilter, Catch, ArgumentsHost, HttpException, Logger } from '@nestjs/common';
 import { Request, Response } from 'express';
 
 interface ErrorResponse {
@@ -11,12 +11,23 @@ interface ErrorResponse {
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
+  private readonly logger = new Logger('HttpExceptionFilter');
+
   catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
     const status = exception.getStatus();
     const errorResponse = exception.getResponse();
+
+    // Log error details for debugging
+    this.logger.error(`HTTP Exception: ${JSON.stringify({
+      status,
+      path: request.url,
+      method: request.method,
+      body: request.body,
+      error: errorResponse
+    })}`);
 
     response.status(status).json({
       statusCode: status,
@@ -26,7 +37,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
       error: this.formatError(errorResponse),
     });
   }
-
 
   private formatMessage(response: string | ErrorResponse): string | string[] {
     return typeof response === 'object'

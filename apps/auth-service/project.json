@@ -23,7 +23,9 @@
       "dependsOn": ["build"],
       "options": {
         "buildTarget": "auth-service:build",
-        "runBuildTargetDependencies": false
+        "runBuildTargetDependencies": false,
+        "inspect": "inspect",
+        "port": 9230
       },
       "configurations": {
         "development": {
