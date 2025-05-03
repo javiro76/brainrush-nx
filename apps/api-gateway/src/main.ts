@@ -19,6 +19,12 @@ async function bootstrap() {
   );
   app.useGlobalFilters(new HttpExceptionFilter());
 
+  app.enableCors({
+    origin: true, // Permite todas las solicitudes en desarrollo
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
+
   await app.listen(envs.port);
   logger.log(`🚀 Gateway corriendo en puerto ${envs.port}`);
 }

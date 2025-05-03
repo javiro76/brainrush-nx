@@ -6,6 +6,9 @@ import * as joi from 'joi';
 
 interface EnvVars {
   PORT: number;
+  AUTH_SERVICE_HOST: string;
+  AUTH_SERVICE_PORT: number;
+
   NATS_SERVERS: string[];
   API_PREFIX?: string; // Ej: '/api/v1'
 }
@@ -13,6 +16,10 @@ interface EnvVars {
 
 const envsSchema = joi.object({
   PORT: joi.number().required(),
+  AUTH_SERVICE_HOST: joi.string().hostname().required(),
+  AUTH_SERVICE_PORT: joi.number().port().required(),
+  
+
   NATS_SERVERS: joi.array().items(joi.string().uri()).optional().default(['nats://localhost:4222']),
   API_PREFIX: joi.string().optional().default('/api')
 }).unknown(true); // Permitir propiedades adicionales
@@ -30,6 +37,8 @@ const envVars: EnvVars = value;
 
 export const envs = {
   port: envVars.PORT,
+  authServiceHost: envVars.AUTH_SERVICE_HOST,
+  authServicePort: envVars.AUTH_SERVICE_PORT,
   natsServers: envVars.NATS_SERVERS,
   apiPrefix: envVars.API_PREFIX // Para globalPrefix en Nest
 };
