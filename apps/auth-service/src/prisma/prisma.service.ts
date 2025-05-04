@@ -14,15 +14,15 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
     async onModuleInit() {
         try {
             await this.$connect();
-            this.logger.log('Successfully connected to MongoDB database');
+            this.logger.log('Successfully connected to PostgreSQL database');
         } catch (error) {
-            this.logger.error(`Failed to connect to MongoDB database: ${error.message}`);
+            this.logger.error(`Failed to connect to PostgreSQL database: ${error.message}`);
             throw error;
         }
     }
 
     async onModuleDestroy() {
         await this.$disconnect();
-        this.logger.log('Disconnected from MongoDB database');
+        this.logger.log('Disconnected from PostgreSQL database');
     }
 }

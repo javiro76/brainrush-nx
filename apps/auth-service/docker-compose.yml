@@ -1,16 +1,19 @@
 version: '3.8'
 
 services:
-  mongodb:
-    image: mongo:latest
-    container_name: auth-mongodb
+  postgres:
+    image: postgres:16-alpine
+    container_name: auth-postgres
     restart: always
     ports:
-      - "27017:27017"
-    command: ["--replSet", "rs0", "--bind_ip_all", "--noauth"]
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: auth_db
     volumes:
-      - mongodb_data:/data/db
+      - postgres_data:/var/lib/postgresql/data
 
 volumes:
-  mongodb_data:
+  postgres_data:
     driver: local
