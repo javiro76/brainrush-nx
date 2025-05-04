@@ -72,7 +72,9 @@ async function bootstrap() {
   }
 
   // Configuración global
-  app.setGlobalPrefix('api');
+  app.setGlobalPrefix('api', {
+    exclude: ['/health'], // Excluir health check del prefijo global
+  });
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -106,5 +108,6 @@ async function bootstrap() {
   await app.listen(process.env.PORT ?? 3000);
   logger.log(`API Gateway is running on: http://localhost:${process.env.PORT ?? 3000}`);
   logger.log(`Swagger documentation available at: http://localhost:${process.env.PORT ?? 3000}/api/docs`);
+  logger.log(`Health check available at: http://localhost:${process.env.PORT ?? 3000}/health`);
 }
 void bootstrap();

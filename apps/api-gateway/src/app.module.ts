@@ -9,6 +9,7 @@ import * as winston from 'winston';
 import * as path from 'path';
 import * as fs from 'fs';
 import { CommonModule } from './common/common.module';
+import { HealthModule } from './health/health.module';
 
 // Determinar la ruta raíz del proyecto dinámicamente
 const findProjectRoot = () => {
@@ -103,6 +104,7 @@ const combinedLogPath = path.join(logDir, 'combined.log');
     HttpModule,
     AuthModule,
     CommonModule, // Importamos el CommonModule que contiene nuestro LoggerService
+    HealthModule, // Importamos el módulo de Health Checks
   ],
   providers: [
     AppService,
