@@ -10,8 +10,28 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { CommonModule } from './common/common.module';
 
-// Ruta absoluta al directorio raíz del proyecto (ajusta esta ruta según sea necesario)
-const projectRoot = 'c:\\Users\\Asus\\Documents\\cursos\\brainrush-nx';
+// Determinar la ruta raíz del proyecto dinámicamente
+const findProjectRoot = () => {
+  // Comenzamos con la ruta del archivo actual
+  let currentPath = __dirname;
+
+  // Buscamos hacia arriba hasta encontrar el package.json de la raíz del proyecto
+  while (currentPath !== path.parse(currentPath).root) {
+    // Si encontramos el package.json de la raíz del proyecto
+    if (fs.existsSync(path.join(currentPath, 'nx.json'))) {
+      return currentPath;
+    }
+    // Subir un nivel en la jerarquía de directorios
+    currentPath = path.dirname(currentPath);
+  }
+
+  // Si no encontramos la raíz del proyecto, usamos el directorio actual como fallback
+  console.warn('No se pudo determinar la raíz del proyecto. Usando directorio actual.');
+  return process.cwd();
+};
+
+// Determinar la ruta raíz del proyecto
+const projectRoot = findProjectRoot();
 
 // Asegurarnos que el directorio logs existe
 const logDir = path.join(projectRoot, 'logs');
@@ -26,7 +46,7 @@ if (!fs.existsSync(logDir)) {
 }
 
 // Imprimir información de depuración
-console.log('Directorio de trabajo actual:', process.cwd());
+console.log('Directorio raíz del proyecto detectado:', projectRoot);
 console.log('Directorio de logs configurado:', logDir);
 console.log('El directorio existe:', fs.existsSync(logDir));
 

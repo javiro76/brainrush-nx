@@ -1,16 +1,16 @@
-{"context":"AuthService","level":"info","message":"Servicio inicializado con URL: http://localhost:3001","timestamp":"2025-05-04T02:48:06.314Z"}
-{"context":"AppService","level":"info","message":"Servicio inicializado","timestamp":"2025-05-04T02:48:06.315Z"}
-{"context":"AuthController","level":"info","message":"Controlador de autenticación inicializado","timestamp":"2025-05-04T02:48:06.316Z"}
-{"context":"RoutesResolver","level":"info","message":"AuthController {/api/auth}:","timestamp":"2025-05-04T02:48:06.333Z"}
-{"context":"RouterExplorer","level":"info","message":"Mapped {/api/auth, POST} route","timestamp":"2025-05-04T02:48:06.336Z"}
-{"context":"RouterExplorer","level":"info","message":"Mapped {/api/auth, GET} route","timestamp":"2025-05-04T02:48:06.337Z"}
-{"context":"RouterExplorer","level":"info","message":"Mapped {/api/auth/:id, GET} route","timestamp":"2025-05-04T02:48:06.337Z"}
-{"context":"RouterExplorer","level":"info","message":"Mapped {/api/auth/:id, PATCH} route","timestamp":"2025-05-04T02:48:06.338Z"}
-{"context":"RouterExplorer","level":"info","message":"Mapped {/api/auth/:id, DELETE} route","timestamp":"2025-05-04T02:48:06.338Z"}
-{"context":"NestApplication","level":"info","message":"Nest application successfully started","timestamp":"2025-05-04T02:48:06.340Z"}
-{"level":"info","message":"API Gateway is running on: http://localhost:3000","timestamp":"2025-05-04T02:48:06.343Z"}
-{"level":"info","message":"Swagger documentation available at: http://localhost:3000/api/docs","timestamp":"2025-05-04T02:48:06.343Z"}
-{"context":"AuthController","level":"info","message":"Solicitud para obtener todos los usuarios","timestamp":"2025-05-04T02:49:51.862Z"}
-{"context":"AuthService","level":"info","message":"Obteniendo todos los usuarios","timestamp":"2025-05-04T02:49:51.862Z"}
-{"context":"AuthService","level":"info","message":"4 usuarios encontrados","timestamp":"2025-05-04T02:49:51.894Z"}
-{"context":"AuthController","level":"info","message":"Respuesta enviada con la lista de usuarios","timestamp":"2025-05-04T02:49:51.894Z"}
+{"context":"AuthService","level":"info","message":"Servicio inicializado con URL: http://localhost:3001","timestamp":"2025-05-04T02:58:21.753Z"}
+{"context":"AppService","level":"info","message":"Servicio inicializado","timestamp":"2025-05-04T02:58:21.753Z"}
+{"context":"AuthController","level":"info","message":"Controlador de autenticación inicializado","timestamp":"2025-05-04T02:58:21.754Z"}
+{"context":"RoutesResolver","level":"info","message":"AuthController {/api/auth}:","timestamp":"2025-05-04T02:58:21.767Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/api/auth, POST} route","timestamp":"2025-05-04T02:58:21.771Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/api/auth, GET} route","timestamp":"2025-05-04T02:58:21.771Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/api/auth/:id, GET} route","timestamp":"2025-05-04T02:58:21.772Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/api/auth/:id, PATCH} route","timestamp":"2025-05-04T02:58:21.772Z"}
+{"context":"RouterExplorer","level":"info","message":"Mapped {/api/auth/:id, DELETE} route","timestamp":"2025-05-04T02:58:21.773Z"}
+{"context":"NestApplication","level":"info","message":"Nest application successfully started","timestamp":"2025-05-04T02:58:21.775Z"}
+{"level":"info","message":"API Gateway is running on: http://localhost:3000","timestamp":"2025-05-04T02:58:21.779Z"}
+{"level":"info","message":"Swagger documentation available at: http://localhost:3000/api/docs","timestamp":"2025-05-04T02:58:21.779Z"}
+{"context":"AuthController","level":"info","message":"Solicitud para obtener todos los usuarios","timestamp":"2025-05-04T02:58:50.642Z"}
+{"context":"AuthService","level":"info","message":"Obteniendo todos los usuarios","timestamp":"2025-05-04T02:58:50.642Z"}
+{"context":"AuthService","level":"info","message":"4 usuarios encontrados","timestamp":"2025-05-04T02:58:50.672Z"}
+{"context":"AuthController","level":"info","message":"Respuesta enviada con la lista de usuarios","timestamp":"2025-05-04T02:58:50.672Z"}
