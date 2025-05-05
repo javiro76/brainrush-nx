@@ -55,6 +55,7 @@ export class AuthService {
       // Emitir evento de registro de usuario a través de NATS
       this.emitUserRegistered(newUser);
 
+
       return {
         token,
         user: {
