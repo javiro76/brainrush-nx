@@ -5,6 +5,7 @@ import { JwtPayload } from '@brainrush-nx/shared';
 import { firstValueFrom } from 'rxjs';
 import { envs } from '../config';
 import { NatsService } from '../transports/nats/nats.service';
+import { RefreshTokenDto } from './dto';
 
 @Injectable()
 export class AuthService {
@@ -61,6 +62,41 @@ export class AuthService {
     } catch (error) {
       this.logger.error(`Error al validar token: ${error.message}`, error.stack);
       throw new UnauthorizedException('Token inválido');
+    }
+  }
+
+  /**
+   * Refresca el token de acceso usando un refresh token
+   */
+  async refreshToken(refreshTokenDto: RefreshTokenDto) {
+    try {
+      const { data } = await firstValueFrom(
+        this.httpService.post(
+          `http://${envs.authServiceHost}:${envs.authServicePort}/auth/refresh-token`,
+          refreshTokenDto
+        )
+      );
+      return data;
+    } catch (error) {
+      this.logger.error(`Error al refrescar token: ${error.message}`, error.stack);
+      throw error.response?.data || new UnauthorizedException('Error al refrescar token');
+    }
+  }
+
+  /**
+   * Cierra la sesión del usuario revocando su refresh token
+   */
+  async logout(refreshToken: string): Promise<void> {
+    try {
+      await firstValueFrom(
+        this.httpService.post(
+          `http://${envs.authServiceHost}:${envs.authServicePort}/auth/logout`,
+          { refreshToken }
+        )
+      );
+    } catch (error) {
+      this.logger.error(`Error al cerrar sesión: ${error.message}`, error.stack);
+      throw error.response?.data || new Error('Error al cerrar sesión');
     }
   }
 }

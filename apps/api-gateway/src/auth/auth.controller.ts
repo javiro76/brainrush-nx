@@ -1,6 +1,6 @@
-import { Body, Controller, Get, Logger, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Logger, Post, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { LoginUserDto, RegisterUserDto } from './dto';
+import { LoginUserDto, RefreshTokenDto, RegisterUserDto } from './dto';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard, RolesGuard } from './guards';
 import { CurrentUser, Roles } from './decorators';
@@ -29,6 +29,25 @@ export class AuthController {
   async login(@Body() loginDto: LoginUserDto) {
     this.logger.log(`Intento de inicio de sesión: ${loginDto.email}`);
     return this.authService.login(loginDto);
+  }
+
+  @ApiOperation({ summary: 'Refrescar token de acceso usando refresh token' })
+  @ApiResponse({ status: 200, description: 'Token de acceso refrescado correctamente' })
+  @ApiResponse({ status: 401, description: 'Refresh token inválido o expirado' })
+  @Post('refresh-token')
+  async refreshToken(@Body() refreshTokenDto: RefreshTokenDto) {
+    this.logger.log('Solicitando refresh de token');
+    return this.authService.refreshToken(refreshTokenDto);
+  }
+
+  @ApiOperation({ summary: 'Cerrar sesión y revocar refresh token' })
+  @ApiResponse({ status: 204, description: 'Sesión cerrada correctamente' })
+  @ApiResponse({ status: 401, description: 'Refresh token inválido' })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Post('logout')
+  async logout(@Body('refreshToken') refreshToken: string) {
+    this.logger.log('Solicitud de cierre de sesión');
+    return this.authService.logout(refreshToken);
   }
 
   @ApiOperation({ summary: 'Obtener información del usuario actual' })

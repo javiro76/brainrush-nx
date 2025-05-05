@@ -1,11 +1,13 @@
-import { BadRequestException, Injectable, Logger, NotFoundException, ConflictException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../prisma/prisma.service';
 import { JwtPayload, UserRole } from '@brainrush-nx/shared';
 import * as bcrypt from 'bcrypt';
-import { LoginUserDto, RegisterUserDto } from './dto';
+import { LoginUserDto, RefreshTokenDto, RegisterUserDto } from './dto';
 import { AuthResponse } from './interfaces/auth-response.interface';
 import { NatsService } from '../nats/nats.service';
+import { ConfigService } from '@nestjs/config';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class AuthService {
@@ -15,6 +17,7 @@ export class AuthService {
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
     private readonly natsService: NatsService,
+    private readonly configService: ConfigService,
   ) {}
 
   /**
@@ -52,12 +55,15 @@ export class AuthService {
         role: newUser.role as UserRole,
       });
 
+      // Generar refresh token
+      const refreshToken = await this.generateRefreshToken(newUser.id);
+
       // Emitir evento de registro de usuario a través de NATS
       this.emitUserRegistered(newUser);
 
-
       return {
         token,
+        refreshToken,
         user: {
           id: newUser.id,
           email: newUser.email,
@@ -100,11 +106,15 @@ export class AuthService {
         role: user.role as UserRole,
       });
 
+      // Generar refresh token
+      const refreshToken = await this.generateRefreshToken(user.id);
+
       // Emitir evento de login a través de NATS
       this.emitUserLoggedIn(user);
 
       return {
         token,
+        refreshToken,
         user: {
           id: user.id,
           email: user.email,
@@ -126,7 +136,7 @@ export class AuthService {
       const payload = await this.jwtService.verifyAsync<JwtPayload>(token);
       return payload;
     } catch (error) {
-      throw new UnauthorizedException('Token inválido o expirado');
+      throw new UnauthorizedException(`Token inválido o expirado, ${error.message}`);
     }
   }
 
@@ -135,6 +145,132 @@ export class AuthService {
    */
   private async generateJwtToken(payload: JwtPayload): Promise<string> {
     return this.jwtService.signAsync(payload);
+  }
+
+  /**
+   * Genera un refresh token para un usuario y lo guarda en la base de datos
+   */
+  private async generateRefreshToken(userId: string): Promise<string> {
+    try {
+      // Crear un token aleatorio
+      const tokenValue = randomUUID();
+
+      // Calcular la fecha de expiración (7 días)
+      const expiresIn = new Date();
+      expiresIn.setDate(expiresIn.getDate() + 7);
+
+      // Guardar el token en la base de datos
+      await this.prisma.refreshToken.create({
+        data: {
+          token: tokenValue,
+          expires: expiresIn,
+          userId: userId,
+        },
+      });
+
+      return tokenValue;
+    } catch (error) {
+      this.logger.error(`Error al generar refresh token: ${error.message}`, error.stack);
+      throw error;
+    }
+  }
+
+  /**
+   * Renueva el token de acceso usando un refresh token
+   */
+  async refreshAccessToken(refreshTokenDto: RefreshTokenDto): Promise<AuthResponse> {
+    try {
+      const { refreshToken } = refreshTokenDto;
+
+      // Buscar el refresh token en la base de datos
+      const storedToken = await this.prisma.refreshToken.findUnique({
+        where: { token: refreshToken },
+        include: { user: true },
+      });
+
+      // Verificar si el token existe
+      if (!storedToken) {
+        throw new UnauthorizedException('Refresh token inválido');
+      }
+
+      // Verificar si el token está revocado
+      if (storedToken.revoked) {
+        throw new UnauthorizedException('Refresh token revocado');
+      }
+
+      // Verificar si el token ha expirado
+      if (storedToken.expires < new Date()) {
+        throw new UnauthorizedException('Refresh token expirado');
+      }
+
+      // Generar un nuevo access token
+      const newAccessToken = await this.generateJwtToken({
+        sub: storedToken.user.id,
+        email: storedToken.user.email,
+        name: storedToken.user.name,
+        role: storedToken.user.role as UserRole,
+      });
+
+      return {
+        token: newAccessToken,
+        refreshToken,
+        user: {
+          id: storedToken.user.id,
+          email: storedToken.user.email,
+          name: storedToken.user.name,
+          role: storedToken.user.role as UserRole,
+        },
+      };
+    } catch (error) {
+      this.logger.error(`Error al refrescar token: ${error.message}`, error.stack);
+      throw error;
+    }
+  }
+
+  /**
+   * Cierra la sesión de un usuario revocando su refresh token
+   */
+  async logout(refreshToken: string): Promise<void> {
+    try {
+      // Buscar el refresh token
+      const storedToken = await this.prisma.refreshToken.findUnique({
+        where: { token: refreshToken },
+      });
+
+      // Si el token no existe, no hacemos nada
+      if (!storedToken) {
+        return;
+      }
+
+      // Revocar el token
+      await this.prisma.refreshToken.update({
+        where: { id: storedToken.id },
+        data: { revoked: true },
+      });
+
+      this.logger.log(`Refresh token revocado para el usuario: ${storedToken.userId}`);
+    } catch (error) {
+      this.logger.error(`Error al cerrar sesión: ${error.message}`, error.stack);
+      throw error;
+    }
+  }
+
+  /**
+   * Revoca todos los refresh tokens de un usuario
+   */
+  async revokeAllUserTokens(userId: string): Promise<void> {
+    try {
+      // Revocar todos los tokens del usuario
+      await this.prisma.refreshToken.updateMany({
+        where: { userId, revoked: false },
+        data: { revoked: true },
+      });
+
+      this.logger.log(`Todos los refresh tokens revocados para el usuario: ${userId}`);
+    } catch (error) {
+      this.logger.error(`Error al revocar todos los tokens: ${error.message}`, error.stack);
+      throw error;
+    }
   }
 
   /**
