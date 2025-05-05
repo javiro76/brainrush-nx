@@ -8,7 +8,7 @@ import helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  
+
   // Usar el logger de Winston como logger global
   const logger = app.get(WINSTON_MODULE_NEST_PROVIDER);
   app.useLogger(logger);
@@ -87,7 +87,7 @@ async function bootstrap() {
   app.enableCors({
     origin: isProduction ? [
       // Lista de dominios permitidos en producción
-      'https://brainrush.com', 
+      'https://brainrush.com',
       'https://api.brainrush.com'
     ] : true, // En desarrollo, permitir todos los orígenes
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',

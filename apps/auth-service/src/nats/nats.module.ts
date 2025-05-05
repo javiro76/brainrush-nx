@@ -1,8 +1,8 @@
 import { Global, Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { envs } from '../config';
-
-export const NATS_SERVICE = 'NATS_CLIENT';
+import { NatsService } from './nats.service';
+import { NATS_SERVICE } from './nats.constants';
 
 @Global()
 @Module({
@@ -17,6 +17,7 @@ export const NATS_SERVICE = 'NATS_CLIENT';
       },
     ]),
   ],
-  exports: [ClientsModule],
+  providers: [NatsService], // Registrar el NatsService como proveedor
+  exports: [ClientsModule, NatsService], // Exportar tanto ClientsModule como NatsService
 })
 export class NatsModule { }

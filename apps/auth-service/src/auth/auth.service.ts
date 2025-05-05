@@ -1,168 +1,170 @@
-import { Injectable, Logger, NotFoundException, ConflictException } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger, NotFoundException, ConflictException, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import { JwtPayload, UserRole } from '@brainrush-nx/shared';
+import * as bcrypt from 'bcrypt';
+import { LoginUserDto, RegisterUserDto } from './dto';
+import { AuthResponse } from './interfaces/auth-response.interface';
+import { NatsService } from '../nats/nats.service';
 
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger('AuthService');
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly jwtService: JwtService,
+    private readonly natsService: NatsService,
+  ) {}
 
-  async create(createAuthDto: CreateAuthDto) {
+  /**
+   * Registra un nuevo usuario
+   */
+  async register(registerDto: RegisterUserDto): Promise<AuthResponse> {
     try {
       // Verificar si el usuario ya existe
       const existingUser = await this.prisma.user.findUnique({
-        where: { email: createAuthDto.email }
+        where: { email: registerDto.email },
       });
 
       if (existingUser) {
-        throw new ConflictException(`User with email ${createAuthDto.email} already exists`);
+        throw new BadRequestException(`El usuario con email ${registerDto.email} ya existe`);
       }
 
-      // Crear el nuevo usuario
+      // Hash de la contraseña
+      const hashedPassword = await bcrypt.hash(registerDto.password, 10);
+
+      // Crear el usuario
       const newUser = await this.prisma.user.create({
-        data: createAuthDto
+        data: {
+          email: registerDto.email,
+          name: registerDto.name,
+          password: hashedPassword,
+          role: registerDto.role || UserRole.STUDENT,
+        },
       });
 
-      this.logger.log(`User created: ${newUser.email}`);
+      // Generar token JWT
+      const token = await this.generateJwtToken({
+        sub: newUser.id,
+        email: newUser.email,
+        name: newUser.name,
+        role: newUser.role as UserRole,
+      });
 
-      // Retorna el usuario sin la contraseña
-      const { password, ...result } = newUser;
+      // Emitir evento de registro de usuario a través de NATS
+      this.emitUserRegistered(newUser);
 
       return {
-        statusCode: 201,
-        message: 'User created successfully',
-        data: result
+        token,
+        user: {
+          id: newUser.id,
+          email: newUser.email,
+          name: newUser.name,
+          role: newUser.role as UserRole,
+        },
       };
     } catch (error) {
-      if (error instanceof ConflictException) {
-        throw error;
-      }
-      this.logger.error(`Error creating user: ${error.message}`);
+      this.logger.error(`Error al registrar usuario: ${error.message}`, error.stack);
       throw error;
     }
   }
 
-  async findAll() {
+  /**
+   * Inicia sesión de usuario
+   */
+  async login(loginDto: LoginUserDto): Promise<AuthResponse> {
     try {
-      const users = await this.prisma.user.findMany({
-        select: {
-          id: true,
-          email: true,
-          name: true,
-          createdAt: true,
-          updatedAt: true
-        }
-      });
-
-      return {
-        statusCode: 200,
-        message: 'Users retrieved successfully',
-        data: users
-      };
-    } catch (error) {
-      this.logger.error(`Error retrieving users: ${error.message}`);
-      throw error;
-    }
-  }
-
-  async findOne(id: string) {
-    try {
+      // Buscar el usuario
       const user = await this.prisma.user.findUnique({
-        where: { id },
-        select: {
-          id: true,
-          email: true,
-          name: true,
-          createdAt: true,
-          updatedAt: true
-        }
+        where: { email: loginDto.email },
       });
 
       if (!user) {
-        throw new NotFoundException(`User with ID ${id} not found`);
+        throw new UnauthorizedException('Credenciales incorrectas');
       }
 
+      // Verificar la contraseña
+      const isPasswordValid = await bcrypt.compare(loginDto.password, user.password);
+
+      if (!isPasswordValid) {
+        throw new UnauthorizedException('Credenciales incorrectas');
+      }
+
+      // Generar token JWT
+      const token = await this.generateJwtToken({
+        sub: user.id,
+        email: user.email,
+        name: user.name,
+        role: user.role as UserRole,
+      });
+
+      // Emitir evento de login a través de NATS
+      this.emitUserLoggedIn(user);
+
       return {
-        statusCode: 200,
-        message: 'User retrieved successfully',
-        data: user
+        token,
+        user: {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          role: user.role as UserRole,
+        },
       };
     } catch (error) {
-      if (error instanceof NotFoundException) {
-        throw error;
-      }
-      this.logger.error(`Error finding user: ${error.message}`);
+      this.logger.error(`Error al iniciar sesión: ${error.message}`, error.stack);
       throw error;
     }
   }
 
-  async update(id: string, updateAuthDto: UpdateAuthDto) {
+  /**
+   * Valida el token JWT y devuelve la información del usuario
+   */
+  async validateToken(token: string): Promise<JwtPayload> {
     try {
-      // Verificar si el usuario existe
-      const user = await this.prisma.user.findUnique({
-        where: { id }
-      });
-
-      if (!user) {
-        throw new NotFoundException(`User with ID ${id} not found`);
-      }
-
-      // Actualizar el usuario
-      const updatedUser = await this.prisma.user.update({
-        where: { id },
-        data: updateAuthDto,
-        select: {
-          id: true,
-          email: true,
-          name: true,
-          createdAt: true,
-          updatedAt: true
-        }
-      });
-
-      return {
-        statusCode: 200,
-        message: 'User updated successfully',
-        data: updatedUser
-      };
+      const payload = await this.jwtService.verifyAsync<JwtPayload>(token);
+      return payload;
     } catch (error) {
-      if (error instanceof NotFoundException) {
-        throw error;
-      }
-      this.logger.error(`Error updating user: ${error.message}`);
-      throw error;
+      throw new UnauthorizedException('Token inválido o expirado');
     }
   }
 
-  async remove(id: string) {
+  /**
+   * Genera un token JWT
+   */
+  private async generateJwtToken(payload: JwtPayload): Promise<string> {
+    return this.jwtService.signAsync(payload);
+  }
+
+  /**
+   * Emite evento cuando un usuario se registra
+   */
+  private emitUserRegistered(user: any) {
     try {
-      // Verificar si el usuario existe
-      const user = await this.prisma.user.findUnique({
-        where: { id }
+      this.natsService.emitUserRegistered({
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        role: user.role
       });
-
-      if (!user) {
-        throw new NotFoundException(`User with ID ${id} not found`);
-      }
-
-      // Eliminar el usuario
-      await this.prisma.user.delete({
-        where: { id }
-      });
-
-      return {
-        statusCode: 200,
-        message: 'User deleted successfully',
-        data: { id }
-      };
+      this.logger.log(`Evento user.registered emitido para ${user.email}`);
     } catch (error) {
-      if (error instanceof NotFoundException) {
-        throw error;
-      }
-      this.logger.error(`Error deleting user: ${error.message}`);
-      throw error;
+      this.logger.error(`Error al emitir evento user.registered: ${error.message}`);
+    }
+  }
+
+  /**
+   * Emite evento cuando un usuario inicia sesión
+   */
+  private emitUserLoggedIn(user: any) {
+    try {
+      this.natsService.emitUserLoggedIn({
+        id: user.id,
+        email: user.email
+      });
+      this.logger.log(`Evento user.logged_in emitido para ${user.email}`);
+    } catch (error) {
+      this.logger.error(`Error al emitir evento user.logged_in: ${error.message}`);
     }
   }
 }

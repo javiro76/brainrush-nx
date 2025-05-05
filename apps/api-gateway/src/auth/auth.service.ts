@@ -1,134 +1,66 @@
-import { Injectable } from '@nestjs/common';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
 import { HttpService } from '@nestjs/axios';
-import { envs } from '../config';
+import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { JwtPayload } from '@brainrush-nx/shared';
 import { firstValueFrom } from 'rxjs';
-import { LoggerService } from '../common/logger.service';
-import { catchError } from 'rxjs/operators';
-import { throwError } from 'rxjs';
+import { envs } from '../config';
+import { NatsService } from '../transports/nats/nats.service';
 
 @Injectable()
 export class AuthService {
-  private readonly authServiceUrl: string;
-  private readonly context = 'AuthService';
+  private readonly logger = new Logger('AuthGatewayService');
 
   constructor(
     private readonly httpService: HttpService,
-    private readonly logger: LoggerService
-  ) {
-    // Configura la URL desde variables de entorno
-    this.authServiceUrl = `http://${envs.authServiceHost}:${envs.authServicePort}`;
-    this.logger.log(this.context, `Servicio inicializado con URL: ${this.authServiceUrl}`);
-  }
+    private readonly configService: ConfigService,
+    private readonly natsService: NatsService, // Inyección del servicio NATS
+  ) {}
 
-  async create(createAuthDto: CreateAuthDto) {
-    this.logger.log(this.context, `Creando nuevo usuario: ${createAuthDto.email}`);
-
+  /**
+   * Registra un nuevo usuario a través del Auth Service
+   */
+  async register(registerDto: any) {
     try {
       const { data } = await firstValueFrom(
-        this.httpService.post(`${this.authServiceUrl}/users`, createAuthDto)
-          .pipe(
-            catchError(error => {
-              this.logger.error(this.context, `Error al crear usuario: ${error.message}`, error.stack);
-              return throwError(() => error);
-            })
-          )
+        this.httpService.post(`http://${envs.authServiceHost}:${envs.authServicePort}/auth/register`, registerDto)
       );
-
-      this.logger.log(this.context, `Usuario creado con éxito: ${createAuthDto.email}`);
       return data;
     } catch (error) {
-      this.logger.error(this.context, `Error no controlado al crear usuario: ${error.message}`, error.stack);
-      throw error;
+      this.logger.error(`Error al registrar usuario: ${error.message}`, error.stack);
+      throw error.response?.data || new Error('Error al registrar usuario');
     }
   }
 
-  async findAll() {
-    this.logger.log(this.context, 'Obteniendo todos los usuarios');
-
+  /**
+   * Inicia sesión a través del Auth Service
+   */
+  async login(loginDto: any) {
     try {
       const { data } = await firstValueFrom(
-        this.httpService.get(`${this.authServiceUrl}/users`)
-          .pipe(
-            catchError(error => {
-              this.logger.error(this.context, `Error al obtener usuarios: ${error.message}`, error.stack);
-              return throwError(() => error);
-            })
-          )
+        this.httpService.post(`http://${envs.authServiceHost}:${envs.authServicePort}/auth/login`, loginDto)
       );
-
-      this.logger.log(this.context, `${data?.data?.length || 0} usuarios encontrados`);
       return data;
     } catch (error) {
-      this.logger.error(this.context, `Error no controlado al obtener usuarios: ${error.message}`, error.stack);
-      throw error;
+      this.logger.error(`Error al iniciar sesión: ${error.message}`, error.stack);
+      throw error.response?.data || new Error('Error al iniciar sesión');
     }
   }
 
-  async findOne(id: number) {
-    this.logger.log(this.context, `Buscando usuario con ID: ${id}`);
-
+  /**
+   * Valida un token JWT a través del Auth Service
+   */
+  async validateToken(token: string): Promise<JwtPayload> {
     try {
       const { data } = await firstValueFrom(
-        this.httpService.get(`${this.authServiceUrl}/users/${id}`)
-          .pipe(
-            catchError(error => {
-              this.logger.error(this.context, `Error al buscar usuario ${id}: ${error.message}`, error.stack);
-              return throwError(() => error);
-            })
-          )
+        this.httpService.post(
+          `http://${envs.authServiceHost}:${envs.authServicePort}/auth/validate-token`,
+          { token }
+        )
       );
-
-      this.logger.log(this.context, `Usuario encontrado: ${id}`);
       return data;
     } catch (error) {
-      this.logger.error(this.context, `Error no controlado al buscar usuario ${id}: ${error.message}`, error.stack);
-      throw error;
-    }
-  }
-
-  async update(id: number, updateAuthDto: UpdateAuthDto) {
-    this.logger.log(this.context, `Actualizando usuario ${id}`);
-
-    try {
-      const { data } = await firstValueFrom(
-        this.httpService.patch(`${this.authServiceUrl}/users/${id}`, updateAuthDto)
-          .pipe(
-            catchError(error => {
-              this.logger.error(this.context, `Error al actualizar usuario ${id}: ${error.message}`, error.stack);
-              return throwError(() => error);
-            })
-          )
-      );
-
-      this.logger.log(this.context, `Usuario ${id} actualizado con éxito`);
-      return data;
-    } catch (error) {
-      this.logger.error(this.context, `Error no controlado al actualizar usuario ${id}: ${error.message}`, error.stack);
-      throw error;
-    }
-  }
-
-  async remove(id: number) {
-    this.logger.log(this.context, `Eliminando usuario ${id}`);
-
-    try {
-      const { data } = await firstValueFrom(
-        this.httpService.delete(`${this.authServiceUrl}/users/${id}`)
-          .pipe(
-            catchError(error => {
-              this.logger.error(this.context, `Error al eliminar usuario ${id}: ${error.message}`, error.stack);
-              return throwError(() => error);
-            })
-          )
-      );
-
-      this.logger.log(this.context, `Usuario ${id} eliminado con éxito`);
-      return data;
-    } catch (error) {
-      this.logger.error(this.context, `Error no controlado al eliminar usuario ${id}: ${error.message}`, error.stack);
-      throw error;
+      this.logger.error(`Error al validar token: ${error.message}`, error.stack);
+      throw new UnauthorizedException('Token inválido');
     }
   }
 }
