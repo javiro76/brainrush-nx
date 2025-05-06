@@ -1,0 +1,42 @@
+# Docker Compose para Desarrollo - BrainRush (Entorno de Desarrollo)
+# Este archivo solo inicia la infraestructura necesaria para desarrollo local
+
+services:
+  # Servidor NATS para comunicación entre servicios
+  nats:
+    image: nats:latest
+    container_name: brainrush-dev-nats
+    ports:
+      - "4222:4222"  # Cliente
+      - "8222:8222"  # HTTP Monitor
+    volumes:
+      - nats_dev_data:/data
+    command: -js  # Habilitar JetStream
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8222/varz"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+  # Base de datos para el servicio de autenticación (auth-service)
+  auth-db:
+    image: postgres:14
+    container_name: brainrush-dev-auth-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: auth_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - auth_db_dev_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  nats_dev_data:
+  auth_db_dev_data:
