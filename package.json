@@ -9,8 +9,8 @@
     "dev:auth": "npx nx serve auth-service",
     "dev:gateway": "npx nx serve api-gateway",
     "dev:all": "concurrently \"npm run dev:infra:up\" \"npm run dev:auth\" \"npm run dev:gateway\"",
-    "prisma:migrate": "set DATABASE_URL=postgresql://postgres:postgres@localhost:5432/auth_db&& npx prisma migrate deploy --schema=./apps/auth-service/prisma/schema.prisma",
-    "prisma:studio": "set DATABASE_URL=postgresql://postgres:postgres@localhost:5432/auth_db&& npx prisma studio --schema=./apps/auth-service/prisma/schema.prisma",
+    "prisma:migrate": "npx prisma migrate deploy --schema=./apps/auth-service/prisma/schema.prisma",
+    "prisma:studio": "npx prisma studio --schema=./apps/auth-service/prisma/schema.prisma",
     "dev:setup": "npm run dev:infra:up && npm run prisma:migrate"
   },
   "private": true,
@@ -65,6 +65,7 @@
     "jest-environment-node": "^29.7.0",
     "nx": "20.8.1",
     "prettier": "^2.6.2",
+    "prisma": "^6.7.0",
     "ts-jest": "^29.1.0",
     "ts-node": "10.9.1",
     "tslib": "^2.3.0",
