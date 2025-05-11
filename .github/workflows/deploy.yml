@@ -12,9 +12,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
+        uses: actions/checkout@v4      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
@@ -35,6 +33,21 @@ jobs:
           echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env.prod
           echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env.prod
           echo "JWT_EXPIRES_IN=${{ secrets.JWT_EXPIRES_IN }}" >> .env.prod
+
+      - name: Validate Secrets
+        run: |
+          if [ -z "${{ secrets.DIGITALOCEAN_HOST }}" ]; then
+              echo "Error: DIGITALOCEAN_HOST is not set."
+              exit 1
+          fi
+          if [ -z "${{ secrets.DIGITALOCEAN_USERNAME }}" ]; then
+              echo "Error: DIGITALOCEAN_USERNAME is not set."
+              exit 1
+          fi
+          if [ -z "${{ secrets.DIGITALOCEAN_SSH_KEY }}" ]; then
+              echo "Error: DIGITALOCEAN_SSH_KEY is not set."
+              exit 1
+          fi
 
       - name: Deploy to Digital Ocean
         uses: appleboy/ssh-action@v1.0.0
