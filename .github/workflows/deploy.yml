@@ -52,6 +52,23 @@ jobs:
           fi
           # La validación de SSH_PASSPHRASE ya no es necesaria
 
+      - name: List workspace contents before copying
+        run: |
+          echo "Listing root directory:"
+          ls -la
+          echo "---"
+          echo "Listing dist/ directory (if it exists):"
+          ls -la dist/ || echo "dist/ directory not found"
+          echo "---"
+          echo "Listing apps/ directory (if it exists):"
+          ls -la apps/ || echo "apps/ directory not found"
+          echo "---"
+          echo "Listing apps/auth-service/ directory (if it exists):"
+          ls -la apps/auth-service/ || echo "apps/auth-service/ directory not found"
+          echo "---"
+          echo "Listing apps/api-gateway/ directory (if it exists):"
+          ls -la apps/api-gateway/ || echo "apps/api-gateway/ directory not found"
+
       - name: Deploy to Digital Ocean (Create Directory)
         uses: appleboy/ssh-action@v1.0.0
         with:
