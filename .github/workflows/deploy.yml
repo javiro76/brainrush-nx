@@ -19,9 +19,11 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-
+          
       - name: Install dependencies
-        run: npm ci      - name: Build applications
+        run: npm ci
+
+      - name: Build applications
         run: |
           echo "Building API Gateway..."
           npx nx build api-gateway --prod
