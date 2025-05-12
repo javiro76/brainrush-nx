@@ -44,9 +44,8 @@ services:
   # Servicio de autenticación
   auth-service:
     build:
-      context: ./apps/auth-service  # Cambiado: El contexto es ahora el directorio de auth-service
-      dockerfile:  Dockerfile        # Asume que tu Dockerfile se llama 'Dockerfile' dentro de apps/auth-service/
-    restart: always
+      context: .
+      dockerfile: ./apps/auth-service/Dockerfile
     environment:
       - NODE_ENV=production
       - PORT=3334
@@ -71,8 +70,8 @@ services:
   # API Gateway
   api-gateway:
     build:
-      context: ./apps/api-gateway   # Cambiado: El contexto es ahora el directorio de api-gateway
-      dockerfile: Dockerfile        # Asume que tu Dockerfile se llama 'Dockerfile' dentro de apps/api-gateway/
+      context: .
+      dockerfile: ./apps/api-gateway/Dockerfile
     restart: always
     ports:
       - "3333:3333"  # Será expuesto a través de Nginx
