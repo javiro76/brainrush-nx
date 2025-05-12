@@ -1,15 +1,19 @@
 # Etapa de construcción
-FROM node:22-alpine AS builder
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
 # Actualizar paquetes del sistema para mitigar vulnerabilidades
 RUN apk update && apk upgrade && apk add --no-cache dumb-init
 
-# Copiar package.json y package-lock.json
+# Copiar package.json y package-lock.json y archivos de configuración nx
 COPY package*.json ./
-COPY nx.json .
-COPY tsconfig.base.json .
+COPY nx.json ./
+COPY tsconfig.base.json ./
+
+# Copiar las definiciones de proyectos para NX
+COPY apps/auth-service/project.json ./apps/auth-service/
+COPY libs/ ./libs/
 
 # Instalar dependencias
 RUN npm ci
@@ -24,7 +28,7 @@ RUN npx nx build auth-service --prod
 RUN cd apps/auth-service && npx prisma generate
 
 # Etapa de producción
-FROM node:22-alpine
+FROM node:20-alpine
 
 WORKDIR /app
 
@@ -35,12 +39,13 @@ RUN apk update && apk upgrade && apk add --no-cache dumb-init python3 make g++
 COPY --from=builder /app/dist/apps/auth-service ./
 COPY --from=builder /app/apps/auth-service/prisma ./prisma
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 
 # Copiar package.json y package-lock.json para reinstalar dependencias
 COPY --from=builder /app/package.json /app/package-lock.json ./
 
-# Instalar solo las dependencias de producción
-RUN npm ci --only=production
+# Instalar solo las dependencias de producción (sin volver a generar prisma client)
+RUN npm ci --only=production --ignore-scripts
 
 # Generar el cliente de Prisma en el contenedor de producción
 RUN npx prisma generate

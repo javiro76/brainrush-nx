@@ -21,12 +21,17 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
-
-      - name: Build applications
+        run: npm ci      - name: Build applications
         run: |
+          echo "Building API Gateway..."
           npx nx build api-gateway --prod
+
+          echo "Building Auth Service..."
           npx nx build auth-service --prod
+
+          echo "Verifying build artifacts..."
+          ls -la dist/apps/api-gateway
+          ls -la dist/apps/auth-service
 
       - name: Create .env file
         run: |
@@ -67,16 +72,19 @@ jobs:
           ls -la apps/auth-service/ || echo "apps/auth-service/ directory not found"
           echo "---"
           echo "Listing apps/api-gateway/ directory (if it exists):"
-          ls -la apps/api-gateway/ || echo "apps/api-gateway/ directory not found"
-
-      - name: Create deployment package
+          ls -la apps/api-gateway/ || echo "apps/api-gateway/ directory not found"      - name: Create deployment package
         run: |
           tar -zcvf deployment.tar.gz \
             dist/ \
             docker-compose.prod.yml \
             .env.prod \
+            package.json \
+            package-lock.json \
+            nx.json \
+            tsconfig.base.json \
             apps/auth-service/ \
-            apps/api-gateway/
+            apps/api-gateway/ \
+            libs/
           echo "--- Deployment package contents (deployment.tar.gz) ---"
           tar -ztvf deployment.tar.gz
 
@@ -112,9 +120,7 @@ jobs:
           script: |
             cd /home/brainrush/brainrush-app
             tar -zxvf deployment.tar.gz
-            rm deployment.tar.gz # Opcional: eliminar el tar después de extraer
-
-      - name: Start Docker containers
+            rm deployment.tar.gz # Opcional: eliminar el tar después de extraer      - name: Start Docker containers
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.DIGITALOCEAN_HOST }}
@@ -122,8 +128,26 @@ jobs:
           key: ${{ secrets.DIGITALOCEAN_SSH_KEY }}
           script: |
             cd /home/brainrush/brainrush-app
-            docker-compose -f docker-compose.prod.yml down
-            docker-compose -f docker-compose.prod.yml up -d --build
+
+            # Primero, intenta usar la configuración pre-construida
+            if [ -f "docker-compose.pre-built.yml" ]; then
+              echo "Usando la versión pre-construida (optimizada)"
+              docker-compose -f docker-compose.pre-built.yml down
+              docker-compose -f docker-compose.pre-built.yml up -d --build
+              DOCKER_EXIT_CODE=$?
+            else
+              echo "Versión pre-construida no disponible, usando configuración estándar"
+              docker-compose -f docker-compose.prod.yml down
+              docker-compose -f docker-compose.prod.yml up -d --build
+              DOCKER_EXIT_CODE=$?
+            fi
+
+            # Verificar si Docker Compose ha funcionado correctamente
+            if [ $DOCKER_EXIT_CODE -ne 0 ]; then
+              echo "Error al iniciar los contenedores, intentando con la configuración estándar"
+              docker-compose -f docker-compose.prod.yml down
+              docker-compose -f docker-compose.prod.yml up -d --build
+            fi
 
             # Ejecutar migraciones de Prisma (si aplica)
             docker-compose -f docker-compose.prod.yml exec -T auth-service npx prisma migrate deploy

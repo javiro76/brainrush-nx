@@ -1,15 +1,19 @@
 # Etapa de construcción
-FROM node:22-alpine AS builder
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
 # Actualizar paquetes del sistema para mitigar vulnerabilidades
 RUN apk update && apk upgrade && apk add --no-cache dumb-init
 
-# Copiar package.json y package-lock.json
+# Copiar package.json y package-lock.json y archivos de configuración nx
 COPY package*.json ./
-COPY nx.json .
-COPY tsconfig.base.json .
+COPY nx.json ./
+COPY tsconfig.base.json ./
+
+# Copiar las definiciones de proyectos para NX
+COPY apps/api-gateway/project.json ./apps/api-gateway/
+COPY libs/ ./libs/
 
 # Instalar dependencias
 RUN npm ci
@@ -21,7 +25,7 @@ COPY . .
 RUN npx nx build api-gateway --prod
 
 # Etapa de producción
-FROM node:22-alpine
+FROM node:20-alpine
 
 WORKDIR /app
 

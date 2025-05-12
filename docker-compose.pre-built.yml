@@ -1,4 +1,4 @@
-# docker-compose.prod.yml - Configuración para entorno de producción
+# docker-compose.pre-built.yml - Configuración para entorno de producción (usando builds pre-construidos)
 version: '3.8'
 
 services:
@@ -41,13 +41,12 @@ services:
       timeout: 5s
       retries: 5
 
-  # Servicio de autenticación
+  # Servicio de autenticación (usando build pre-construido)
   auth-service:
+    image: auth-service:latest
     build:
       context: .
-      dockerfile: ./apps/auth-service/Dockerfile
-      args:
-        - NODE_ENV=production
+      dockerfile: ./apps/auth-service/prebuilt.Dockerfile
     environment:
       - NODE_ENV=production
       - PORT=3334
@@ -68,13 +67,13 @@ services:
       timeout: 5s
       retries: 3
       start_period: 15s
-  # API Gateway
+
+  # API Gateway (usando build pre-construido)
   api-gateway:
+    image: api-gateway:latest
     build:
       context: .
-      dockerfile: ./apps/api-gateway/Dockerfile
-      args:
-        - NODE_ENV=production
+      dockerfile: ./apps/api-gateway/prebuilt.Dockerfile
     restart: always
     ports:
       - "3333:3333"  # Será expuesto a través de Nginx
