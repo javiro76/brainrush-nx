@@ -71,7 +71,12 @@ jobs:
           host: ${{ secrets.DIGITALOCEAN_HOST }}
           username: ${{ secrets.DIGITALOCEAN_USERNAME }}
           key: ${{ secrets.DIGITALOCEAN_SSH_KEY }}
-          source: 'dist/,docker-compose.prod.yml,.env.prod,apps/*/Dockerfile'
+          source: |
+            dist/
+            docker-compose.prod.yml
+            .env.prod
+            apps/auth-service/
+            apps/api-gateway/
           target: '/home/brainrush/brainrush-app'
           strip_components: 0 # Asegúrate de que esto es lo que quieres. 0 copia la estructura completa.
 
