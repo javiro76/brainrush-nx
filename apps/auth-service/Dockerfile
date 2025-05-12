@@ -15,10 +15,6 @@ COPY tsconfig.base.json ./
 COPY apps/auth-service/project.json ./apps/auth-service/ 
 COPY libs/ ./libs/ 
 
-# Copiar configuración de ESLint
-COPY apps/auth-service/eslint.config.mjs ./apps/auth-service/ 
-COPY libs/shared/eslint.config.mjs ./libs/shared/ 
-
 # Instalar dependencias
 RUN npm ci
 

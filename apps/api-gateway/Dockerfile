@@ -15,10 +15,6 @@ COPY tsconfig.base.json ./
 COPY apps/api-gateway/project.json ./apps/api-gateway/ 
 COPY libs/ ./libs/ 
 
-# Copiar configuración de ESLint
-COPY apps/api-gateway/eslint.config.mjs ./apps/api-gateway/ 
-COPY libs/shared/eslint.config.mjs ./libs/shared/ 
-
 # Instalar dependencias
 RUN npm ci
 
