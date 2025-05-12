@@ -83,11 +83,11 @@ jobs:
           key: ${{ secrets.DIGITALOCEAN_SSH_KEY }}
           script: |
             cd /home/brainrush/brainrush-app
-            docker compose -f docker-compose.prod.yml down
-            docker compose -f docker-compose.prod.yml up -d --build
+            docker-compose -f docker-compose.prod.yml down
+            docker-compose -f docker-compose.prod.yml up -d --build
 
             # Ejecutar migraciones de Prisma (si aplica)
-            docker compose -f docker-compose.prod.yml exec -T auth-service npx prisma migrate deploy
+            docker-compose -f docker-compose.prod.yml exec -T auth-service npx prisma migrate deploy
 
             # Eliminar imágenes antiguas (limpieza)
             docker image prune -af
