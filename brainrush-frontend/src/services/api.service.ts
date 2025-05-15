@@ -1,0 +1,109 @@
+/**
+ * Configuración base para Axios
+ */
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+
+// URL base de la API
+export const BASE_API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000/api';
+
+// Clase base para los servicios API
+export class ApiService {
+  private static instance: ApiService;
+  private api: AxiosInstance;
+
+  private constructor() {
+    this.api = axios.create({
+      baseURL: BASE_API_URL,
+      timeout: 10000, // 10 segundos
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    // Interceptor para añadir token a las peticiones
+    this.api.interceptors.request.use(
+      (config) => {
+        const token = localStorage.getItem('token');
+        if (token && config.headers) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+      },
+      (error) => Promise.reject(error)
+    );
+
+    // Interceptor para manejar errores de respuesta
+    this.api.interceptors.response.use(
+      (response) => response,
+      async (error) => {
+        const originalRequest = error.config;
+
+        // Si el error es 401 (No autorizado) y no se ha intentado refrescar el token
+        if (error.response?.status === 401 && !originalRequest._retry) {
+          originalRequest._retry = true;
+
+          try {
+            // Intenta refrescar el token
+            const refreshToken = localStorage.getItem('refreshToken');
+            if (!refreshToken) {
+              throw new Error('No refresh token available');
+            }
+
+            const response = await axios.post(
+              `${BASE_API_URL}/auth/refresh-token`,
+              { refreshToken }
+            );
+
+            const { token, refreshToken: newRefreshToken } = response.data;
+
+            // Guardar nuevos tokens
+            localStorage.setItem('token', token);
+            localStorage.setItem('refreshToken', newRefreshToken);
+
+            // Actualizar el token en la petición original y reintentarla
+            originalRequest.headers.Authorization = `Bearer ${token}`;
+            return this.api(originalRequest);
+          } catch (refreshError) {
+            // Si no se puede refrescar el token, limpiar localStorage y redirigir a login
+            localStorage.removeItem('token');
+            localStorage.removeItem('refreshToken');
+            window.location.href = '/login';
+            return Promise.reject(refreshError);
+          }
+        }
+
+        return Promise.reject(error);
+      }
+    );
+  }
+
+  // Patrón Singleton para obtener instancia
+  public static getInstance(): ApiService {
+    if (!ApiService.instance) {
+      ApiService.instance = new ApiService();
+    }
+    return ApiService.instance;
+  }
+
+  // Método para obtener la instancia de Axios
+  public getAxios(): AxiosInstance {
+    return this.api;
+  }
+
+  // Métodos HTTP básicos
+  public get<T = any>(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
+    return this.api.get<T>(url, config);
+  }
+
+  public post<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
+    return this.api.post<T>(url, data, config);
+  }
+
+  public put<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
+    return this.api.put<T>(url, data, config);
+  }
+
+  public delete<T = any>(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
+    return this.api.delete<T>(url, config);
+  }
+}

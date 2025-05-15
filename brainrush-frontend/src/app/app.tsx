@@ -1,51 +1,69 @@
-// Uncomment this line to use CSS modules
-// import styles from './app.module.css';
-import NxWelcome from './nx-welcome';
+import { Route, Routes, Navigate } from 'react-router-dom';
+import { useAppSelector } from '../hooks/useRedux';
+import { ThemeProvider } from '@mui/material/styles';
+import { CssBaseline } from '@mui/material';
+import { createAppTheme } from '../styles/theme';
 
-import { Route, Routes, Link } from 'react-router-dom';
+// Layout principal y páginas
+import MainLayout from '../components/layout/MainLayout';
+import LoginPage from '../pages/auth/LoginPage';
+import RegisterPage from '../pages/auth/RegisterPage';
+import DashboardPage from '../pages/dashboard/DashboardPage';
+import NotFoundPage from '../pages/NotFoundPage';
+import ProtectedRoute from '../components/common/ProtectedRoute';
+
+// Páginas de exámenes
+import ExamsPage from '../pages/exams/ExamsPage';
+import ExamStartPage from '../pages/exams/ExamStartPage';
+
+// Páginas de cursos
+import CoursesPage from '../pages/courses/CoursesPage';
+import CourseDetailPage from '../pages/courses/CourseDetailPage';
 
 export function App() {
-  return (
-    <div>
-      <NxWelcome title="brainrush-frontend" />
+  // Obtener el tema actual del store de Redux
+  const themeMode = useAppSelector((state) => state.theme.mode);
 
-      {/* START: routes */}
-      {/* These routes and navigation have been generated for you */}
-      {/* Feel free to move and update them to fit your needs */}
-      <br />
-      <hr />
-      <br />
-      <div role="navigation">
-        <ul>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to="/page-2">Page 2</Link>
-          </li>
-        </ul>
-      </div>
+  // Crear el tema basado en el modo actual
+  const theme = createAppTheme(themeMode);
+
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
       <Routes>
+        {/* Rutas públicas */}
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+
+        {/* Rutas protegidas */}
         <Route
           path="/"
           element={
-            <div>
-              This is the generated root route.{' '}
-              <Link to="/page-2">Click here for page 2.</Link>
-            </div>
+            <ProtectedRoute>
+              <MainLayout />
+            </ProtectedRoute>
           }
-        />
-        <Route
-          path="/page-2"
-          element={
-            <div>
-              <Link to="/">Click here to go back to root page.</Link>
-            </div>
-          }
-        />
+        >
+          <Route index element={<Navigate to="/dashboard" replace />} />
+          <Route path="dashboard" element={<DashboardPage />} />
+
+          {/* Rutas para exámenes */}
+          <Route path="exams">
+            <Route index element={<ExamsPage />} />
+            <Route path=":examId/start" element={<ExamStartPage />} />
+          </Route>
+
+          {/* Rutas para cursos */}
+          <Route path="courses">
+            <Route index element={<CoursesPage />} />
+            <Route path=":courseId" element={<CourseDetailPage />} />
+          </Route>
+        </Route>
+
+        {/* Ruta para páginas no encontradas */}
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
-      {/* END: routes */}
-    </div>
+    </ThemeProvider>
   );
 }
 
