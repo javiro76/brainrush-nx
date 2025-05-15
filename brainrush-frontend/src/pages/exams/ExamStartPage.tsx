@@ -45,7 +45,8 @@ import {
   Close,
   AccessTime,
   HelpOutline,
-  ArrowBack
+  ArrowBack,
+  FormatListBulleted
 } from '@mui/icons-material';
 import { useAppSelector } from '../../hooks/useRedux';
 
@@ -355,15 +356,13 @@ const ExamStartPage = () => {
           <Box sx={{ mb: 3 }}>
             <Typography variant="h6" gutterBottom>
               Información del examen
-            </Typography>
-
-            <Grid container spacing={2}>
-              <Grid item xs={6}>
+            </Typography>            <Grid container spacing={2}>
+              <Grid component="div" size={6}>
                 <Typography variant="body1">
                   <Box component="span" fontWeight="bold">Preguntas:</Box> {exam.questions.length}
                 </Typography>
               </Grid>
-              <Grid item xs={6}>
+              <Grid component="div" size={6}>
                 <Typography variant="body1">
                   <Box component="span" fontWeight="bold">Duración:</Box> {exam.timeInMinutes} minutos
                 </Typography>
@@ -501,7 +500,7 @@ const ExamStartPage = () => {
           </Box>
 
           <Grid container spacing={3} sx={{ mb: 4 }}>
-            <Grid item xs={12} sm={4}>
+            <Grid component="div" size={{ xs: 12, sm: 4 }}>
               <Card sx={{ textAlign: 'center', bgcolor: 'success.light' }}>
                 <CardContent>
                   <Typography variant="h4">
@@ -510,10 +509,9 @@ const ExamStartPage = () => {
                   <Typography variant="body2" color="text.secondary">
                     Respuestas correctas
                   </Typography>
-                </CardContent>
-              </Card>
+                </CardContent>              </Card>
             </Grid>
-            <Grid item xs={12} sm={4}>
+            <Grid component="div" size={{ xs: 12, sm: 4 }}>
               <Card sx={{ textAlign: 'center', bgcolor: 'error.light' }}>
                 <CardContent>
                   <Typography variant="h4">
@@ -522,10 +520,9 @@ const ExamStartPage = () => {
                   <Typography variant="body2" color="text.secondary">
                     Respuestas incorrectas
                   </Typography>
-                </CardContent>
-              </Card>
+                </CardContent>              </Card>
             </Grid>
-            <Grid item xs={12} sm={4}>
+            <Grid component="div" size={{ xs: 12, sm: 4 }}>
               <Card sx={{ textAlign: 'center', bgcolor: 'grey.100' }}>
                 <CardContent>
                   <Typography variant="h4">
@@ -652,17 +649,15 @@ const ExamStartPage = () => {
         bgcolor: theme.palette.background.default
       }}>
         <Grid container alignItems="center" spacing={2}>
-          <Grid item>
+          <Grid component="div">
             <IconButton onClick={() => setConfirmExitDialog(true)}>
               <ArrowBack />
-            </IconButton>
-          </Grid>
-          <Grid item xs>
+            </IconButton>          </Grid>
+          <Grid component="div" size="grow">
             <Typography variant="h6" noWrap>
               {exam.title}
-            </Typography>
-          </Grid>
-          <Grid item>
+            </Typography>          </Grid>
+          <Grid component="div">
             <Box sx={{
               display: 'flex',
               alignItems: 'center',

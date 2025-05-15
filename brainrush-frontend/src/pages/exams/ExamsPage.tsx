@@ -26,11 +26,11 @@ import {
   RadioGroup,
   FormControlLabel,
   Radio,
-  TextField,
-  InputAdornment,
+  TextField, InputAdornment,
   Badge,
   Tab,
-  Tabs
+  Tabs,
+  Checkbox
 } from '@mui/material';
 import {
   Assessment,
@@ -319,7 +319,7 @@ const ExamsPage = () => {
       {/* Barra de búsqueda y filtros */}
       <Paper elevation={1} sx={{ p: 2, mb: 3, borderRadius: 2 }}>
         <Grid container spacing={2} alignItems="center">
-          <Grid item xs={12} sm={6} md={8}>
+          <Grid component="div" size={{ xs: 12, sm: 6, md: 8 }}>
             <TextField
               fullWidth
               placeholder="Buscar exámenes..."
@@ -336,7 +336,7 @@ const ExamsPage = () => {
               }}
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={4} sx={{ textAlign: { xs: 'left', sm: 'right' } }}>
+          <Grid component="div" size={{ xs: 12, sm: 6, md: 4 }} sx={{ textAlign: { xs: 'left', sm: 'right' } }}>
             <Button
               variant="outlined"
               startIcon={<FilterList />}
@@ -402,7 +402,7 @@ const ExamsPage = () => {
       ) : (
         <Grid container spacing={2}>
           {filteredExams.map((exam) => (
-            <Grid item xs={12} sm={6} md={4} key={exam.id}>
+            <Grid component="div" size={{ xs: 12, sm: 6, md: 4 }} key={exam.id}>
               <Card
                 variant={exam.favorite ? "elevation" : "outlined"}
                 elevation={exam.favorite ? 3 : 0}
@@ -596,34 +596,29 @@ const ExamsPage = () => {
               <Box sx={{ my: 2 }}>
                 <Typography variant="subtitle2" gutterBottom>
                   Información del examen:
-                </Typography>
-
-                <Grid container spacing={2}>
-                  <Grid item xs={6}>
+                </Typography>                <Grid container spacing={2}>
+                  <Grid component="div" size={6}>
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
                       <Assessment fontSize="small" color="action" sx={{ mr: 1 }} />
                       <Typography variant="body2">
                         {selectedExam.questionsCount} preguntas
-                      </Typography>
-                    </Box>
+                      </Typography>                    </Box>
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid component="div" size={6}>
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
                       <AccessTime fontSize="small" color="action" sx={{ mr: 1 }} />
                       <Typography variant="body2">
                         {selectedExam.timeInMinutes} minutos
-                      </Typography>
-                    </Box>
+                      </Typography>                    </Box>
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid component="div" size={6}>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                       <CalendarToday fontSize="small" color="action" sx={{ mr: 1 }} />
                       <Typography variant="body2">
                         Disponible desde: {new Date(selectedExam.date).toLocaleDateString()}
-                      </Typography>
-                    </Box>
+                      </Typography>                    </Box>
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid component="div" size={6}>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                       <Star fontSize="small" color="action" sx={{ mr: 1 }} />
                       <Typography variant="body2">

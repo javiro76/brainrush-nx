@@ -25,9 +25,9 @@ import {
   LinearProgress,
   Accordion,
   AccordionSummary,
-  AccordionDetails,
-  Badge,
+  AccordionDetails, Badge,
   Alert,
+  AlertTitle,
   CircularProgress,
   Stack,
   Breadcrumbs,
@@ -321,9 +321,8 @@ const CourseDetailPage = () => {
           borderRadius: 2,
           position: 'relative'
         }}
-      >
-        <Grid container>
-          <Grid item xs={12} md={8} sx={{ position: 'relative' }}>
+      >        <Grid container>
+          <Grid component="div" size={{ xs: 12, md: 8 }} sx={{ position: 'relative' }}>
             <Box
               component="img"
               src={course.image}
@@ -397,10 +396,9 @@ const CourseDetailPage = () => {
                   {course.totalLessons} lecciones
                 </Typography>
               </Box>
-            </Box>
-          </Grid>
+            </Box>          </Grid>
 
-          <Grid item xs={12} md={4}>
+          <Grid component="div" size={{ xs: 12, md: 4 }}>
             <Box sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column' }}>
               <Box sx={{ mb: 3 }}>
                 <Typography variant="h6" gutterBottom>
@@ -642,13 +640,10 @@ const CourseDetailPage = () => {
               {course.overview}
             </Typography>
 
-            <Divider sx={{ my: 3 }} />
-
-            <Typography variant="h6" gutterBottom>
+            <Divider sx={{ my: 3 }} />            <Typography variant="h6" gutterBottom>
               Lo que aprenderás
-            </Typography>
-            <Grid container spacing={2}>
-              <Grid item xs={12} md={6}>
+            </Typography>            <Grid container spacing={2}>
+              <Grid component="div" size={{ xs: 12, md: 6 }}>
                 <List>
                   <ListItem>
                     <ListItemIcon>
@@ -660,11 +655,10 @@ const CourseDetailPage = () => {
                     <ListItemIcon>
                       <CheckCircle color="success" />
                     </ListItemIcon>
-                    <ListItemText primary="Resolver ecuaciones lineales y sistemas de ecuaciones" />
-                  </ListItem>
+                    <ListItemText primary="Resolver ecuaciones lineales y sistemas de ecuaciones" />                  </ListItem>
                 </List>
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid component="div" size={{ xs: 12, md: 6 }}>
                 <List>
                   <ListItem>
                     <ListItemIcon>

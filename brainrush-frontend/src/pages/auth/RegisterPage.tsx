@@ -137,7 +137,7 @@ const RegisterPage = () => {
             {({ errors, touched, isSubmitting, values }) => (
               <Form style={{ width: '100%' }}>
                 <Grid container spacing={2}>
-                  <Grid item xs={12}>
+                  <Grid component="div" size={12}>
                     <Field
                       as={TextField}
                       fullWidth
@@ -150,7 +150,7 @@ const RegisterPage = () => {
                       helperText={touched.name && errors.name}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid component="div" size={12}>
                     <Field
                       as={TextField}
                       fullWidth
@@ -163,7 +163,7 @@ const RegisterPage = () => {
                       helperText={touched.email && errors.email}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid component="div" size={12}>
                     <Field
                       as={TextField}
                       fullWidth
@@ -190,7 +190,7 @@ const RegisterPage = () => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid component="div" size={12}>
                     <Field
                       as={TextField}
                       fullWidth
@@ -218,7 +218,7 @@ const RegisterPage = () => {
                     />
                   </Grid>
 
-                  <Grid item xs={12}>
+                  <Grid component="div" size={12}>
                     <FormControlLabel
                       control={
                         <Field
@@ -239,14 +239,14 @@ const RegisterPage = () => {
 
                   {/* Mostrar error del servidor si existe */}
                   {error && (
-                    <Grid item xs={12}>
+                    <Grid component="div" size={12}>
                       <Typography color="error" variant="body2" align="center">
                         {error}
                       </Typography>
                     </Grid>
                   )}
 
-                  <Grid item xs={12}>
+                  <Grid component="div" size={12}>
                     <Button
                       type="submit"
                       fullWidth
@@ -270,7 +270,7 @@ const RegisterPage = () => {
 
           {/* Enlace de inicio de sesión */}
           <Grid container justifyContent="center" sx={{ mt: 3 }}>
-            <Grid item>
+            <Grid component="div">
               <Link component={RouterLink} to="/login" variant="body2">
                 ¿Ya tienes cuenta? Inicia sesión
               </Link>

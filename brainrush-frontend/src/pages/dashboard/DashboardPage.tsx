@@ -112,11 +112,9 @@ const DashboardPage = () => {
         <Typography variant="body1" color="text.secondary">
           Continúa preparándote para el examen ICFES. ¡Tu próximo simulacro está programado pronto!
         </Typography>
-      </Paper>
-
-      <Grid container spacing={3}>
+      </Paper>      <Grid container spacing={3}>
         {/* Progreso del curso */}
-        <Grid item xs={12} md={8}>
+        <Grid component="div" size={{ xs: 12, md: 8 }}>
           <Paper elevation={2} sx={{ p: 2, borderRadius: 2 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
               <School color="primary" sx={{ mr: 1 }} />
@@ -131,11 +129,9 @@ const DashboardPage = () => {
                 Ver todos
               </Button>
             </Box>
-            <Divider sx={{ mb: 2 }} />
-
-            <Grid container spacing={2}>
+            <Divider sx={{ mb: 2 }} />            <Grid container spacing={2}>
               {courseProgress.map((course) => (
-                <Grid item xs={12} sm={6} key={course.id}>
+                <Grid component="div" size={{ xs: 12, sm: 6 }} key={course.id}>
                   <Card variant="outlined" sx={{ mb: 1 }}>
                     <CardContent sx={{ pb: 1 }}>
                       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
@@ -186,11 +182,10 @@ const DashboardPage = () => {
                 </Grid>
               ))}
             </Grid>
-          </Paper>
-        </Grid>
+          </Paper>        </Grid>
 
         {/* Estadísticas */}
-        <Grid item xs={12} md={4}>
+        <Grid component="div" size={{ xs: 12, md: 4 }}>
           <Paper elevation={2} sx={{ p: 2, borderRadius: 2, height: '100%' }}>
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
               <Timeline color="primary" sx={{ mr: 1 }} />
@@ -265,11 +260,10 @@ const DashboardPage = () => {
             >
               Ver estadísticas completas
             </Button>
-          </Paper>
-        </Grid>
+          </Paper>        </Grid>
 
         {/* Próximos exámenes */}
-        <Grid item xs={12}>
+        <Grid component="div" size={12}>
           <Paper elevation={2} sx={{ p: 2, borderRadius: 2 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
               <FormatListBulleted color="primary" sx={{ mr: 1 }} />
@@ -284,11 +278,9 @@ const DashboardPage = () => {
                 Ver todos
               </Button>
             </Box>
-            <Divider sx={{ mb: 2 }} />
-
-            <Grid container spacing={2}>
+            <Divider sx={{ mb: 2 }} />            <Grid container spacing={2}>
               {upcomingExams.map((exam) => (
-                <Grid item xs={12} sm={6} md={4} key={exam.id}>
+                <Grid component="div" size={{ xs: 12, sm: 6, md: 4 }} key={exam.id}>
                   <Card variant="outlined">
                     <CardContent>
                       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>

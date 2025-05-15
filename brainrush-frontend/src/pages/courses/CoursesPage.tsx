@@ -359,10 +359,9 @@ const CoursesPage = () => {
         </Typography>
       </Paper>
 
-      {/* Barra de búsqueda y filtros */}
-      <Box sx={{ mb: 3 }}>
+      {/* Barra de búsqueda y filtros */}      <Box sx={{ mb: 3 }}>
         <Grid container spacing={2}>
-          <Grid item xs={12} sm={6} md={8}>
+          <Grid component="div" size={{ xs: 12, sm: 6, md: 8 }}>
             <TextField
               fullWidth
               placeholder="Buscar cursos..."
@@ -379,7 +378,7 @@ const CoursesPage = () => {
               }}
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid component="div" size={{ xs: 12, sm: 6, md: 4 }}>
             <Box sx={{ display: 'flex', gap: 1 }}>
               <FormControl fullWidth size="medium">
                 <InputLabel>Nivel</InputLabel>
@@ -447,235 +446,234 @@ const CoursesPage = () => {
             Limpiar filtros
           </Button>
         </Box>
-      ) : (
-        <Grid container spacing={3}>
-          {filteredCourses.map((course) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={course.id}>
-              <Card
-                sx={{
-                  height: '100%',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  position: 'relative',
-                  transition: 'all 0.2s ease-in-out',
-                  '&:hover': {
-                    transform: 'translateY(-5px)',
-                    boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
-                  }
-                }}
-                elevation={course.featured ? 3 : 1}
-              >
-                {/* Imagen del curso con overlay para cursos bloqueados */}
-                <Box sx={{ position: 'relative' }}>
-                  <CardMedia
-                    component="img"
-                    height="160"
-                    image={course.image}
-                    alt={course.title}
-                    sx={{
-                      filter: course.locked ? 'brightness(0.6)' : 'none',
-                    }}
-                  />
+      ) : (<Grid container spacing={3}>
+        {filteredCourses.map((course) => (
+          <Grid component="div" size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={course.id}>
+            <Card
+              sx={{
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                position: 'relative',
+                transition: 'all 0.2s ease-in-out',
+                '&:hover': {
+                  transform: 'translateY(-5px)',
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
+                }
+              }}
+              elevation={course.featured ? 3 : 1}
+            >
+              {/* Imagen del curso con overlay para cursos bloqueados */}
+              <Box sx={{ position: 'relative' }}>
+                <CardMedia
+                  component="img"
+                  height="160"
+                  image={course.image}
+                  alt={course.title}
+                  sx={{
+                    filter: course.locked ? 'brightness(0.6)' : 'none',
+                  }}
+                />
 
-                  {/* Indicador de curso bloqueado */}
-                  {course.locked && (
-                    <Box sx={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
-                      <Paper
-                        sx={{
-                          p: 1.5,
-                          bgcolor: 'rgba(0,0,0,0.7)',
-                          color: 'white',
-                          display: 'flex',
-                          alignItems: 'center',
-                        }}
-                      >
-                        <Lock sx={{ mr: 1 }} />
-                        <Typography variant="subtitle2">
-                          Curso Bloqueado
-                        </Typography>
-                      </Paper>
-                    </Box>
+                {/* Indicador de curso bloqueado */}
+                {course.locked && (
+                  <Box sx={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                    <Paper
+                      sx={{
+                        p: 1.5,
+                        bgcolor: 'rgba(0,0,0,0.7)',
+                        color: 'white',
+                        display: 'flex',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <Lock sx={{ mr: 1 }} />
+                      <Typography variant="subtitle2">
+                        Curso Bloqueado
+                      </Typography>
+                    </Paper>
+                  </Box>
+                )}
+
+                {/* Etiqueta de materia */}
+                <Chip
+                  label={course.subject}
+                  size="small"
+                  sx={{
+                    position: 'absolute',
+                    top: 10,
+                    left: 10,
+                    bgcolor: 'rgba(255,255,255,0.9)',
+                  }}
+                />
+
+                {/* Botón de favorito */}
+                <IconButton
+                  aria-label="añadir a favoritos"
+                  onClick={() => handleToggleFavorite(course.id)}
+                  sx={{
+                    position: 'absolute',
+                    top: 5,
+                    right: 5,
+                    bgcolor: 'rgba(255,255,255,0.8)',
+                    '&:hover': {
+                      bgcolor: 'rgba(255,255,255,0.95)',
+                    }
+                  }}
+                >
+                  {course.featured ? (
+                    <Bookmark color="primary" />
+                  ) : (
+                    <BookmarkBorder />
                   )}
+                </IconButton>
+              </Box>
 
-                  {/* Etiqueta de materia */}
-                  <Chip
-                    label={course.subject}
+              <CardContent sx={{ flexGrow: 1, pb: 1 }}>
+                {/* Título del curso */}
+                <Typography
+                  gutterBottom
+                  variant="h6"
+                  component="h2"
+                  sx={{
+                    fontWeight: 'bold',
+                    fontSize: '1.1rem',
+                    mb: 1,
+                    display: '-webkit-box',
+                    overflow: 'hidden',
+                    WebkitBoxOrient: 'vertical',
+                    WebkitLineClamp: 2,
+                    minHeight: '54px',
+                  }}
+                >
+                  {course.title}
+                </Typography>
+
+                {/* Calificación */}
+                <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1.5 }}>
+                  <Rating
+                    value={course.rating}
+                    precision={0.5}
                     size="small"
-                    sx={{
-                      position: 'absolute',
-                      top: 10,
-                      left: 10,
-                      bgcolor: 'rgba(255,255,255,0.9)',
-                    }}
+                    readOnly
                   />
+                  <Typography variant="body2" color="text.secondary">
+                    {course.rating}
+                  </Typography>
+                </Stack>
 
-                  {/* Botón de favorito */}
-                  <IconButton
-                    aria-label="añadir a favoritos"
-                    onClick={() => handleToggleFavorite(course.id)}
-                    sx={{
-                      position: 'absolute',
-                      top: 5,
-                      right: 5,
-                      bgcolor: 'rgba(255,255,255,0.8)',
-                      '&:hover': {
-                        bgcolor: 'rgba(255,255,255,0.95)',
-                      }
-                    }}
+                {/* Información del instructor */}
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 1.5 }}>
+                  <Avatar
+                    src={course.instructor.avatar}
+                    sx={{ width: 24, height: 24, mr: 1 }}
                   >
-                    {course.featured ? (
-                      <Bookmark color="primary" />
-                    ) : (
-                      <BookmarkBorder />
-                    )}
-                  </IconButton>
+                    {course.instructor.name.charAt(0)}
+                  </Avatar>
+                  <Typography variant="body2" color="text.secondary">
+                    {course.instructor.name}
+                  </Typography>
                 </Box>
 
-                <CardContent sx={{ flexGrow: 1, pb: 1 }}>
-                  {/* Título del curso */}
-                  <Typography
-                    gutterBottom
-                    variant="h6"
-                    component="h2"
-                    sx={{
-                      fontWeight: 'bold',
-                      fontSize: '1.1rem',
-                      mb: 1,
-                      display: '-webkit-box',
-                      overflow: 'hidden',
-                      WebkitBoxOrient: 'vertical',
-                      WebkitLineClamp: 2,
-                      minHeight: '54px',
-                    }}
-                  >
-                    {course.title}
-                  </Typography>
-
-                  {/* Calificación */}
-                  <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1.5 }}>
-                    <Rating
-                      value={course.rating}
-                      precision={0.5}
+                {/* Estadísticas del curso */}
+                <Box sx={{ mb: 1.5 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
+                    <AccessTime sx={{ fontSize: 16, mr: 1, color: 'text.secondary' }} />
+                    <Typography variant="body2" color="text.secondary">
+                      {course.duration}
+                    </Typography>
+                    <Box sx={{ ml: 'auto' }} />
+                    <Chip
+                      label={course.level}
                       size="small"
-                      readOnly
+                      color={
+                        course.level === 'Básico' ? 'success' :
+                          course.level === 'Intermedio' ? 'primary' : 'error'
+                      }
+                      variant="outlined"
+                      sx={{ height: 20, fontSize: '0.7rem' }}
                     />
+                  </Box>
+                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    <School sx={{ fontSize: 16, mr: 1, color: 'text.secondary' }} />
                     <Typography variant="body2" color="text.secondary">
-                      {course.rating}
-                    </Typography>
-                  </Stack>
-
-                  {/* Información del instructor */}
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 1.5 }}>
-                    <Avatar
-                      src={course.instructor.avatar}
-                      sx={{ width: 24, height: 24, mr: 1 }}
-                    >
-                      {course.instructor.name.charAt(0)}
-                    </Avatar>
-                    <Typography variant="body2" color="text.secondary">
-                      {course.instructor.name}
+                      {course.completedLessons} de {course.totalLessons} lecciones
                     </Typography>
                   </Box>
+                </Box>
 
-                  {/* Estadísticas del curso */}
-                  <Box sx={{ mb: 1.5 }}>
+                {/* Barra de progreso (solo para cursos inscritos) */}
+                {course.enrolled && (
+                  <Box sx={{ mt: 2 }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
-                      <AccessTime sx={{ fontSize: 16, mr: 1, color: 'text.secondary' }} />
-                      <Typography variant="body2" color="text.secondary">
-                        {course.duration}
+                      <Typography variant="caption" color="text.secondary">
+                        Progreso:
                       </Typography>
-                      <Box sx={{ ml: 'auto' }} />
-                      <Chip
-                        label={course.level}
-                        size="small"
-                        color={
-                          course.level === 'Básico' ? 'success' :
-                            course.level === 'Intermedio' ? 'primary' : 'error'
-                        }
-                        variant="outlined"
-                        sx={{ height: 20, fontSize: '0.7rem' }}
-                      />
-                    </Box>
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                      <School sx={{ fontSize: 16, mr: 1, color: 'text.secondary' }} />
-                      <Typography variant="body2" color="text.secondary">
-                        {course.completedLessons} de {course.totalLessons} lecciones
+                      <Typography variant="caption" sx={{ ml: 'auto' }}>
+                        {course.progress}%
                       </Typography>
                     </Box>
+                    <LinearProgress
+                      variant="determinate"
+                      value={course.progress}
+                      sx={{
+                        height: 5,
+                        borderRadius: 5,
+                        bgcolor: 'rgba(0,0,0,0.08)',
+                      }}
+                    />
                   </Box>
+                )}
+              </CardContent>
 
-                  {/* Barra de progreso (solo para cursos inscritos) */}
-                  {course.enrolled && (
-                    <Box sx={{ mt: 2 }}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
-                        <Typography variant="caption" color="text.secondary">
-                          Progreso:
-                        </Typography>
-                        <Typography variant="caption" sx={{ ml: 'auto' }}>
-                          {course.progress}%
-                        </Typography>
-                      </Box>
-                      <LinearProgress
-                        variant="determinate"
-                        value={course.progress}
-                        sx={{
-                          height: 5,
-                          borderRadius: 5,
-                          bgcolor: 'rgba(0,0,0,0.08)',
-                        }}
-                      />
-                    </Box>
-                  )}
-                </CardContent>
+              <Divider />
 
-                <Divider />
-
-                <CardActions>
-                  {course.locked ? (
-                    <Button
-                      size="small"
-                      variant="outlined"
-                      startIcon={<LockOpen />}
-                      fullWidth
-                      onClick={() => navigate('/pricing')}
-                    >
-                      Desbloquear
-                    </Button>
-                  ) : course.enrolled ? (
-                    <Button
-                      size="small"
-                      variant="contained"
-                      endIcon={<ArrowForward />}
-                      fullWidth
-                      onClick={() => navigate(`/courses/${course.id}`)}
-                    >
-                      Continuar
-                    </Button>
-                  ) : (
-                    <Button
-                      size="small"
-                      variant="outlined"
-                      startIcon={<School />}
-                      fullWidth
-                      onClick={() => handleEnrollCourse(course.id)}
-                    >
-                      Inscribirme
-                    </Button>
-                  )}
-                </CardActions>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
+              <CardActions>
+                {course.locked ? (
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    startIcon={<LockOpen />}
+                    fullWidth
+                    onClick={() => navigate('/pricing')}
+                  >
+                    Desbloquear
+                  </Button>
+                ) : course.enrolled ? (
+                  <Button
+                    size="small"
+                    variant="contained"
+                    endIcon={<ArrowForward />}
+                    fullWidth
+                    onClick={() => navigate(`/courses/${course.id}`)}
+                  >
+                    Continuar
+                  </Button>
+                ) : (
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    startIcon={<School />}
+                    fullWidth
+                    onClick={() => handleEnrollCourse(course.id)}
+                  >
+                    Inscribirme
+                  </Button>
+                )}
+              </CardActions>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
       )}
     </Box>
   );
