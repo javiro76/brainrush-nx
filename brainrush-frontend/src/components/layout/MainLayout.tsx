@@ -208,7 +208,8 @@ const MainLayout = () => {
         </Toolbar>
       </AppBar>
 
-      {/* Drawer lateral */}      <Drawer
+      {/* Drawer lateral */}
+      <Drawer
         variant="permanent"
         open={drawerOpen}
         sx={{
@@ -238,7 +239,9 @@ const MainLayout = () => {
             <ChevronLeftIcon />
           </IconButton>
         </Toolbar>
-        <Divider />        {/* Lista de opciones del menú */}
+        <Divider />
+
+        {/* Lista de opciones del menú */}
         <List>
           {navigationItems.map((item) => (
             <ListItem key={item.text} disablePadding>
@@ -342,7 +345,9 @@ const MainLayout = () => {
         </List>
       </Drawer>
 
-      {/* Contenido principal */}      <Box
+      {/* Contenido principal */}
+      
+      <Box
         component="main"
         sx={{
           flexGrow: 1,
