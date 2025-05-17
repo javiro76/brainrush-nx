@@ -6,19 +6,16 @@ import { createAppTheme } from '../styles/theme';
 
 // Layout principal y páginas
 import MainLayout from '../components/layout/MainLayout';
-import LoginPage from '../pages/auth/LoginPage';
-import RegisterPage from '../pages/auth/RegisterPage';
+import { LoginPage, RegisterPage } from '../pages/auth';
 import DashboardPage from '../pages/dashboard/DashboardPage';
 import NotFoundPage from '../pages/NotFoundPage';
 import ProtectedRoute from '../components/common/ProtectedRoute';
 
 // Páginas de exámenes
-import ExamsPage from '../pages/exams/ExamsPage';
-import ExamStartPage from '../pages/exams/ExamStartPage';
+import { ExamStartPage, ExamsPage } from '../pages/exams';
 
 // Páginas de cursos
-import CoursesPage from '../pages/courses/CoursesPage';
-import CourseDetailPage from '../pages/courses/CourseDetailPage';
+import { CourseDetailPage, CoursesPage } from '../pages/courses';
 
 export function App() {
   // Obtener el tema actual del store de Redux
