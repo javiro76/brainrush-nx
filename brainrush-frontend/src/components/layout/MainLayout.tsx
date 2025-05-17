@@ -33,9 +33,9 @@ import {
   AccountCircle as AccountCircleIcon,
   BookmarkBorder as BookmarkIcon
 } from '@mui/icons-material';
-import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
-import { toggleThemeMode } from '../../store/slices/theme/theme.actions';
-import { logoutRequest } from '../../store/slices/auth/auth.actions';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { toggleThemeMode, logoutRequest } from '../../store';
+
 
 // Ancho del drawer lateral
 const drawerWidth = 240;
@@ -346,7 +346,7 @@ const MainLayout = () => {
       </Drawer>
 
       {/* Contenido principal */}
-      
+
       <Box
         component="main"
         sx={{

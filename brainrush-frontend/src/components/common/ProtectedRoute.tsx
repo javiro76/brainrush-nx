@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { Navigate } from 'react-router-dom';
-import { useAppSelector } from '../../hooks/useRedux';
+import { useAppSelector } from '../../hooks';
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -21,7 +21,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   }
 
   // Si el usuario está autenticado, mostrar los hijos
-  return <>{children}</>;
+  return children;
 };
 
 export default ProtectedRoute;
