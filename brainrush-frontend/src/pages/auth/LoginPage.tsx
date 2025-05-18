@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import {
   Container,
@@ -19,9 +19,11 @@ import {
   School
 } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
-import { loginRequest } from '../../store/slices/auth/auth.actions';
+import { loginFailure, loginRequest } from '../../store/slices/auth/auth.actions';
 import { Formik, Form, Field, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
+import { isActionOf } from '../../utils/redux/index';
+import { NotificationManager} from 'react-notifications';
 
 // Esquema de validación con Yup
 const LoginSchema = Yup.object().shape({
@@ -42,7 +44,7 @@ interface LoginFormValues {
 const LoginPage = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { status, error } = useAppSelector(state => state.auth);
+  const { status, result } = useAppSelector(state => state.auth);
   const [showPassword, setShowPassword] = useState(false);
 
   // Valores iniciales para el formulario
@@ -50,6 +52,12 @@ const LoginPage = () => {
     email: '',
     password: ''
   };
+
+   useEffect(() => {
+        if (isActionOf(result.action, loginFailure)) {
+            NotificationManager.error(result.messageUser);
+        }
+    }, [result]);
 
   // Manejar la visibilidad de la contraseña
   const handleClickShowPassword = () => {

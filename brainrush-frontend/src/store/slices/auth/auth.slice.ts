@@ -5,13 +5,20 @@ import { createReducer } from '@reduxjs/toolkit';
 import { AuthState } from '../../../types/auth.types';
 import * as actions from './auth.actions';
 
+
+
 // Estado inicial
 const initialState: AuthState = {
   user: null,
   token: localStorage.getItem('token'),
   refreshToken: localStorage.getItem('refreshToken'),
   status: 'idle',
-  error: null,
+  result: {
+    action: undefined,
+    error: false,
+    messageUser: '',
+    messageInternal: ''
+  },
 };
 
 // Reducer
@@ -20,13 +27,24 @@ const authReducer = createReducer(initialState, (builder) => {
     // Login reducers
     .addCase(actions.loginRequest, (state) => {
       state.status = 'loading';
-      state.error = null;
+      state.result = {
+        action: actions.loginRequest,
+        error: false,
+        messageUser: '',
+        messageInternal: ''
+      }
     })
     .addCase(actions.loginSuccess, (state, action) => {
       state.status = 'succeeded';
       state.user = action.payload.user;
       state.token = action.payload.token;
       state.refreshToken = action.payload.refreshToken;
+      state.result = {
+        action: actions.loginSuccess,
+        error: false,
+        messageUser: '',
+        messageInternal: ''
+      }
 
       // Guardar en localStorage
       localStorage.setItem('token', action.payload.token);
@@ -34,19 +52,35 @@ const authReducer = createReducer(initialState, (builder) => {
     })
     .addCase(actions.loginFailure, (state, action) => {
       state.status = 'failed';
-      state.error = action.payload;
+      state.result = {
+        action: actions.loginFailure,
+        error: true,
+        messageUser: action.payload,
+        messageInternal: action.payload
+      }
     })
 
     // Register reducers
     .addCase(actions.registerRequest, (state) => {
       state.status = 'loading';
-      state.error = null;
+      state.result = {
+        action: actions.registerRequest,
+        error: false,
+        messageUser: '',
+        messageInternal: ''
+      }
     })
     .addCase(actions.registerSuccess, (state, action) => {
       state.status = 'succeeded';
       state.user = action.payload.user;
       state.token = action.payload.token;
       state.refreshToken = action.payload.refreshToken;
+      state.result = {
+        action: actions.registerSuccess,
+        error: false,
+        messageUser: '',
+        messageInternal: ''
+      }
 
       // Guardar en localStorage
       localStorage.setItem('token', action.payload.token);
@@ -54,12 +88,23 @@ const authReducer = createReducer(initialState, (builder) => {
     })
     .addCase(actions.registerFailure, (state, action) => {
       state.status = 'failed';
-      state.error = action.payload;
+      state.result = {
+        action: actions.registerFailure,
+        error: true,
+        messageUser: action.payload,
+        messageInternal: action.payload
+      }
     })
 
     // Logout reducers
     .addCase(actions.logoutRequest, (state) => {
       state.status = 'loading';
+      state.result = {
+        action: actions.logoutRequest,
+        error: false,
+        messageUser: '',
+        messageInternal: ''
+      }
     })
     .addCase(actions.logoutSuccess, (state) => {
       // Restablecer estado
@@ -67,6 +112,12 @@ const authReducer = createReducer(initialState, (builder) => {
       state.token = null;
       state.refreshToken = null;
       state.status = 'idle';
+      state.result = {
+        action: undefined,
+        error: false,
+        messageUser: '',
+        messageInternal: ''
+      }
 
       // Limpiar localStorage
       localStorage.removeItem('token');
@@ -74,13 +125,23 @@ const authReducer = createReducer(initialState, (builder) => {
     })
     .addCase(actions.logoutFailure, (state, action) => {
       state.status = 'failed';
-      state.error = action.payload;
+      state.result = {
+        action: actions.logoutFailure,
+        error: true,
+        messageUser: action.payload,
+        messageInternal: action.payload
+      }
     })
 
     // Other reducers
     .addCase(actions.clearError, (state) => {
-      state.error = null;
       state.status = 'idle';
+      state.result = {
+        action: undefined,
+        error: false,
+        messageUser: '',
+        messageInternal: ''
+      }
     })
     .addCase(actions.setCredentials, (state, action) => {
       state.user = action.payload.user;

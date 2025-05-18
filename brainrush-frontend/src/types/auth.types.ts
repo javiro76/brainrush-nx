@@ -2,6 +2,8 @@
  * Tipos relacionados con la autenticación
  */
 
+import { ResultModel } from "../utils/redux";
+
 // Información del usuario
 export interface User {
   id: string;
@@ -36,5 +38,5 @@ export interface AuthState {
   token: string | null;
   refreshToken: string | null;
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
-  error: string | null;
+  result: ResultModel
 }
