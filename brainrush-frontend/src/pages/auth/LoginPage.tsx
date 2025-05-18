@@ -53,9 +53,8 @@ const LoginPage = () => {
     email: '',
     password: ''
   };
-
   useEffect(() => {
-    if (isActionOf(result.action, loginFailure)) {
+    if (isActionOf(result.actionType, loginFailure)) {
       enqueueSnackbar(result.messageUser, { variant: 'error' });
     }
   }, [result, enqueueSnackbar]);

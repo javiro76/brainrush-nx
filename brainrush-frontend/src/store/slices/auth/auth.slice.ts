@@ -55,7 +55,7 @@ const authReducer = createReducer(initialState, (builder) => {
       state.result = {
         actionType: actions.loginFailure.type,
         error: true,
-        messageUser: action.payload,
+        messageUser:"Credenciales inválidas",
         messageInternal: action.payload
       }
     })

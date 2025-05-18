@@ -1,5 +1,5 @@
 import {ActionCreatorWithPayload} from '@reduxjs/toolkit';
 
-export const isActionOf = (action: any, reducer: ActionCreatorWithPayload<any>) => {
-    return action?.type === reducer.type;
+export const isActionOf = <T>(resultActionType: string | undefined, actionCreator: ActionCreatorWithPayload<T, string>) => {
+    return resultActionType === actionCreator.type;
 };
