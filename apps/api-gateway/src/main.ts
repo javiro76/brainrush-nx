@@ -105,9 +105,9 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);
 
-  await app.listen(process.env.PORT ?? 3000);
-  logger.log(`API Gateway is running on: http://localhost:${process.env.PORT ?? 3000}`);
-  logger.log(`Swagger documentation available at: http://localhost:${process.env.PORT ?? 3000}/api/docs`);
-  logger.log(`Health check available at: http://localhost:${process.env.PORT ?? 3000}/health`);
+  await app.listen(process.env.PORT ?? 3333);
+  logger.log(`API Gateway is running on: http://localhost:${process.env.PORT ?? 3333}`);
+  logger.log(`Swagger documentation available at: http://localhost:${process.env.PORT ?? 3333}/api/docs`);
+  logger.log(`Health check available at: http://localhost:${process.env.PORT ?? 3333}/health`);
 }
 void bootstrap();

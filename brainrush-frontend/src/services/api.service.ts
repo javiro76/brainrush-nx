@@ -4,7 +4,7 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 // URL base de la API
-export const BASE_API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000/api';
+export const BASE_API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3333/api';
 
 // Clase base para los servicios API
 export class ApiService {
