@@ -23,7 +23,7 @@ import { loginFailure, loginRequest } from '../../store/slices/auth/auth.actions
 import { Formik, Form, Field, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { isActionOf } from '../../utils/redux/index';
-import { useSnackbar } from 'notistack';
+import { useSnackbar, VariantType } from 'notistack';
 
 // Esquema de validación con Yup
 const LoginSchema = Yup.object().shape({
@@ -41,21 +41,57 @@ interface LoginFormValues {
   password: string;
 }
 
-const LoginPage = () => {
-  const navigate = useNavigate();
+const LoginPage = () => {  const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { status, result } = useAppSelector(state => state.auth);
+  const { status, result, user } = useAppSelector(state => state.auth);
   const [showPassword, setShowPassword] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
+
+  // Redireccionar al dashboard si el usuario ya está autenticado
+  useEffect(() => {
+    if (user) {
+      navigate('/dashboard');
+    }
+  }, [user, navigate]);
 
   // Valores iniciales para el formulario
   const initialValues: LoginFormValues = {
     email: '',
     password: ''
-  };
-  useEffect(() => {
+  };  useEffect(() => {
     if (isActionOf(result.actionType, loginFailure)) {
-      enqueueSnackbar(result.messageUser, { variant: 'error' });
+      // Determinar el mensaje basado en el código de estado HTTP
+      let errorMessage = result.messageUser || result.messageInternal || 'Error durante el inicio de sesión';
+      let variant:VariantType = 'default';
+      const statusCode = 400;
+
+      // Personalizar mensajes según código de estado
+      if (statusCode) {
+        switch (result.statusCode) {
+          case 400:
+            errorMessage = 'Datos de inicio de sesión inválidos. Por favor verifica la información.';
+            variant = 'warning';
+            break;
+          case 401:
+            errorMessage = 'Credenciales incorrectas. Revisa tu correo y contraseña.';
+            break;
+          case 403:
+            errorMessage = 'Tu cuenta está bloqueada o desactivada. Contacta al administrador.';
+            break;
+          case 404:
+            errorMessage = 'Usuario no encontrado. Verifica tu correo electrónico.';
+            break;
+          case 500:
+            errorMessage = 'Error en el servidor. Intenta más tarde.';
+            break;
+          default:
+            // Usar el mensaje por defecto ya asignado
+            break;
+        }
+      }
+
+      enqueueSnackbar(errorMessage, { variant });
+      console.error('Error de inicio de sesión:', result);
     }
   }, [result, enqueueSnackbar]);
 

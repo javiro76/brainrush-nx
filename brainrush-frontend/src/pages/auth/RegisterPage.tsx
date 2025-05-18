@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import {
   Container,
@@ -21,9 +21,11 @@ import {
   School
 } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
-import { registerRequest } from '../../store/slices/auth/auth.actions';
+import { registerFailure, registerRequest } from '../../store/slices/auth/auth.actions';
 import { Formik, Form, Field, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
+import { isActionOf } from '../../utils/redux/index';
+import { useSnackbar, VariantType } from 'notistack';
 
 // Esquema de validación con Yup
 const RegisterSchema = Yup.object().shape({
@@ -56,9 +58,43 @@ interface RegisterFormValues {
 const RegisterPage = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { status } = useAppSelector(state => state.auth);
+  const { status, result, user } = useAppSelector(state => state.auth);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
+
+  // Redireccionar al dashboard si el usuario ya está autenticado
+  useEffect(() => {
+    if (user) {
+      navigate('/dashboard');
+    }
+  }, [user, navigate]);
+
+  useEffect(() => {
+    if (isActionOf(result.actionType, registerFailure)) {
+      // Determinar el mensaje basado en el código de estado HTTP
+      let errorMessage = result.messageUser || result.messageInternal || 'Error durante el registro';
+      let variant: VariantType = 'default';
+      // Personalizar mensajes según código de estado
+      if (result.statusCode) {
+        switch (result.statusCode) {
+          case 400:
+            errorMessage = 'Datos de registro inválidos o usuario ya existe';
+            variant = 'warning';
+            break;
+          case 500:
+            errorMessage = 'Error en el servidor. Intenta más tarde.';
+            break;
+          default:
+            // Usar el mensaje por defecto ya asignado
+            break;
+        }
+      }
+
+      enqueueSnackbar(errorMessage, { variant: variant });
+      console.error('Error de registro:', result);
+    }
+  }, [result, enqueueSnackbar]);
 
   // Valores iniciales para el formulario
   const initialValues: RegisterFormValues = {

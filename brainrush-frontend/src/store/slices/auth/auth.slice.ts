@@ -49,14 +49,14 @@ const authReducer = createReducer(initialState, (builder) => {
       // Guardar en localStorage
       localStorage.setItem('token', action.payload.token);
       localStorage.setItem('refreshToken', action.payload.refreshToken);
-    })
-    .addCase(actions.loginFailure, (state, action) => {
+    }).addCase(actions.loginFailure, (state, action) => {
       state.status = 'failed';
       state.result = {
         actionType: actions.loginFailure.type,
         error: true,
-        messageUser:"Credenciales inválidas",
-        messageInternal: action.payload
+        statusCode: action.payload.statusCode,
+        messageUser: "Credenciales inválidas",
+        messageInternal: action.payload.message
       }
     })
 
@@ -85,14 +85,14 @@ const authReducer = createReducer(initialState, (builder) => {
       // Guardar en localStorage
       localStorage.setItem('token', action.payload.token);
       localStorage.setItem('refreshToken', action.payload.refreshToken);
-    })
-    .addCase(actions.registerFailure, (state, action) => {
+    }).addCase(actions.registerFailure, (state, action) => {
       state.status = 'failed';
       state.result = {
         actionType: actions.registerFailure.type,
         error: true,
+        statusCode: action.payload.statusCode,
         messageUser: "Error al registrar el usuario",
-        messageInternal: action.payload
+        messageInternal: action.payload.message
       }
     })
 
@@ -122,14 +122,14 @@ const authReducer = createReducer(initialState, (builder) => {
       // Limpiar localStorage
       localStorage.removeItem('token');
       localStorage.removeItem('refreshToken');
-    })
-    .addCase(actions.logoutFailure, (state, action) => {
+    }).addCase(actions.logoutFailure, (state, action) => {
       state.status = 'failed';
       state.result = {
         actionType: actions.logoutFailure.type,
         error: true,
-        messageUser: action.payload,
-        messageInternal: action.payload
+        statusCode: action.payload.statusCode,
+        messageUser: action.payload.message,
+        messageInternal: action.payload.message
       }
     })
 
