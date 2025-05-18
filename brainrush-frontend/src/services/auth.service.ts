@@ -33,7 +33,7 @@ export class AuthService {
    * @param credentials Credenciales de usuario (email y password)
    * @returns Respuesta con datos de autenticación
    */
-  public login(credentials: LoginCredentials): Promise<AxiosResponse<AuthResponse>> {
+   public login = (credentials: LoginCredentials): Promise<AxiosResponse<AuthResponse>> => {
     try {
       return this.apiService.post<AuthResponse>(this.loginEndpoint, credentials);
     } catch (error) {

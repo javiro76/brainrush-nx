@@ -17,7 +17,7 @@ function* loginSaga(action: ReturnType<typeof actions.loginRequest>) {
   try {
     // Realizar la llamada al servicio de autenticación
     const response: AxiosResponse<AuthResponse> = yield call(
-      authService.login.bind(authService),
+      authService.login,
       action.payload
     );
 

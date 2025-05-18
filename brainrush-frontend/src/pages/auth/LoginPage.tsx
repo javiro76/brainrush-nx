@@ -61,6 +61,7 @@ const LoginPage = () => {
     values: LoginFormValues,
     { setSubmitting }: FormikHelpers<LoginFormValues>
   ) => {
+    console.log('Enviando formulario con:', values); // Para verificar que llega aquí
     dispatch(loginRequest({
       email: values.email,
       password: values.password
@@ -111,75 +112,79 @@ const LoginPage = () => {
             validationSchema={LoginSchema}
             onSubmit={handleSubmit}
           >
-            {({ errors, touched, isSubmitting }) => (<Form style={{ width: '100%' }}>                <Grid container spacing={2}>
-              <Grid component="div" size={12}>
-                <Field
-                  as={TextField}
-                  fullWidth
-                  id="email"
-                  name="email"
-                  label="Correo electrónico"
-                  variant="outlined"
-                  autoComplete="email"
-                  error={touched.email && Boolean(errors.email)}
-                  helperText={touched.email && errors.email} />
-              </Grid>
-              <Grid component="div" size={12}>
-                <Field
-                  as={TextField}
-                  fullWidth
-                  id="password"
-                  name="password"
-                  label="Contraseña"
-                  type={showPassword ? 'text' : 'password'}
-                  variant="outlined"
-                  autoComplete="current-password"
-                  error={touched.password && Boolean(errors.password)}
-                  helperText={touched.password && errors.password}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          aria-label="toggle password visibility"
-                          onClick={handleClickShowPassword}
-                          edge="end"
-                        >
-                          {showPassword ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Grid>
+            {({ errors, touched, isSubmitting }) => (
+              <Form
+                style={{ width: '100%' }}
+              >
+                <Grid container spacing={2}>
+                  <Grid component="div" size={12}>
+                    <Field
+                      as={TextField}
+                      fullWidth
+                      id="email"
+                      name="email"
+                      label="Correo electrónico"
+                      variant="outlined"
+                      autoComplete="email"
+                      error={touched.email && Boolean(errors.email)}
+                      helperText={touched.email && errors.email} />
+                  </Grid>
+                  <Grid component="div" size={12}>
+                    <Field
+                      as={TextField}
+                      fullWidth
+                      id="password"
+                      name="password"
+                      label="Contraseña"
+                      type={showPassword ? 'text' : 'password'}
+                      variant="outlined"
+                      autoComplete="current-password"
+                      error={touched.password && Boolean(errors.password)}
+                      helperText={touched.password && errors.password}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton
+                              aria-label="toggle password visibility"
+                              onClick={handleClickShowPassword}
+                              edge="end"
+                            >
+                              {showPassword ? <VisibilityOff /> : <Visibility />}
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </Grid>
 
-              {/* Mostrar error del servidor si existe */}
-              {error && (
-                <Grid component="div" size={12}>
-                  <Typography color="error" variant="body2" align="center">
-                    {error}
-                  </Typography>
-                </Grid>
-              )}
-
-              <Grid component="div" size={12}>
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  color="primary"
-                  size="large"
-                  disabled={status === 'loading' || isSubmitting}
-                  sx={{ mt: 1 }}
-                >
-                  {status === 'loading' ? (
-                    <CircularProgress size={24} color="inherit" />
-                  ) : (
-                    'Ingresar'
+                  {/* Mostrar error del servidor si existe */}
+                  {error && (
+                    <Grid component="div" size={12}>
+                      <Typography color="error" variant="body2" align="center">
+                        {error}
+                      </Typography>
+                    </Grid>
                   )}
-                </Button>
-              </Grid>
-            </Grid>
-            </Form>
+
+                  <Grid component="div" size={12}>
+                    <Button
+                      type="submit"
+                      fullWidth
+                      variant="contained"
+                      color="primary"
+                      size="large"
+                      disabled={status === 'loading' || isSubmitting}
+                      sx={{ mt: 1 }}
+                    >
+                      {status === 'loading' ? (
+                        <CircularProgress size={24} color="inherit" />
+                      ) : (
+                        'Ingresar'
+                      )}
+                    </Button>
+                  </Grid>
+                </Grid>
+              </Form>
             )}
           </Formik>
 
