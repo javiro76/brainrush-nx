@@ -2,7 +2,7 @@
  * Acciones para el feature de autenticación
  */
 import { createAction } from '@reduxjs/toolkit';
-import { LoginCredentials, RegisterData } from '../../../types/auth.types';
+import { AuthResponse, LoginCredentials, RegisterData } from '../../../types/auth.types';
 
 // Namespace para las acciones
 const AUTH_NAMESPACE = 'auth';
@@ -14,7 +14,7 @@ export const loginFailure = createAction<string>(`${AUTH_NAMESPACE}/loginFailure
 
 // Register actions
 export const registerRequest = createAction<RegisterData>(`${AUTH_NAMESPACE}/registerRequest`);
-export const registerSuccess = createAction<any>(`${AUTH_NAMESPACE}/registerSuccess`);
+export const registerSuccess = createAction<AuthResponse>(`${AUTH_NAMESPACE}/registerSuccess`);
 export const registerFailure = createAction<string>(`${AUTH_NAMESPACE}/registerFailure`);
 
 // Logout actions

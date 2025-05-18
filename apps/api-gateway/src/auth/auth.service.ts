@@ -5,7 +5,7 @@ import { JwtPayload } from '@brainrush-nx/shared';
 import { firstValueFrom } from 'rxjs';
 import { envs } from '../config';
 import { NatsService } from '../transports/nats/nats.service';
-import { RefreshTokenDto } from './dto';
+import { RefreshTokenDto, RegisterUserDto } from './dto';
 
 @Injectable()
 export class AuthService {
@@ -20,7 +20,7 @@ export class AuthService {
   /**
    * Registra un nuevo usuario a través del Auth Service
    */
-  async register(registerDto: any) {
+  async register(registerDto: RegisterUserDto) {
     try {
       const { data } = await firstValueFrom(
         this.httpService.post(`http://${envs.authServiceHost}:${envs.authServicePort}/auth/register`, registerDto)

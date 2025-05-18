@@ -91,7 +91,7 @@ const authReducer = createReducer(initialState, (builder) => {
       state.result = {
         actionType: actions.registerFailure.type,
         error: true,
-        messageUser: action.payload,
+        messageUser: "Error al registrar el usuario",
         messageInternal: action.payload
       }
     })
