@@ -67,7 +67,11 @@ export class ApiService {
             // Si no se puede refrescar el token, limpiar localStorage y redirigir a login
             localStorage.removeItem('token');
             localStorage.removeItem('refreshToken');
-            window.location.href = '/login';
+            if (this.redirectToLogin) {
+              this.redirectToLogin();
+            } else {
+              console.error('Redirect function not set. Cannot redirect to login.');
+            }
             return Promise.reject(refreshError);
           }
         }
@@ -106,4 +110,20 @@ export class ApiService {
   public delete<T = any>(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
     return this.api.delete<T>(url, config);
   }
+
+  // Agregar una propiedad para almacenar la función de redirección
+  private redirectToLogin: (() => void) | null = null;
+
+  // Método para configurar la función de redirección
+  public setRedirectToLogin(redirectFn: () => void): void {
+    this.redirectToLogin = redirectFn;
+  }
+
+  // Método estático para configurar la función de redirección
+  public static setRedirectToLogin(redirectFn: () => void): void {
+    ApiService.getInstance().setRedirectToLogin(redirectFn);
+  }
 }
+
+// Exportar la clase ApiService como exportación predeterminada
+export default ApiService;

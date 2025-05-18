@@ -5,6 +5,19 @@ import { Provider } from 'react-redux';
 import { store } from './store/store';
 
 import App from './app/app';
+import { useNavigate } from 'react-router-dom';
+
+// Eliminar y volver a importar ApiService para forzar la recarga del módulo
+import ApiService from './services/api.service';
+
+function AppInitializer() {
+  const navigate = useNavigate();
+
+  // Configure ApiService to use React Router for redirection
+  ApiService.setRedirectToLogin(() => navigate('/login'));
+
+  return <App />;
+}
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -13,7 +26,7 @@ root.render(
   <StrictMode>
     <Provider store={store}>
       <BrowserRouter>
-        <App />
+        <AppInitializer />
       </BrowserRouter>
     </Provider>
   </StrictMode>
