@@ -4,6 +4,7 @@
 import { AxiosResponse } from 'axios';
 import { ApiService } from './api.service';
 import { AuthResponse, LoginCredentials, RegisterData } from '../types/auth.types';
+import { UserProfile } from '../types/user.types';
 
 export class AuthService {
   private static _instance: AuthService;
@@ -33,7 +34,7 @@ export class AuthService {
    * @param credentials Credenciales de usuario (email y password)
    * @returns Respuesta con datos de autenticación
    */
-   public login = (credentials: LoginCredentials): Promise<AxiosResponse<AuthResponse>> => {
+  public login = (credentials: LoginCredentials): Promise<AxiosResponse<AuthResponse>> => {
     try {
       return this.apiService.post<AuthResponse>(this.loginEndpoint, credentials);
     } catch (error) {
@@ -47,7 +48,7 @@ export class AuthService {
    * @param userData Datos del nuevo usuario
    * @returns Respuesta con datos de autenticación
    */
-  public register(userData: RegisterData): Promise<AxiosResponse<AuthResponse>> {
+  public register = (userData: RegisterData): Promise<AxiosResponse<AuthResponse>> => {
     try {
       return this.apiService.post<AuthResponse>(this.registerEndpoint, userData);
     } catch (error) {
@@ -61,7 +62,7 @@ export class AuthService {
    * @param refreshToken Token de refresco actual
    * @returns Respuesta de cierre de sesión
    */
-  public logout(refreshToken: string): Promise<AxiosResponse<void>> {
+  public logout = (refreshToken: string): Promise<AxiosResponse<void>> => {
     try {
       return this.apiService.post<void>(this.logoutEndpoint, { refreshToken });
     } catch (error) {
@@ -75,7 +76,7 @@ export class AuthService {
    * @param refreshToken Token de refresco
    * @returns Respuesta con nuevos tokens
    */
-  public refreshToken(refreshToken: string): Promise<AxiosResponse<{ token: string; refreshToken: string }>> {
+  public refreshToken = (refreshToken: string): Promise<AxiosResponse<{ token: string; refreshToken: string }>> => {
     try {
       return this.apiService.post<{ token: string; refreshToken: string }>(
         this.refreshTokenEndpoint,
@@ -91,9 +92,9 @@ export class AuthService {
    * Obtiene el perfil del usuario autenticado
    * @returns Datos del perfil del usuario
    */
-  public getProfile(): Promise<AxiosResponse<any>> {
+  public getProfile = (): Promise<AxiosResponse<UserProfile>> => {
     try {
-      return this.apiService.get(this.profileEndpoint);
+      return this.apiService.get<UserProfile>(this.profileEndpoint);
     } catch (error) {
       console.error('Error al obtener perfil:', error);
       throw error;
