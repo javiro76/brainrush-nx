@@ -56,7 +56,7 @@ interface RegisterFormValues {
 const RegisterPage = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { status, error } = useAppSelector(state => state.auth);
+  const { status } = useAppSelector(state => state.auth);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -238,13 +238,13 @@ const RegisterPage = () => {
                   </Grid>
 
                   {/* Mostrar error del servidor si existe */}
-                  {error && (
+                  {/* {error && (
                     <Grid component="div" size={12}>
                       <Typography color="error" variant="body2" align="center">
                         {error}
                       </Typography>
                     </Grid>
-                  )}
+                  )} */}
 
                   <Grid component="div" size={12}>
                     <Button

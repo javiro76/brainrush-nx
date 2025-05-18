@@ -1,4 +1,4 @@
-import { useState,useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import {
   Container,
@@ -23,7 +23,7 @@ import { loginFailure, loginRequest } from '../../store/slices/auth/auth.actions
 import { Formik, Form, Field, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { isActionOf } from '../../utils/redux/index';
-import { NotificationManager} from 'react-notifications';
+import { useSnackbar } from 'notistack';
 
 // Esquema de validación con Yup
 const LoginSchema = Yup.object().shape({
@@ -46,6 +46,7 @@ const LoginPage = () => {
   const dispatch = useAppDispatch();
   const { status, result } = useAppSelector(state => state.auth);
   const [showPassword, setShowPassword] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
 
   // Valores iniciales para el formulario
   const initialValues: LoginFormValues = {
@@ -53,11 +54,11 @@ const LoginPage = () => {
     password: ''
   };
 
-   useEffect(() => {
-        if (isActionOf(result.action, loginFailure)) {
-            NotificationManager.error(result.messageUser);
-        }
-    }, [result]);
+  useEffect(() => {
+    if (isActionOf(result.action, loginFailure)) {
+      enqueueSnackbar(result.messageUser, { variant: 'error' });
+    }
+  }, [result, enqueueSnackbar]);
 
   // Manejar la visibilidad de la contraseña
   const handleClickShowPassword = () => {
@@ -166,13 +167,13 @@ const LoginPage = () => {
                   </Grid>
 
                   {/* Mostrar error del servidor si existe */}
-                  {error && (
+                  {/* {error && (
                     <Grid component="div" size={12}>
                       <Typography color="error" variant="body2" align="center">
                         {error}
                       </Typography>
                     </Grid>
-                  )}
+                  )} */}
 
                   <Grid component="div" size={12}>
                     <Button

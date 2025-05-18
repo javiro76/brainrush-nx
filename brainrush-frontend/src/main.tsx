@@ -3,6 +3,7 @@ import * as ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { store } from './store/store';
+import { SnackbarProvider } from 'notistack';
 
 import App from './app/app';
 import { useNavigate } from 'react-router-dom';
@@ -26,7 +27,13 @@ root.render(
   <StrictMode>
     <Provider store={store}>
       <BrowserRouter>
-        <AppInitializer />
+        <SnackbarProvider
+          maxSnack={3}
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+          autoHideDuration={3000}
+        >
+          <AppInitializer />
+        </SnackbarProvider>
       </BrowserRouter>
     </Provider>
   </StrictMode>
