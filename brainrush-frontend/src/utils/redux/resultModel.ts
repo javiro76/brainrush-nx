@@ -4,9 +4,9 @@
 export interface ResultModel {
 
     /**
-     * actions
+     * action type
      */
-    action?: any;
+    actionType?: string | undefined;//indentificador de la acción
 
     /**
      * error

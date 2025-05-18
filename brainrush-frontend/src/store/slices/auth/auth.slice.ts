@@ -14,7 +14,7 @@ const initialState: AuthState = {
   refreshToken: localStorage.getItem('refreshToken'),
   status: 'idle',
   result: {
-    action: undefined,
+    actionType: undefined,
     error: false,
     messageUser: '',
     messageInternal: ''
@@ -28,7 +28,7 @@ const authReducer = createReducer(initialState, (builder) => {
     .addCase(actions.loginRequest, (state) => {
       state.status = 'loading';
       state.result = {
-        action: actions.loginRequest,
+        actionType: actions.loginRequest.type,
         error: false,
         messageUser: '',
         messageInternal: ''
@@ -40,7 +40,7 @@ const authReducer = createReducer(initialState, (builder) => {
       state.token = action.payload.token;
       state.refreshToken = action.payload.refreshToken;
       state.result = {
-        action: actions.loginSuccess,
+        actionType: actions.loginSuccess.type,
         error: false,
         messageUser: '',
         messageInternal: ''
@@ -53,7 +53,7 @@ const authReducer = createReducer(initialState, (builder) => {
     .addCase(actions.loginFailure, (state, action) => {
       state.status = 'failed';
       state.result = {
-        action: actions.loginFailure,
+        actionType: actions.loginFailure.type,
         error: true,
         messageUser: action.payload,
         messageInternal: action.payload
@@ -64,7 +64,7 @@ const authReducer = createReducer(initialState, (builder) => {
     .addCase(actions.registerRequest, (state) => {
       state.status = 'loading';
       state.result = {
-        action: actions.registerRequest,
+        actionType: actions.registerRequest.type,
         error: false,
         messageUser: '',
         messageInternal: ''
@@ -76,7 +76,7 @@ const authReducer = createReducer(initialState, (builder) => {
       state.token = action.payload.token;
       state.refreshToken = action.payload.refreshToken;
       state.result = {
-        action: actions.registerSuccess,
+        actionType: actions.registerSuccess.type,
         error: false,
         messageUser: '',
         messageInternal: ''
@@ -89,7 +89,7 @@ const authReducer = createReducer(initialState, (builder) => {
     .addCase(actions.registerFailure, (state, action) => {
       state.status = 'failed';
       state.result = {
-        action: actions.registerFailure,
+        actionType: actions.registerFailure.type,
         error: true,
         messageUser: action.payload,
         messageInternal: action.payload
@@ -100,7 +100,7 @@ const authReducer = createReducer(initialState, (builder) => {
     .addCase(actions.logoutRequest, (state) => {
       state.status = 'loading';
       state.result = {
-        action: actions.logoutRequest,
+        actionType: actions.logoutRequest.type,
         error: false,
         messageUser: '',
         messageInternal: ''
@@ -113,7 +113,7 @@ const authReducer = createReducer(initialState, (builder) => {
       state.refreshToken = null;
       state.status = 'idle';
       state.result = {
-        action: undefined,
+        actionType: undefined,
         error: false,
         messageUser: '',
         messageInternal: ''
@@ -126,7 +126,7 @@ const authReducer = createReducer(initialState, (builder) => {
     .addCase(actions.logoutFailure, (state, action) => {
       state.status = 'failed';
       state.result = {
-        action: actions.logoutFailure,
+        actionType: actions.logoutFailure.type,
         error: true,
         messageUser: action.payload,
         messageInternal: action.payload
@@ -137,7 +137,7 @@ const authReducer = createReducer(initialState, (builder) => {
     .addCase(actions.clearError, (state) => {
       state.status = 'idle';
       state.result = {
-        action: undefined,
+        actionType: undefined,
         error: false,
         messageUser: '',
         messageInternal: ''
