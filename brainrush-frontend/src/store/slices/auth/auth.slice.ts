@@ -56,7 +56,8 @@ const authReducer = createReducer(initialState, (builder) => {
         error: true,
         statusCode: action.payload.statusCode,
         messageUser: "Credenciales inválidas",
-        messageInternal: action.payload.message
+        messageInternal: action.payload.message,
+        isNetworkError: action.payload.isNetworkError
       }
     })
 
@@ -85,13 +86,14 @@ const authReducer = createReducer(initialState, (builder) => {
       // Guardar en localStorage
       localStorage.setItem('token', action.payload.token);
       localStorage.setItem('refreshToken', action.payload.refreshToken);
-    }).addCase(actions.registerFailure, (state, action) => {
+    })
+    .addCase(actions.registerFailure, (state, action) => {
       state.status = 'failed';
       state.result = {
         actionType: actions.registerFailure.type,
         error: true,
         statusCode: action.payload.statusCode,
-        messageUser: "Error al registrar el usuario",
+        messageUser: action.payload.message,
         messageInternal: action.payload.message
       }
     })

@@ -27,5 +27,9 @@ export interface ResultModel {
    * message internal
    */
   messageUser?: string;
+  /**
+   * is network error
+   */
+  isNetworkError?: boolean;
 
 }

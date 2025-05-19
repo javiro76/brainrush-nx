@@ -6,8 +6,9 @@ import { AuthResponse, LoginCredentials, RegisterData, User } from '../../../typ
 
 // Interfaz para errores estructurados
 export interface ErrorResponse {
-  message: string;
+  message: string | undefined;
   statusCode: number;
+  isNetworkError: boolean;
 }
 
 // Namespace para las acciones

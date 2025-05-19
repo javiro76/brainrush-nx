@@ -6,6 +6,7 @@ import { AuthService } from '../../../services';
 import * as actions from './auth.actions';
 import { AuthResponse } from '../../../types/auth.types';
 import { AxiosError, AxiosResponse } from 'axios';
+import { extractErrorInfo } from '../../../utils/redux';
 
 // Servicio de autenticación
 const authService = AuthService.getInstance();
@@ -24,34 +25,14 @@ function* loginSaga(action: ReturnType<typeof actions.loginRequest>) {
     // Enviar acción de éxito con datos del usuario y tokens
     yield put(actions.loginSuccess(response.data));
   } catch (error: unknown) {
-    // Capturar el código de estado HTTP y el mensaje de error
-    let errorMessage = 'Ha ocurrido un error al iniciar sesión';
-    let statusCode = 500; // Código por defecto
-
-    if (error && typeof error === 'object') {
-      const axiosError = error as AxiosError;
-
-      if (axiosError.response) {
-        // Error de respuesta del servidor (tiene código de estado HTTP)
-        statusCode = axiosError.response.status;
-
-        // Intentar obtener el mensaje de error del servidor
-        if (axiosError.response.data && typeof axiosError.response.data === 'object') {
-          const responseData = axiosError.response.data as Record<string, unknown>;
-          if (responseData.message && typeof responseData.message === 'string') {
-            errorMessage = responseData.message;
-          }
-        }
-      } else if (axiosError.message) {
-        // Error con mensaje pero sin respuesta HTTP (por ejemplo, error de red)
-        errorMessage = axiosError.message;
-      }
-    }
+    // funcion que Capturar el código de estado HTTP y el mensaje de error
+    const errorInfo = extractErrorInfo(error);
 
     // Enviar acción de error con el mensaje y código de estado
     yield put(actions.loginFailure({
-      message: errorMessage,
-      statusCode: statusCode
+      message: errorInfo.originalMessage,
+      statusCode: errorInfo.statusCode,
+      isNetworkError: errorInfo.isNetworkError,
     }));
   }
 }
@@ -63,41 +44,23 @@ function* registerSaga(action: ReturnType<typeof actions.registerRequest>) {
   try {
     // Realizar la llamada al servicio de autenticación
     const response: AxiosResponse<AuthResponse> = yield call(
-      authService.register.bind(authService),
+      authService.register,
       action.payload
     );
 
     // Enviar acción de éxito con datos del usuario y tokens
     yield put(actions.registerSuccess(response.data));
+
   } catch (error: unknown) {
-    // Capturar el código de estado HTTP y el mensaje de error
-    let errorMessage = 'Ha ocurrido un error al registrar el usuario';
-    let statusCode = 500; // Código por defecto
 
-    if (error && typeof error === 'object') {
-      const axiosError = error as AxiosError;
-
-      if (axiosError.response) {
-        // Error de respuesta del servidor (tiene código de estado HTTP)
-        statusCode = axiosError.response.status;
-
-        // Intentar obtener el mensaje de error del servidor
-        if (axiosError.response.data && typeof axiosError.response.data === 'object') {
-          const responseData = axiosError.response.data as Record<string, unknown>;
-          if (responseData.message && typeof responseData.message === 'string') {
-            errorMessage = responseData.message;
-          }
-        }
-      } else if (axiosError.message) {
-        // Error con mensaje pero sin respuesta HTTP (por ejemplo, error de red)
-        errorMessage = axiosError.message;
-      }
-    }
+    // funcion que Capturar el código de estado HTTP y el mensaje de error
+    const errorInfo = extractErrorInfo(error);
 
     // Enviar acción de error con el mensaje y código de estado
     yield put(actions.registerFailure({
-      message: errorMessage,
-      statusCode: statusCode
+      message: errorInfo.originalMessage,
+      statusCode: errorInfo.statusCode,
+      isNetworkError: errorInfo.isNetworkError,
     }));
   }
 }
@@ -121,34 +84,14 @@ function* logoutSaga(action: ReturnType<typeof actions.logoutRequest>) {
     // Enviar acción de éxito para limpiar el estado
     yield put(actions.logoutSuccess());
   } catch (error: unknown) {
-    // Capturar el código de estado HTTP y el mensaje de error
-    let errorMessage = 'Ha ocurrido un error al cerrar sesión';
-    let statusCode = 500; // Código por defecto
-
-    if (error && typeof error === 'object') {
-      const axiosError = error as AxiosError;
-
-      if (axiosError.response) {
-        // Error de respuesta del servidor (tiene código de estado HTTP)
-        statusCode = axiosError.response.status;
-
-        // Intentar obtener el mensaje de error del servidor
-        if (axiosError.response.data && typeof axiosError.response.data === 'object') {
-          const responseData = axiosError.response.data as Record<string, unknown>;
-          if (responseData.message && typeof responseData.message === 'string') {
-            errorMessage = responseData.message;
-          }
-        }
-      } else if (axiosError.message) {
-        // Error con mensaje pero sin respuesta HTTP (por ejemplo, error de red)
-        errorMessage = axiosError.message;
-      }
-    }
+    // funcion que Capturar el código de estado HTTP y el mensaje de error
+    const errorInfo = extractErrorInfo(error);
 
     // Enviar acción de error con el mensaje y código de estado
     yield put(actions.logoutFailure({
-      message: errorMessage,
-      statusCode: statusCode
+      message: errorInfo.originalMessage,
+      statusCode: errorInfo.statusCode,
+      isNetworkError: errorInfo.isNetworkError,
     }));
 
     // Intentar limpiar el estado de todas formas
