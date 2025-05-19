@@ -30,17 +30,20 @@ export class ApiService {
         return config;
       },
       (error) => Promise.reject(error)
-    );
-
-    // Interceptor para manejar errores de respuesta
+    );    // Interceptor para manejar errores de respuesta
     this.api.interceptors.response.use(
       (response) => response,
       async (error) => {
         const originalRequest = error.config;
 
-        // Si el error es 401 (No autorizado) y no se ha intentado refrescar el token
-        if (error.response?.status === 401 && !originalRequest._retry) {
+        // No intentar refrescar el token en endpoints de login o registro
+        const isAuthEndpoint = originalRequest.url?.includes('/auth/login') ||
+          originalRequest.url?.includes('/auth/register');
+
+        // Si el error es 401 (No autorizado), no es un endpoint de auth y no se ha intentado refrescar el token
+        if (error.response?.status === 401 && !isAuthEndpoint && !originalRequest._retry) {
           originalRequest._retry = true;
+          console.log('Intentando refrescar token para:', originalRequest.url);
 
           try {
             // Intenta refrescar el token
@@ -61,10 +64,10 @@ export class ApiService {
             localStorage.setItem('refreshToken', newRefreshToken);
 
             // Actualizar el token en la petición original y reintentarla
-            originalRequest.headers.Authorization = `Bearer ${token}`;
-            return this.api(originalRequest);
+            originalRequest.headers.Authorization = `Bearer ${token}`; return this.api(originalRequest);
           } catch (refreshError) {
             // Si no se puede refrescar el token, limpiar localStorage y redirigir a login
+            console.error('Error al refrescar token:', refreshError);
             localStorage.removeItem('token');
             localStorage.removeItem('refreshToken');
             if (this.redirectToLogin) {
@@ -74,6 +77,12 @@ export class ApiService {
             }
             return Promise.reject(refreshError);
           }
+        }
+
+        // Para errores 401 en endpoints de auth, pasar el error original sin modificar
+        if (error.response?.status === 401 && (originalRequest.url?.includes('/auth/login') ||
+          originalRequest.url?.includes('/auth/register'))) {
+          console.log('Error 401 en endpoint de autenticación, pasando error original');
         }
 
         return Promise.reject(error);

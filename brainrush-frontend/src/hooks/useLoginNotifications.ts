@@ -2,7 +2,7 @@
 import { useEffect } from 'react';
 import { useSnackbar } from 'notistack';
 import { isActionOf } from '../utils/redux';
-import { loginFailure,loginSuccess } from '../store/slices/auth/auth.actions';
+import { loginFailure, loginSuccess } from '../store/slices/auth/auth.actions';
 
 
 /**
@@ -29,25 +29,39 @@ export const useLoginNotifications = (result: any) => {
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
-    if (isActionOf(result.actionType,  loginFailure)) {
-      if (result.isNetworkError) {
+    // Si result es undefined o no tiene actionType, no hacemos nada
+    if (!result || !result.actionType) return;
 
+    console.log('Resultado de login:', result);
+
+    if (isActionOf(result.actionType, loginFailure)) {
+      if (result.isNetworkError) {
         enqueueSnackbar('Problema de conexión. Verifica tu internet y vuelve a intentarlo.', {
           variant: 'warning'
         });
       } else if (result.statusCode === 401) {
-        enqueueSnackbar(result.messageUser || "credenciales incorrectas", { variant: 'warning' });
+        // Para errores de credenciales (401)
+        enqueueSnackbar(result.messageUser || "Credenciales incorrectas", {
+          variant: 'warning'
+        });
+      } else if (result.statusCode === 400) {
+        // Para errores de validación (400)
+        enqueueSnackbar(result.messageUser || "Datos de inicio de sesión inválidos", {
+          variant: 'warning'
+        });
       } else if (result.statusCode) {
-        console.log('Error de autenticación:', result.statusCode);
-        enqueueSnackbar('Error interno del servidor. Intenta más tarde.', {
+        // Para otros errores con código de estado
+        console.log('Error de autenticación:', result.statusCode, result.messageUser);
+        enqueueSnackbar(result.messageUser || 'Error interno del servidor. Intenta más tarde.', {
           variant: 'error'
         });
       } else {
-        enqueueSnackbar('Error inicio de sesión. Por favor intenta nuevamente.', {
+        // Errores sin código de estado
+        enqueueSnackbar('Error en inicio de sesión. Por favor intenta nuevamente.', {
           variant: 'error'
         });
       }
-    } else if (isActionOf(result.actionType,loginSuccess )) {
+    } else if (isActionOf(result.actionType, loginSuccess)) {
       enqueueSnackbar('Inicio de sesión correcto, redirigiendo...', {
         variant: 'success'
       });
