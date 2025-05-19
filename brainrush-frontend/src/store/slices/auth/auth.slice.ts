@@ -49,13 +49,14 @@ const authReducer = createReducer(initialState, (builder) => {
       // Guardar en localStorage
       localStorage.setItem('token', action.payload.token);
       localStorage.setItem('refreshToken', action.payload.refreshToken);
-    }).addCase(actions.loginFailure, (state, action) => {
+    })
+    .addCase(actions.loginFailure, (state, action) => {
       state.status = 'failed';
       state.result = {
         actionType: actions.loginFailure.type,
         error: true,
         statusCode: action.payload.statusCode,
-        messageUser: "Credenciales inválidas",
+        messageUser: action.payload.message,
         messageInternal: action.payload.message,
         isNetworkError: action.payload.isNetworkError
       }

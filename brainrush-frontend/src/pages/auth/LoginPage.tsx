@@ -19,11 +19,10 @@ import {
   School
 } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
-import { loginFailure, loginRequest } from '../../store/slices/auth/auth.actions';
+import { loginRequest } from '../../store/slices/auth/auth.actions';
 import { Formik, Form, Field, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
-import { isActionOf } from '../../utils/redux/index';
-import { useSnackbar, VariantType } from 'notistack';
+import { useLoginNotifications } from '../../hooks';
 
 // Esquema de validación con Yup
 const LoginSchema = Yup.object().shape({
@@ -45,7 +44,6 @@ const LoginPage = () => {  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { status, result, user } = useAppSelector(state => state.auth);
   const [showPassword, setShowPassword] = useState(false);
-  const { enqueueSnackbar } = useSnackbar();
 
   // Redireccionar al dashboard si el usuario ya está autenticado
   useEffect(() => {
@@ -58,42 +56,10 @@ const LoginPage = () => {  const navigate = useNavigate();
   const initialValues: LoginFormValues = {
     email: '',
     password: ''
-  };  useEffect(() => {
-    if (isActionOf(result.actionType, loginFailure)) {
-      // Determinar el mensaje basado en el código de estado HTTP
-      let errorMessage = result.messageUser || result.messageInternal || 'Error durante el inicio de sesión';
-      let variant:VariantType = 'default';
-      const statusCode = 400;
+  };
 
-      // Personalizar mensajes según código de estado
-      if (statusCode) {
-        switch (result.statusCode) {
-          case 400:
-            errorMessage = 'Datos de inicio de sesión inválidos. Por favor verifica la información.';
-            variant = 'warning';
-            break;
-          case 401:
-            errorMessage = 'Credenciales incorrectas. Revisa tu correo y contraseña.';
-            break;
-          case 403:
-            errorMessage = 'Tu cuenta está bloqueada o desactivada. Contacta al administrador.';
-            break;
-          case 404:
-            errorMessage = 'Usuario no encontrado. Verifica tu correo electrónico.';
-            break;
-          case 500:
-            errorMessage = 'Error en el servidor. Intenta más tarde.';
-            break;
-          default:
-            // Usar el mensaje por defecto ya asignado
-            break;
-        }
-      }
-
-      enqueueSnackbar(errorMessage, { variant });
-      console.error('Error de inicio de sesión:', result);
-    }
-  }, [result, enqueueSnackbar]);
+  // Manejar las notificaciones de error
+  useLoginNotifications(result);
 
   // Manejar la visibilidad de la contraseña
   const handleClickShowPassword = () => {

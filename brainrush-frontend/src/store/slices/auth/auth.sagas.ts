@@ -5,7 +5,7 @@ import { call, put, takeLatest } from 'redux-saga/effects';
 import { AuthService } from '../../../services';
 import * as actions from './auth.actions';
 import { AuthResponse } from '../../../types/auth.types';
-import { AxiosError, AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 import { extractErrorInfo } from '../../../utils/redux';
 
 // Servicio de autenticación

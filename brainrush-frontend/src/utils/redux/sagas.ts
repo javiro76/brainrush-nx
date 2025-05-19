@@ -23,11 +23,18 @@ export const extractErrorInfo = (error: unknown): {
         if (responseData.message && typeof responseData.message === 'string') {
           originalMessage = responseData.message;
         }
-      }
-    } else if (axiosError.message) {
+      }    } else if (axiosError.message) {
       // Error con mensaje pero sin respuesta HTTP (por ejemplo, error de red)
       originalMessage = axiosError.message;
-      isNetworkError = true; // Marcar como error de red
+      
+      // Verificar si es realmente un error de red
+      isNetworkError = (
+        axiosError.code === 'ECONNABORTED' || 
+        axiosError.code === 'ETIMEDOUT' || 
+        axiosError.code === 'ERR_NETWORK' ||
+        axiosError.message.includes('network') || 
+        axiosError.message.includes('connection')
+      );
     }
   }
 
