@@ -1,0 +1,54 @@
+{
+  "tiposTexto": [
+    {
+      "id": "tt-001",
+      "nombre": "Continuo",
+      "descripcion": "Textos escritos en prosa, organizados en oraciones y párrafos que se leen de manera lineal."
+    },
+    {
+      "id": "tt-002",
+      "nombre": "Discontinuo",
+      "descripcion": "Textos cuya organización difiere de la lineal (tablas, gráficos, diagramas, etc.)."
+    },
+    {
+      "id": "tt-003",
+      "nombre": "Mixto",
+      "descripcion": "Textos que combinan formatos continuos y discontinuos."
+    },
+    {
+      "id": "tt-004",
+      "nombre": "Múltiple",
+      "descripcion": "Combinación de dos o más textos continuos."
+    },
+    {
+      "id": "tt-005",
+      "nombre": "Literario",
+      "descripcion": "Textos literarios como cuentos, novelas, poesía."
+    },
+    {
+      "id": "tt-006",
+      "nombre": "Informativo",
+      "descripcion": "Textos que exponen, argumentan o describen."
+    },
+    {
+      "id": "tt-007",
+      "nombre": "Argumentativo",
+      "descripcion": "Textos que presentan razonamientos y argumentos."
+    },
+    {
+      "id": "tt-008",
+      "nombre": "Expositivo",
+      "descripcion": "Textos que explican o informan sobre un tema."
+    },
+    {
+      "id": "tt-009",
+      "nombre": "Narrativo",
+      "descripcion": "Textos que relatan una secuencia de eventos."
+    },
+    {
+      "id": "tt-010",
+      "nombre": "Descriptivo",
+      "descripcion": "Textos que describen características o cualidades."
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "taxonomiaBloom": [
+    {
+      "id": "bloom-001",
+      "nombre": "Recordar",
+      "descripcion": "Recuperar, reconocer y recordar conocimiento relevante de la memoria a largo plazo."
+    },
+    {
+      "id": "bloom-002",
+      "nombre": "Comprender",
+      "descripcion": "Construir significado a partir de mensajes orales, escritos o gráficos a través de interpretar, ejemplificar, clasificar, resumir, inferir, comparar o explicar."
+    },
+    {
+      "id": "bloom-003",
+      "nombre": "Aplicar",
+      "descripcion": "Llevar a cabo o utilizar un procedimiento en una situación dada; llevar a cabo algo o usarlo."
+    },
+    {
+      "id": "bloom-004",
+      "nombre": "Analizar",
+      "descripcion": "Descomponer material en sus partes constituyentes y detectar cómo las partes se relacionan entre sí y con una estructura o propósito general."
+    },
+    {
+      "id": "bloom-005",
+      "nombre": "Evaluar",
+      "descripcion": "Hacer juicios basados en criterios y estándares a través de la comprobación y la crítica."
+    },
+    {
+      "id": "bloom-006",
+      "nombre": "Crear",
+      "descripcion": "Reunir elementos para formar un todo coherente o funcional; reorganizar elementos en un nuevo patrón o estructura."
+    }
+  ]
+}

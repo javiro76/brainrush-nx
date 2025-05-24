@@ -1,0 +1,29 @@
+{
+  "areas": [
+    {
+      "id": "area-001",
+      "nombre": "Lectura Crítica",
+      "descripcion": "Evalúa la capacidad para comprender, interpretar y evaluar textos que se encuentran en la vida cotidiana y en ámbitos académicos no especializados."
+    },
+    {
+      "id": "area-002",
+      "nombre": "Matemáticas",
+      "descripcion": "Evalúa la capacidad para comprender, interpretar y usar herramientas matemáticas para enfrentar situaciones en diversos contextos."
+    },
+    {
+      "id": "area-003",
+      "nombre": "Ciencias Naturales",
+      "descripcion": "Evalúa la capacidad para comprender y usar nociones, conceptos y teorías de las ciencias naturales en la solución de problemas."
+    },
+    {
+      "id": "area-004",
+      "nombre": "Sociales y Ciudadanas",
+      "descripcion": "Evalúa las habilidades para comprender el mundo social desde la perspectiva de las ciencias sociales y las competencias para el ejercicio de la ciudadanía."
+    },
+    {
+      "id": "area-005",
+      "nombre": "Inglés",
+      "descripcion": "Evalúa la competencia comunicativa en lengua inglesa, enfocada específicamente en la habilidad de lectura y el componente lingüístico."
+    }
+  ]
+}
