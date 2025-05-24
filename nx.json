@@ -35,7 +35,8 @@
       "exclude": [
         "apps/brainrush-nx-e2e/**/*",
         "apps/auth-service-e2e/**/*",
-        "apps/api-gateway-e2e/**/*"
+        "apps/api-gateway-e2e/**/*",
+        "content-service-e2e/**/*"
       ]
     },
     {

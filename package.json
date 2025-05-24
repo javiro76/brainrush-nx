@@ -11,7 +11,9 @@
     "dev:all": "concurrently \"npm run dev:infra:up\" \"npm run dev:auth\" \"npm run dev:gateway\"",
     "prisma:migrate": "npx prisma migrate deploy --schema=./apps/auth-service/prisma/schema.prisma",
     "prisma:studio": "npx prisma studio --schema=./apps/auth-service/prisma/schema.prisma",
-    "dev:setup": "npm run dev:infra:up && npm run prisma:migrate"
+    "dev:setup": "npm run dev:infra:up && npm run prisma:migrate",
+    "dev:frontend": "npx nx serve brainrush-frontend",
+    "dev:all-with-frontend": "concurrently \"npm run dev:infra:up\" \"npm run dev:auth\" \"npm run dev:gateway\" \"npm run dev:frontend\""
   },
   "private": true,
   "dependencies": {
@@ -64,12 +66,13 @@
     "@nx/eslint": "20.8.1",
     "@nx/eslint-plugin": "20.8.1",
     "@nx/jest": "20.8.1",
-    "@nx/js": "20.8.1",
-    "@nx/node": "20.8.1",
+    "@nx/js": "21.1.2",
+    "@nx/nest": "^21.1.2",
+    "@nx/node": "21.1.2",
     "@nx/playwright": "20.8.1",
     "@nx/react": "20.8.1",
     "@nx/web": "20.8.1",
-    "@nx/webpack": "20.8.1",
+    "@nx/webpack": "21.1.2",
     "@nx/workspace": "20.8.1",
     "@playwright/test": "^1.36.0",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.7",
