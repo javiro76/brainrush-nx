@@ -1,0 +1,485 @@
+ {
+  "opciones": [
+
+  {
+    "id": "opt-021",
+    "preguntaId": "q006",
+    "clave": "A",
+    "texto": "Sugiere que esta tecnología es la solución definitiva al cambio climático.",
+    "correcta": false,
+    "retroalimentacion": "Incorrecto. El texto especifica que la tecnología 'complementaría -no reemplazaría-' otras soluciones, no que sea la única o definitiva [3]."
+  },
+  {
+    "id": "opt-022",
+    "preguntaId": "q006",
+    "clave": "B",
+    "texto": "Indica que esta tecnología debe usarse junto con otras medidas para combatir el cambio climático.",
+    "correcta": true,
+    "retroalimentacion": "Correcto. La justificación de la pregunta y la frase en el texto indican que esta tecnología es parte de un conjunto de medidas necesarias para abordar el cambio climático [3]."
+  },
+  {
+    "id": "opt-023",
+    "preguntaId": "q006",
+    "clave": "C",
+    "texto": "Significa que la tecnología aún no es rentable económicamente.",
+    "correcta": false,
+    "retroalimentacion": "Incorrecto. Si bien el costo y la eficiencia son desafíos mencionados en el texto [4, 5], la frase 'complementaría -no reemplazaría-' se refiere a su rol en relación con otras soluciones climáticas, no a su viabilidad económica [3]."
+  },
+  {
+    "id": "opt-024",
+    "preguntaId": "q006",
+    "clave": "D",
+    "texto": "Implica que la tecnología reemplazará todas las fuentes de energía actuales.",
+    "correcta": false,
+    "retroalimentacion": "Incorrecto. La frase clave 'complementaría -no reemplazaría-' [3] descarta la idea de que esta tecnología vaya a sustituir por completo otras soluciones climáticas o, de manera más amplia, todas las fuentes de energía actuales."
+  },
+
+  {
+    "id": "opt-025",
+    "preguntaId": "q007",
+    "clave": "A",
+    "texto": "Aproximadamente el 50% de los colombianos.",
+    "correcta": false,
+    "retroalimentacion": "Incorrecto. El texto proporciona un porcentaje diferente, basado en datos del DANE."
+  },
+  {
+    "id": "opt-026",
+    "preguntaId": "q007",
+    "clave": "B",
+    "texto": "El 72% de los colombianos.",
+    "correcta": true,
+    "retroalimentacion": "Correcto. El texto menciona explícitamente que 'el 72% de los colombianos las usan como principal fuente de noticias según el DANE'."
+  },
+  {
+    "id": "opt-027",
+    "preguntaId": "q007",
+    "clave": "C",
+    "texto": "Más del 80% de los colombianos.",
+    "correcta": false,
+    "retroalimentacion": "Incorrecto. El porcentaje exacto mencionado en el texto es menor a 80%."
+  },
+  {
+    "id": "opt-028",
+    "preguntaId": "q007",
+    "clave": "D",
+    "texto": "Menos del 60% de los colombianos.",
+    "correcta": false,
+    "retroalimentacion": "Incorrecto. El porcentaje indicado en el texto es significativamente mayor a 60%."
+  },
+   {
+    "id": "opt-029",
+    "preguntaId": "q008",
+    "clave": "A",
+    "texto": "Lugares físicos con acústica especial para reuniones.",
+    "correcta": false,
+    "retroalimentacion": "Incorrecto. En el contexto del texto sobre redes sociales, 'cámaras de eco' es una metáfora, no un lugar físico."
+  },
+  {
+    "id": "opt-030",
+    "preguntaId": "q008",
+    "clave": "B",
+    "texto": "Espacios digitales donde predominan las opiniones afines, limitando la exposición a ideas diversas.",
+    "correcta": true,
+    "retroalimentacion": "Correcto. La justificación de la pregunta y el contexto del texto t003 describen las 'cámaras de eco' como entornos que refuerzan las creencias existentes y restringen la diversidad de perspectivas."
+  },
+  {
+    "id": "opt-031",
+    "preguntaId": "q008",
+    "clave": "C",
+    "texto": "La capacidad de las noticias falsas para propagarse rápidamente.",
+    "correcta": false,
+    "retroalimentacion": "Incorrecto. Si bien el texto t003 menciona la rápida viralización de falsedades [2], este concepto es diferente del de 'cámaras de eco', que se refiere al aislamiento informativo y el refuerzo de creencias."
+  },
+  {
+    "id": "opt-032",
+    "preguntaId": "q008",
+    "clave": "D",
+    "texto": "La función de las redes sociales para conectar personas con intereses comunes.",
+    "correcta": false,
+    "retroalimentacion": "Incorrecto. Aunque las redes conectan personas por intereses, el término 'cámara de eco' se enfoca en el efecto negativo de esa conexión cuando limita la exposición a puntos de vista diferentes."
+  },
+   {
+    "id": "opt-033",
+    "preguntaId": "q009",
+    "clave": "A",
+    "texto": "Para ilustrar la gran cantidad de noticias falsas que circulan en línea.",
+    "correcta": false,
+    "retroalimentacion": "Incorrecto. Si bien el caso demuestra la circulación de noticias falsas, el autor lo usa con un propósito más específico, relacionado con la respuesta de las plataformas."
+  },
+  {
+    "id": "opt-034",
+    "preguntaId": "q009",
+    "clave": "B",
+    "texto": "Para demostrar que la autorregulación de las plataformas no es suficiente para frenar la desinformación.",
+    "correcta": true,
+    "retroalimentacion": "Correcto. La justificación de la pregunta [1] indica explícitamente que el caso de 'Noticias Falsas XYZ' se usa como un 'ejemplo concreto para demostrar la ineficacia de la autorregulación'."
+  },
+  {
+    "id": "opt-035",
+    "preguntaId": "q009",
+    "clave": "C",
+    "texto": "Para resaltar la rapidez con la que las noticias se vuelven virales en las redes sociales.",
+    "correcta": false,
+    "retroalimentacion": "Incorrecto. Aunque el texto t003 menciona la viralización rápida de falsedades [2], el ejemplo específico de 'Noticias Falsas XYZ' se enfoca en la falla de los mecanismos de control, no solo en la velocidad de propagación."
+  },
+  {
+    "id": "opt-036",
+    "preguntaId": "q009",
+    "clave": "D",
+    "texto": "Para justificar la necesidad de una mayor alfabetización digital en los usuarios.",
+    "correcta": false,
+    "retroalimentacion": "Incorrecto. El texto t003 sí menciona la alfabetización digital como una solución [2], pero el caso 'Noticias Falsas XYZ' se presenta como evidencia de que la autorregulación empresarial es la que ha fallado [1, 2]."
+  },
+  {
+    "id": "opt-037",
+    "preguntaId": "q010",
+    "clave": "A",
+    "texto": "Perú",
+    "correcta": false,
+    "retroalimentacion": "Incorrecto. Según la infografía, Perú es un destino importante (21.7%) [1], pero no es el principal."
+  },
+  {
+    "id": "opt-038",
+    "preguntaId": "q010",
+    "clave": "B",
+    "texto": "Chile",
+    "correcta": false,
+    "retroalimentacion": "Incorrecto. Según la infografía, Chile es un destino relevante (14.3%) [1], pero no es el principal."
+  },
+  {
+    "id": "opt-039",
+    "preguntaId": "q010",
+    "clave": "C",
+    "texto": "Colombia",
+    "correcta": true,
+    "retroalimentacion": "Correcto. La infografía muestra que el 48.2% de los migrantes venezolanos se encuentran en Colombia [1], convirtiéndolo en el principal destino según los datos presentados, tal como indica la justificación [3]."
+  },
+  {
+    "id": "opt-040",
+    "preguntaId": "q010",
+    "clave": "D",
+    "texto": "Ecuador",
+    "correcta": false,
+    "retroalimentacion": "Incorrecto. La infografía proporcionada no identifica a Ecuador como uno de los principales destinos para los migrantes venezolanos cuya distribución se detalla [1]."
+  },
+  {
+    "id": "opt-041",
+    "preguntaId": "q011",
+    "clave": "A",
+    "texto": "La distancia geográfica entre los puntos de origen y destino.",
+    "correcta": false,
+    "retroalimentacion": "Incorrecto. El espesor de las flechas en este contexto no representa la distancia, sino la magnitud del movimiento de personas."
+  },
+  {
+    "id": "opt-042",
+    "preguntaId": "q011",
+    "clave": "B",
+    "texto": "El tiempo promedio que tarda el viaje migratorio.",
+    "correcta": false,
+    "retroalimentacion": "Incorrecto. El espesor es una convención gráfica para mostrar la intensidad o volumen de un fenómeno, no la duración de un proceso."
+  },
+  {
+    "id": "opt-043",
+    "preguntaId": "q011",
+    "clave": "C",
+    "texto": "La magnitud o cantidad de personas en los flujos migratorios.",
+    "correcta": true,
+    "retroalimentacion": "Correcto. La justificación y la descripción de la infografía t004 indican explícitamente que el espesor de las flechas es 'proporcional a flujos' migratorios, lo que se refiere a la cantidad de personas que se desplazan."
+  },
+  {
+    "id": "opt-044",
+    "preguntaId": "q011",
+    "clave": "D",
+    "texto": "El nivel de peligro de cada ruta migratoria.",
+    "correcta": false,
+    "retroalimentacion": "Incorrecto. La infografía t004 se enfoca en datos demográficos y rutas principales, no en la seguridad o peligrosidad de las rutas."
+  },
+  {
+    "id": "opt-045",
+    "preguntaId": "q012",
+    "clave": "A",
+    "texto": "Indica diferencias en la calidad de la recolección de datos entre países.",
+    "correcta": false,
+    "retroalimentacion": "Incorrecto. Aunque la variabilidad del margen de error puede sugerir diferencias en la recolección, la justificación en las fuentes se centra en que incluir esta información demuestra 'rigor científico al transparentar las limitaciones de precisión', no solo en señalar diferencias en la calidad."
+  },
+  {
+    "id": "opt-046",
+    "preguntaId": "q012",
+    "clave": "B",
+    "texto": "Demuestra rigurosidad científica al transparentar la precisión variable de los datos.",
+    "correcta": true,
+    "retroalimentacion": "Correcto. La justificación de la pregunta en las fuentes indica explícitamente que incluir el margen de error variable 'Demuestra rigor científico al transparentar las limitaciones de precisión en los datos presentados'."
+  },
+  {
+    "id": "opt-047",
+    "preguntaId": "q012",
+    "clave": "C",
+    "texto": "Permite a los lectores ajustar las cifras totales de cada país.",
+    "correcta": false,
+    "retroalimentacion": "Incorrecto. El margen de error define un rango de incertidumbre para las cifras, no un valor que los lectores deban usar para ajustar las cifras a un número exacto."
+  },
+  {
+    "id": "opt-048",
+    "preguntaId": "q012",
+    "clave": "D",
+    "texto": "Señala que la metodología de muestreo no fue uniforme en todos los puntos fronterizos.",
+    "correcta": false,
+    "retroalimentacion": "Incorrecto. Si bien la metodología de muestreo puede influir en el margen de error variable, la razón principal para incluir esta información, según la justificación, es demostrar rigor y transparencia sobre la precisión de los datos, no solo describir una posible causa de la variabilidad."
+  },
+  {
+    "id": "opt-049",
+    "preguntaId": "q013",
+    "clave": "A",
+    "texto": "El jaguar",
+    "correcta": false,
+    "retroalimentacion": "Incorrecto. La leyenda narrada en el texto t005 identifica a un ave específica como la protagonista de la hazaña de robar el fuego."
+  },
+  {
+    "id": "opt-050",
+    "preguntaId": "q013",
+    "clave": "B",
+    "texto": "El águila",
+    "correcta": false,
+    "retroalimentacion": "Incorrecto. Si bien el águila es un ave importante en muchas culturas, la leyenda Yukpa en el texto t005 atribuye la acción de obtener el fuego a otro animal."
+  },
+  {
+    "id": "opt-051",
+    "preguntaId": "q013",
+    "clave": "C",
+    "texto": "El colibrí",
+    "correcta": true,
+    "retroalimentacion": "Correcto. La justificación y el texto t005 indican explícitamente que el 'colibrí, ave sagrada llamada Se'iku' fue quien robó el fuego a los espíritus para la humanidad [1]."
+  },
+  {
+    "id": "opt-052",
+    "preguntaId": "q013",
+    "clave": "D",
+    "texto": "El tucán",
+    "correcta": false,
+    "retroalimentacion": "Incorrecto. El texto t005 nombra a un ave diferente como la responsable de llevar el fuego a los humanos en la leyenda Yukpa."
+  },
+   {
+    "id": "opt-053",
+    "preguntaId": "q014",
+    "clave": "A",
+    "texto": "Es un canto para atraer a su pareja.",
+    "correcta": false,
+    "retroalimentacion": "Incorrecto. La leyenda t005 narra una explicación mitológica para el sonido, no una biológica o de comportamiento reproductivo."
+  },
+  {
+    "id": "opt-054",
+    "preguntaId": "q014",
+    "clave": "B",
+    "texto": "Es una señal para indicar dónde encontrar néctar.",
+    "correcta": false,
+    "retroalimentacion": "Incorrecto. El texto t005 ofrece una razón cultural y mítica para el sonido del colibrí, no una relacionada con su alimentación."
+  },
+  {
+    "id": "opt-055",
+    "preguntaId": "q014",
+    "clave": "C",
+    "texto": "El sonido 'se-se' es resultado de la quemadura en su garganta al transportar el fuego.",
+    "correcta": true,
+    "retroalimentacion": "Correcto. La justificación [2] y el texto t005 [1] indican explícitamente que el sonido característico del colibrí se debe a la quemadura que sufrió su garganta al llevar el fuego desde el volcán."
+  },
+  {
+    "id": "opt-056",
+    "preguntaId": "q014",
+    "clave": "D",
+    "texto": "Sirve como advertencia a otros animales del peligro.",
+    "correcta": false,
+    "retroalimentacion": "Incorrecto. La leyenda t005 no describe el sonido del colibrí como una señal de advertencia para otros animales."
+  },
+  {
+    "id": "opt-057",
+    "preguntaId": "q015",
+    "clave": "A",
+    "texto": "Principalmente proporcionar entretenimiento durante las reuniones comunitarias.",
+    "correcta": false,
+    "retroalimentacion": "Incorrecto. Aunque las leyendas pueden ser entretenidas, el texto t005 se enfoca en su rol explicativo de prácticas y creencias culturales."
+  },
+  {
+    "id": "opt-058",
+    "preguntaId": "q015",
+    "clave": "B",
+    "texto": "Servir como un registro histórico preciso de eventos pasados.",
+    "correcta": false,
+    "retroalimentacion": "Incorrecto. Las leyendas suelen ser narrativas míticas o simbólicas que explican orígenes, no registros fácticos históricos detallados."
+  },
+  {
+    "id": "opt-059",
+    "preguntaId": "q015",
+    "clave": "C",
+    "texto": "Advertir a la comunidad sobre los peligros geográficos del territorio, como los volcanes.",
+    "correcta": false,
+    "retroalimentacion": "Incorrecto. Si bien la leyenda menciona un volcán como el origen del fuego, su función principal según el texto es explicar elementos culturales, no servir como manual de advertencias geográficas."
+  },
+  {
+    "id": "opt-060",
+    "preguntaId": "q015",
+    "clave": "D",
+    "texto": "Explicar el origen y significado de ciertas prácticas y creencias culturales.",
+    "correcta": true,
+    "retroalimentacion": "Correcto. La justificación y el texto t005 indican que la leyenda funciona como un mito fundacional que explica tres elementos culturales concretos, como la prohibición de cazar colibríes o el ritual del fuego nuevo."
+  },
+  {
+    "id": "opt-061",
+    "preguntaId": "q016",
+    "clave": "A",
+    "texto": "Configurar la opción 'Público'",
+    "correcta": false,
+    "retroalimentacion": "Incorrecto. El manual t006 recomienda restringir al máximo el acceso a datos sensibles, no hacerlos públicos."
+  },
+  {
+    "id": "opt-062",
+    "preguntaId": "q016",
+    "clave": "B",
+    "texto": "Configurar la opción 'Solo Amigos'",
+    "correcta": false,
+    "retroalimentacion": "Incorrecto. Aunque 'Solo Amigos' restringe el acceso, el manual t006 es más estricto para datos sensibles, recomendando una configuración aún más limitada."
+  },
+  {
+    "id": "opt-063",
+    "preguntaId": "q016",
+    "clave": "C",
+    "texto": "Configurar la opción 'Solo yo'",
+    "correcta": true,
+    "retroalimentacion": "Correcto. El manual t006 especifica directamente configurar 'Solo yo' para datos sensibles como ubicación en tiempo real o fotos de documentos."
+  },
+  {
+    "id": "opt-064",
+    "preguntaId": "q016",
+    "clave": "D",
+    "texto": "Desactivar la visualización de la información",
+    "correcta": false,
+    "retroalimentacion": "Incorrecto. Desactivar la visualización podría ser una medida de seguridad, pero el manual t006 recomienda específicamente una configuración de privacidad ('Solo yo') para los datos sensibles."
+  },
+  {
+    "id": "opt-065",
+    "preguntaId": "q017",
+    "clave": "A",
+    "texto": "Puede revelar información sobre la ubicación geográfica de la persona.",
+    "correcta": false,
+    "retroalimentacion": "Incorrecto. Aunque la ubicación es un dato sensible mencionado en el manual t006, la razón específica para no compartir selfies con la cédula visible es otra."
+  },
+  {
+    "id": "opt-066",
+    "preguntaId": "q017",
+    "clave": "B",
+    "texto": "Ha facilitado suplantaciones de identidad según informes oficiales.",
+    "correcta": true,
+    "retroalimentacion": "Correcto. El manual t006 advierte explícitamente sobre este riesgo, citando informes de la Policía Nacional que confirman que compartir selfies con la cédula visible ha llevado a suplantaciones."
+  },
+  {
+    "id": "opt-067",
+    "preguntaId": "q017",
+    "clave": "C",
+    "texto": "Viola la Ley 1581 de 2012 sobre protección de datos.",
+    "correcta": false,
+    "retroalimentacion": "Incorrecto. La Ley 1581 de 2012 protege los datos personales, pero el manual t006 señala una consecuencia específica (suplantación) como la razón directa de la advertencia, no solo una violación general de la ley."
+  },
+  {
+    "id": "opt-068",
+    "preguntaId": "q017",
+    "clave": "D",
+    "texto": "Permite que los algoritmos de las redes sociales clasifiquen mejor al usuario.",
+    "correcta": false,
+    "retroalimentacion": "Incorrecto. El manual t006 se enfoca en la seguridad del usuario frente a terceros malintencionados, no en el funcionamiento interno de los algoritmos de las plataformas."
+  },
+  {
+    "id": "opt-069",
+    "preguntaId": "q018",
+    "clave": "A",
+    "texto": "La ley fundamenta jurídicamente las precauciones sobre protección de datos personales sugeridas en el manual.",
+    "correcta": true,
+    "retroalimentacion": "Correcto. La justificación de q018 y el texto t006 indican que la Ley 1581 de 2012 es la base legal para las recomendaciones de seguridad sobre datos personales en redes sociales."
+  },
+  {
+    "id": "opt-070",
+    "preguntaId": "q018",
+    "clave": "B",
+    "texto": "El manual es una versión simplificada de la ley para niños y adolescentes.",
+    "correcta": false,
+    "retroalimentacion": "Incorrecto. El manual t006 es un protocolo de seguridad para usuarios generales de redes sociales, no una simplificación específica de la ley para un grupo de edad."
+  },
+  {
+    "id": "opt-071",
+    "preguntaId": "q018",
+    "clave": "C",
+    "texto": "La ley solo se aplica a datos recolectados por entidades públicas, no por redes sociales privadas.",
+    "correcta": false,
+    "retroalimentacion": "Incorrecto. La Ley 1581 de 2012 aplica a la protección de datos personales en general en Colombia, sin limitarse solo a entidades públicas."
+  },
+  {
+    "id": "opt-072",
+    "preguntaId": "q018",
+    "clave": "D",
+    "texto": "El manual reemplaza las disposiciones de la ley en el ámbito digital.",
+    "correcta": false,
+    "retroalimentacion": "Incorrecto. El manual t006 es una guía práctica basada en la ley, no un reemplazo de sus disposiciones legales."
+  }, {
+    "id": "opt-073",
+    "preguntaId": "q019",
+    "clave": "A",
+    "texto": "Que la tecnología es significativamente menos efectiva fuera de entornos de laboratorio.",
+    "correcta": true,
+    "retroalimentacion": "Correcto. La justificación de q019 indica que esta baja eficiencia en condiciones reales significa que la tecnología pierde efectividad en 'entornos no controlados', lo que implica fuera del laboratorio."
+  },
+  {
+    "id": "opt-074",
+    "preguntaId": "q019",
+    "clave": "B",
+    "texto": "Que solo el 12% de la luz solar es absorbida por los catalizadores.",
+    "correcta": false,
+    "retroalimentacion": "Incorrecto. Aunque está relacionado con la eficiencia, el texto t002 y la justificación de q019 se centran en la implicación de esa baja eficiencia en la práctica (fuera del laboratorio), no solo en un mecanismo físico específico."
+  },
+  {
+    "id": "opt-075",
+    "preguntaId": "q019",
+    "clave": "C",
+    "texto": "Que solo el 12% del CO2 capturado se convierte en metanol.",
+    "correcta": false,
+    "retroalimentacion": "Incorrecto. El texto t002 menciona una eficiencia del 85% para la conversión de CO2 a metanol en un contexto ideal, no el 12%. La eficiencia del 12% se refiere a la eficiencia *energética* en condiciones reales."
+  },
+  {
+    "id": "opt-076",
+    "preguntaId": "q019",
+    "clave": "D",
+    "texto": "Que se necesita un 88% más de catalizadores para ser eficiente.",
+    "correcta": false,
+    "retroalimentacion": "Incorrecto. El texto t002 no relaciona directamente la eficiencia energética con la cantidad de catalizadores necesarios en esa proporción. La eficiencia del 12% refleja el rendimiento general en condiciones reales, no una simple falta de material."
+  },
+   {
+    "id": "opt-077",
+    "preguntaId": "q020",
+    "clave": "A",
+    "texto": "Afirman la verdad de las noticias pero no combaten las falsedades.",
+    "correcta": false,
+    "retroalimentacion": "Incorrecto. Aunque la desinformación es un problema central mencionado en el texto t003 [2], la contradicción principal destacada es otra."
+  },
+  {
+    "id": "opt-078",
+    "preguntaId": "q020",
+    "clave": "B",
+    "texto": "Democratizan el acceso a la información pero crean cámaras de eco que limitan la diversidad de perspectivas.",
+    "correcta": true,
+    "retroalimentacion": "Correcto. El editorial t003 [2] señala esta dualidad: facilitan el acceso general ('democratizan el acceso al conocimiento' [2]) pero sus algoritmos ('algoritmos diseñados para maximizar engagement' [2]) tienden a reforzar sesgos y limitar la exposición a diferentes puntos de vista ('crean cámaras de eco que amplifican sesgos cognitivos' [2])."
+  },
+  {
+    "id": "opt-079",
+    "preguntaId": "q020",
+    "clave": "C",
+    "texto": "Fomentan la interacción social pero aíslan a los usuarios en burbujas digitales.",
+    "correcta": false,
+    "retroalimentacion": "Incorrecto. Aunque es una interpretación posible, el texto t003 [2] se centra en la información y las 'cámaras de eco', que limitan la diversidad de perspectivas [1], no tanto en el aislamiento social per se."
+  },
+  {
+    "id": "opt-080",
+    "preguntaId": "q020",
+    "clave": "D",
+    "texto": "Son gratuitas para el usuario pero generan grandes ingresos para las empresas propietarias.",
+    "correcta": false,
+    "retroalimentacion": "Incorrecto. Esta afirmación sobre el modelo de negocio no es la contradicción principal que el editorial t003 [2] discute en relación con el impacto en la ecología informativa."
+  }
+    ]
+}

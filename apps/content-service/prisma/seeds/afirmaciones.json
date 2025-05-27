@@ -1,0 +1,116 @@
+{
+  "afirmaciones": [
+    {
+      "id": "afir-001",
+      "areaId": "area-001",
+      "numero": 1,
+      "descripcion": "Identifica y entiende los contenidos locales que conforman un texto",
+      "tipo": "Literal",
+      "competenciaId": "comp-001"
+    },
+    {
+      "id": "afir-002",
+      "areaId": "area-001",
+      "numero": 2,
+      "descripcion": "Comprende cómo se articulan las partes de un texto para darle un sentido global",
+      "tipo": "Inferencial",
+      "competenciaId": "comp-002"
+    },
+    {
+      "id": "afir-003",
+      "areaId": "area-001",
+      "numero": 3,
+      "descripcion": "Reflexiona a partir de un texto y evalúa su contenido",
+      "tipo": "Crítico",
+      "competenciaId": "comp-003"
+    },
+    {
+      "id": "afir-004",
+      "areaId": "area-002",
+      "numero": 1,
+      "descripcion": "Comprende y transforma la información cuantitativa y esquemática presentada en distintos formatos",
+      "tipo": "Interpretación",
+      "competenciaId": "comp-004"
+    },
+    {
+      "id": "afir-005",
+      "areaId": "area-002",
+      "numero": 2,
+      "descripcion": "Frente a un problema que involucre información cuantitativa, plantea e implementa estrategias que lleven a soluciones adecuadas",
+      "tipo": "Formulación",
+      "competenciaId": "comp-005"
+    },
+    {
+      "id": "afir-006",
+      "areaId": "area-002",
+      "numero": 3,
+      "descripcion": "Valida procedimientos y estrategias matemáticas utilizadas para dar solución a problemas",
+      "tipo": "Argumentación",
+      "competenciaId": "comp-006"
+    },
+    {
+      "id": "afir-007",
+      "areaId": "area-003",
+      "numero": 1,
+      "descripcion": "Identifica las características de algunos fenómenos de la naturaleza basándose en el análisis de información y conceptos propios del conocimiento científico",
+      "tipo": "Comprensión",
+      "competenciaId": "comp-007"
+    },
+    {
+      "id": "afir-008",
+      "areaId": "area-003",
+      "numero": 2,
+      "descripcion": "Explica cómo ocurren algunos fenómenos de la naturaleza basándose en observaciones, patrones y conceptos propios del conocimiento científico",
+      "tipo": "Explicación",
+      "competenciaId": "comp-008"
+    },
+    {
+      "id": "afir-009",
+      "areaId": "area-003",
+      "numero": 3,
+      "descripcion": "Utiliza procedimientos para evaluar predicciones, interpretaciones o argumentos que pueden dar solución a problemas científicos",
+      "tipo": "Indagación",
+      "competenciaId": "comp-009"
+    },
+    {
+      "id": "afir-010",
+      "areaId": "area-004",
+      "numero": 1,
+      "descripcion": "Comprende modelos conceptuales, sus características y contextos de aplicación",
+      "tipo": "Conocimiento",
+      "competenciaId": "comp-010"
+    },
+    {
+      "id": "afir-011",
+      "areaId": "area-004",
+      "numero": 2,
+      "descripcion": "Comprende perspectivas de distintos actores y grupos sociales",
+      "tipo": "Interpretación",
+      "competenciaId": "comp-011"
+    },
+    {
+      "id": "afir-012",
+      "areaId": "area-004",
+      "numero": 3,
+      "descripcion": "Evalúa usos sociales de las ciencias sociales",
+      "tipo": "Reflexión",
+      "competenciaId": "comp-012"
+    },
+    {
+      "id": "afir-013",
+      "areaId": "area-005",
+      "numero": 1,
+      "descripcion": "Identifica y comprende información explícita en textos en inglés",
+      "tipo": "Literal",
+      "competenciaId": "comp-013"
+    },
+    {
+      "id": "afir-014",
+      "areaId": "area-005",
+      "numero": 2,
+      "descripcion": "Infiere información implícita en textos en inglés",
+      "tipo": "Inferencial",
+      "competenciaId": "comp-014"
+    }
+  ]
+}

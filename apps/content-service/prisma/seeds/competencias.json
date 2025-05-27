@@ -1,0 +1,94 @@
+{
+  "competencias": [
+    {
+      "id": "comp-001",
+      "areaId": "area-001",
+      "nombre": "Identificación de información",
+      "descripcion": "Capacidad para identificar y entender contenidos locales que conforman un texto."
+    },
+    {
+      "id": "comp-002",
+      "areaId": "area-001",
+      "nombre": "Comprensión e interpretación",
+      "descripcion": "Capacidad para comprender cómo se articulan las partes de un texto para darle un sentido global."
+    },
+    {
+      "id": "comp-003",
+      "areaId": "area-001",
+      "nombre": "Reflexión y evaluación",
+      "descripcion": "Capacidad para reflexionar a partir de un texto y evaluar su contenido de forma crítica."
+    },
+    {
+      "id": "comp-004",
+      "areaId": "area-002",
+      "nombre": "Interpretación y representación",
+      "descripcion": "Habilidad para comprender y transformar información presentada en distintos formatos."
+    },
+    {
+      "id": "comp-005",
+      "areaId": "area-002",
+      "nombre": "Formulación y ejecución",
+      "descripcion": "Capacidad para plantear y diseñar estrategias que permitan solucionar problemas de diversos contextos."
+    },
+    {
+      "id": "comp-006",
+      "areaId": "area-002",
+      "nombre": "Argumentación",
+      "descripcion": "Capacidad para validar o refutar conclusiones, estrategias, soluciones e interpretaciones en situaciones diversas."
+    },
+    {
+      "id": "comp-007",
+      "areaId": "area-003",
+      "nombre": "Uso comprensivo del conocimiento científico",
+      "descripcion": "Capacidad para comprender y usar nociones, conceptos y teorías de las ciencias naturales en la solución de problemas."
+    },
+    {
+      "id": "comp-008",
+      "areaId": "area-003",
+      "nombre": "Explicación de fenómenos",
+      "descripcion": "Capacidad para construir explicaciones, comprender argumentos y modelos que den cuenta de fenómenos naturales."
+    },
+    {
+      "id": "comp-009",
+      "areaId": "area-003",
+      "nombre": "Indagación",
+      "descripcion": "Capacidad para plantear preguntas y procedimientos adecuados, buscar, seleccionar, organizar e interpretar información relevante."
+    },
+    {
+      "id": "comp-010",
+      "areaId": "area-004",
+      "nombre": "Pensamiento social",
+      "descripcion": "Capacidad para usar conceptos básicos de las ciencias sociales que facilitan la comprensión de problemáticas sociales."
+    },
+    {
+      "id": "comp-011",
+      "areaId": "area-004",
+      "nombre": "Interpretación y análisis de perspectivas",
+      "descripcion": "Capacidad para pensar y analizar problemas sociales según perspectivas de los involucrados."
+    },
+    {
+      "id": "comp-012",
+      "areaId": "area-004",
+      "nombre": "Pensamiento reflexivo y sistémico",
+      "descripcion": "Capacidad de reconocer distintas formas de aproximarse a problemas sociales y la complejidad de sus relaciones."
+    },
+    {
+      "id": "comp-013",
+      "areaId": "area-005",
+      "nombre": "Competencia lingüística",
+      "descripcion": "Conocimiento y uso de las reglas formales de la lengua en situaciones comunicativas."
+    },
+    {
+      "id": "comp-014",
+      "areaId": "area-005",
+      "nombre": "Competencia pragmática",
+      "descripcion": "Uso funcional de la lengua, incluyendo organización del discurso y comprensión en situaciones reales."
+    },
+    {
+      "id": "comp-015",
+      "areaId": "area-005",
+      "nombre": "Competencia sociolingüística",
+      "descripcion": "Conocimiento y manejo de las condiciones sociales y culturales implícitas en el uso de la lengua."
+    }
+  ]
+}

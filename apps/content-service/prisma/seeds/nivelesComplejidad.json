@@ -1,0 +1,46 @@
+{
+  "nivelesComplejidad": [
+    {
+      "id": "nc-001",
+      "nombre": "Básico",
+      "descripcion": "Preguntas de baja dificultad que evalúan aspectos fundamentales y explícitos."
+    },
+    {
+      "id": "nc-002",
+      "nombre": "Medio",
+      "descripcion": "Preguntas de dificultad media que requieren hacer conexiones e inferencias simples."
+    },
+    {
+      "id": "nc-003",
+      "nombre": "Avanzado",
+      "descripcion": "Preguntas de alta dificultad que requieren análisis profundo, evaluación crítica o inferencias complejas."
+    }
+  ],
+  "nivelesIngles": [
+    {
+      "id": "ni-001",
+      "nombre": "Pre A1",
+      "descripcion": "Nivel inicial de reconocimiento de elementos muy básicos del idioma."
+    },
+    {
+      "id": "ni-002",
+      "nombre": "A1",
+      "descripcion": "Nivel principiante, comprensión de frases y expresiones cotidianas básicas."
+    },
+    {
+      "id": "ni-003",
+      "nombre": "A2",
+      "descripcion": "Nivel elemental, comprensión de textos sencillos sobre temas conocidos."
+    },
+    {
+      "id": "ni-004",
+      "nombre": "B1",
+      "descripcion": "Nivel intermedio, comprensión de textos con temas cotidianos o de interés personal."
+    },
+    {
+      "id": "ni-005",
+      "nombre": "B2",
+      "descripcion": "Nivel intermedio alto, comprensión de textos complejos y técnicos."
+    }
+  ]
+}

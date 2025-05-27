@@ -1,0 +1,171 @@
+{
+  "textos": [
+    {
+      "id": "t001",
+      "fuente": "Gabriel García Márquez - Cien años de soledad (1967). Fragmento autónomo de dominio público",
+      "contenido": "Muchos años después, frente al pelotón de fusilamiento, el coronel Aureliano Buendía había de recordar aquella tarde remota en que su padre lo llevó a conocer el hielo. Macondo era entonces una aldea de veinte casas de barro y cañabrava construidas a la orilla de un río de aguas diáfanas que se precipitaban por un lecho de piedras pulidas, blancas y enormes como huevos prehistóricos. El mundo era tan reciente, que muchas cosas carecían de nombre, y para mencionarlas había que señalarlas con el dedo. Los niños de la aldea jugaban con insectos luminosos que guardaban en frascos, creyendo que eran fragmentos de estrellas caídas. Las mujeres tejían hamacas que parecían telarañas gigantes, mientras los hombres intentaban descifrar los sueños que el viento traía desde la ciénaga. Así transcurrían los días en aquel lugar olvidado por el tiempo, donde la magia y la realidad se confundían en cada esquina.",
+      "tipoTexto": "Narrativo",
+      "subtipo": "Realismo mágico",
+      "nivelLectura": "medio",
+      "palabrasClave": [
+        "Macondo",
+        "coronel Aureliano",
+        "realismo mágico",
+        "fundación",
+        "literatura latinoamericana"
+      ],
+      "fechaCreacion": "2023-11-15T00:00:00Z",
+      "vinculaciones": {
+        "afirmaciones": ["afir-001", "afir-002", "afir-003"],
+        "competencias": ["comp-001", "comp-002", "comp-003"],
+        "taxonomiaBloom": ["bloom-001", "bloom-002", "bloom-005"]
+      },
+      "contadorPalabras": 156,
+      "dificultadLexica": "media",
+      "estado": "publicado",
+      "imagen": null
+    },
+    {
+      "id": "t002",
+      "fuente": "Artículo científico adaptado - Revista Nature (2023). Incluye glosario integrado",
+      "contenido": "La fotosíntesis artificial ha alcanzado un hito sin precedentes al convertir dióxido de carbono (CO2) en metanol con un 85% de eficiencia, utilizando catalizadores de cobalto (sustancias que aceleran reacciones químicas sin consumirse). Este avance, desarrollado por el Instituto Max Planck, podría reducir hasta un 20% las emisiones globales de gases de efecto invernadero para 2040 si se implementa a escala industrial. Sin embargo, los desafíos técnicos persisten: la escalabilidad (capacidad para mantener rendimiento en plantas industriales) requiere superar limitaciones actuales donde los costos triplican los métodos convencionales. Además, la eficiencia energética en condiciones reales no supera el 12%, según datos publicados en Science Advances. Los investigadores destacan que esta tecnología complementaría -no reemplazaría- otras soluciones climáticas, necesitando aún 5-8 años de desarrollo para ser comercialmente viable.",
+      "tipoTexto": "Expositivo",
+      "subtipo": "Científico con notas técnicas",
+      "nivelLectura": "alto",
+      "palabrasClave": [
+        "fotosíntesis artificial",
+        "energía renovable",
+        "cambio climático",
+        "catalizadores",
+        "CO2",
+        "escalabilidad"
+      ],
+      "fechaCreacion": "2023-11-15T00:00:00Z",
+      "vinculaciones": {
+        "afirmaciones": ["afir-001", "afir-002", "afir-003"],
+        "competencias": ["comp-001", "comp-002", "comp-003"],
+        "taxonomiaBloom": ["bloom-001", "bloom-003", "bloom-004"]
+      },
+      "contadorPalabras": 178,
+      "dificultadLexica": "alta",
+      "estado": "publicado",
+      "imagen": null
+    },
+    {
+      "id": "t003",
+      "fuente": "Editorial: 'El impacto de las redes sociales' - Periódico El Tiempo (2023)",
+      "contenido": "Las plataformas digitales han transformado radicalmente la ecología informativa contemporánea. Por un lado, democratizan el acceso al conocimiento (el 72% de los colombianos las usan como principal fuente de noticias según el DANE). Por otro, algoritmos diseñados para maximizar engagement crean cámaras de eco que amplifican sesgos cognitivos. Estudios del MIT demuestran que las falsedades se viralizan 6 veces más rápido que la verdad. Frente a esto, la autorregulación de las empresas ha resultado insuficiente: el reciente caso de 'Noticias Falsas XYZ' mostró cómo contenido verificado como falso alcanzó 2.3 millones de compartidos antes de ser removido. Urge implementar políticas públicas que combatan esta infodemia, combinando alfabetización digital (como el programa del MinTIC 'En TIC Confío') con regulación inteligente que preserve la libertad de expresión mientras protege el debate democrático de la contaminación desinformativa.",
+      "tipoTexto": "Argumentativo",
+      "subtipo": "Editorial con datos",
+      "nivelLectura": "medio-alto",
+      "palabrasClave": [
+        "redes sociales",
+        "desinformación",
+        "pensamiento crítico",
+        "medios digitales",
+        "alfabetización digital"
+      ],
+      "fechaCreacion": "2023-11-15T00:00:00Z",
+      "vinculaciones": {
+        "afirmaciones": ["afir-002", "afir-003"],
+        "competencias": ["comp-002", "comp-003"],
+        "taxonomiaBloom": ["bloom-004", "bloom-005"]
+      },
+      "contadorPalabras": 192,
+      "dificultadLexica": "media-alta",
+      "estado": "publicado",
+      "imagen": null
+    },
+    {
+      "id": "t004",
+      "fuente": "Infografía: 'Migración en América Latina 2023' - Proyecciones ACNUR",
+      "contenido": "Visualización de datos que integra: 1) Gráfico de barras con cifras estimadas (junio 2023 ±5% margen de error): Venezuela: 7.13 millones de migrantes (48.2% en Colombia, 21.7% Perú, 14.3% Chile); Honduras: 1.52 millones; Haití: 1.34 millones. 2) Mapa temático con rutas migratorias principales (espesor de flechas proporcional a flujos). 3) Diagrama circular: distribución por género (52.1% hombres, 47.9% mujeres) y edad (23% menores de 18 años). Nota metodológica: Proyecciones basadas en muestreo en 12 puntos fronterizos estratégicos, con verificación cruzada de datos gubernamentales. Margen de error variable según país (3-7%).",
+      "tipoTexto": "Discontinuo",
+      "subtipo": "Infografía estadística",
+      "nivelLectura": "básico-medio",
+      "palabrasClave": [
+        "migración",
+        "ACNUR",
+        "datos demográficos",
+        "América Latina",
+        "visualización"
+      ],
+      "fechaCreacion": "2023-11-15T00:00:00Z",
+      "vinculaciones": {
+        "afirmaciones": ["afir-001", "afir-002"],
+        "competencias": ["comp-001", "comp-002"],
+        "taxonomiaBloom": ["bloom-001", "bloom-002"]
+      },
+      "contadorPalabras": 143,
+      "dificultadLexica": "media",
+      "estado": "publicado",
+      "imagen": {
+        "url": "https://storage.example.com/icfes/graficos/migracion2023.png",
+        "alt": "Infografía compuesta con gráfico de barras, mapa de rutas y diagrama circular sobre migración",
+        "ancho": 1200,
+        "alto": 900,
+        "formato": "png",
+        "tamanoKB": 320,
+        "requiereImagen": true
+      }
+    },
+    {
+      "id": "t005",
+      "fuente": "Leyenda Yukpa extendida - Tradición oral (Versión pedagógica validada por el ICANH)",
+      "contenido": "En las tierras altas de la Sierra de Perijá, los ancianos Yukpa narran cómo el colibrí, ave sagrada llamada 'Se'iku', obtuvo el fuego para la humanidad. Hace generaciones, cuando los humanos tiritaban de frío en la oscuridad, Se'iku emprendió un viaje al volcán donde los espíritus guardaban el fuego original. Tras sortear tempestades y engañar a los guardianes con su vuelo zigzagueante, tomó una brasa en su diminuto pico. El viaje de regreso quemó su garganta (por eso los colibríes hacen sonido 'se-se') y tiñó su plumaje de rojo carmesí. Al llegar, entregó el fuego a los chamanes, enseñándoles a conservarlo en piedras volcánicas. Esta leyenda explica tres elementos culturales Yukpa: 1) La prohibición de cazar colibríes, 2) El ritual del fuego nuevo en los solsticios, y 3) La creencia de que estas aves llevan mensajes entre los mundos.",
+      "tipoTexto": "Narrativo",
+      "subtipo": "Leyenda étnica",
+      "nivelLectura": "básico",
+      "palabrasClave": [
+        "leyenda",
+        "Yukpa",
+        "tradición oral",
+        "Sierra de Perijá",
+        "cosmovisión indígena"
+      ],
+      "fechaCreacion": "2023-11-15T00:00:00Z",
+      "vinculaciones": {
+        "afirmaciones": ["afir-001", "afir-002"],
+        "competencias": ["comp-001", "comp-002"],
+        "taxonomiaBloom": ["bloom-001", "bloom-002"]
+      },
+      "contadorPalabras": 187,
+      "dificultadLexica": "media-baja",
+      "estado": "publicado",
+      "imagen": {
+        "url": "https://storage.example.com/icfes/ilustraciones/colibri-yukpa.jpg",
+        "alt": "Ilustración estilo códice de un colibrí llevando fuego según la leyenda Yukpa",
+        "ancho": 800,
+        "alto": 600,
+        "formato": "jpg",
+        "tamanoKB": 210,
+        "requiereImagen": false
+      }
+    },
+    {
+      "id": "t006",
+      "fuente": "Manual técnico: 'Seguridad en redes sociales' - MinTIC Colombia (Versión 3.2, 2023)",
+      "contenido": "Protocolo completo para usuarios: 1) VERIFICACIÓN: Contrastar información con al menos dos fuentes oficiales (ej: sitios .gov.co o medios verificados). 2) PRIVACIDAD: Configurar 'Solo yo' para datos sensibles (ubicación en tiempo real, fotos de documentos como cédula o pasaporte). 3) REPORTE: Usar herramientas de plataformas (ej: botón 'Reportar contenido' en Facebook/Meta). 4) PROTECCIÓN: Nunca compartir claves, números financieros (tarjetas de crédito 16 dígitos) o información médica. 5) GESTIÓN DE TIEMPO: Usar funciones como 'Bienestar Digital' (Android) o 'Tiempo de Uso' (iOS). 6) CONEXIONES: Revisar cada 3 meses listas de amigos/aplicaciones con acceso. Advertencia legal: La Ley 1581 de 2012 protege datos personales en Colombia. Ejemplo de riesgo: Compartir selfies con cédula visible ha facilitado suplantaciones según informe de la Policía Nacional (2022).",
+      "tipoTexto": "Instructivo",
+      "subtipo": "Manual de seguridad",
+      "nivelLectura": "básico",
+      "palabrasClave": [
+        "redes sociales",
+        "seguridad digital",
+        "protección de datos",
+        "ley 1581",
+        "MinTIC"
+      ],
+      "fechaCreacion": "2023-11-15T00:00:00Z",
+      "vinculaciones": {
+        "afirmaciones": ["afir-001"],
+        "competencias": ["comp-001"],
+        "taxonomiaBloom": ["bloom-001"]
+      },
+      "contadorPalabras": 198,
+      "dificultadLexica": "media",
+      "estado": "publicado",
+      "imagen": null
+    }
+  ]
+}
