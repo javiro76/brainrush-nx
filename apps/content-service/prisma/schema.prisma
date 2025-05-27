@@ -1,6 +1,3 @@
-// This is your Prisma schema file for the content-service
-// Learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider      = "prisma-client-js"
   output        = "../../../node_modules/.prisma/content-client"
@@ -12,110 +9,89 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Áreas del examen ICFES
 model Area {
-  id          String @id
-  nombre      String
-  descripcion String
-
-  // Relaciones
-  competencias Competencia[]
+  id           String        @id
+  nombre       String
+  descripcion  String
   afirmaciones Afirmacion[]
+  competencias Competencia[]
   preguntas    Pregunta[]
 }
 
-// Competencias por área de conocimiento
 model Competencia {
-  id          String @id
-  areaId      String
-  nombre      String
-  descripcion String
-
-  // Relaciones
-  area         Area         @relation(fields: [areaId], references: [id])
+  id           String       @id
+  areaId       String
+  nombre       String
+  descripcion  String
   afirmaciones Afirmacion[]
+  area         Area         @relation(fields: [areaId], references: [id])
 }
 
-// Afirmaciones relacionadas a competencias
 model Afirmacion {
-  id            String @id
+  id            String      @id
   areaId        String
   numero        Int
   descripcion   String
   tipo          String
   competenciaId String
-
-  // Relaciones
-  area        Area        @relation(fields: [areaId], references: [id])
-  competencia Competencia @relation(fields: [competenciaId], references: [id])
-  preguntas   Pregunta[]
+  area          Area        @relation(fields: [areaId], references: [id])
+  competencia   Competencia @relation(fields: [competenciaId], references: [id])
+  preguntas     Pregunta[]
 }
 
-// Tipos de textos
 model TipoTexto {
   id          String @id
   nombre      String
   descripcion String
 }
 
-// Niveles de complejidad de las preguntas
 model NivelComplejidad {
   id          String @id
   nombre      String
   descripcion String
 }
 
-// Niveles de inglés
 model NivelIngles {
   id          String @id
   nombre      String
   descripcion String
 }
 
-// Taxonomía de Bloom para clasificar preguntas
 model TaxonomiaBloom {
-  id          String @id
+  id          String                @id
   nombre      String
   descripcion String
-
-  // Relación muchos a muchos con Texto
-  textos TextoTaxonomiaBloom[]
+  textos      TextoTaxonomiaBloom[]
 }
 
-// Modelo para textos utilizados en las preguntas
 model Texto {
-  id               String    @id
+  id               String                @id
   fuente           String?
   contenido        String
   tipoTexto        String?
   subtipo          String?
   nivelLectura     String?
   palabrasClave    String[]
-  fechaCreacion    DateTime? @default(now())
+  fechaCreacion    DateTime?             @default(now())
   contadorPalabras Int?
   dificultadLexica String?
-  estado           String?   @default("borrador")
+  estado           String?               @default("borrador")
   imagen           String?
-
-  // Relaciones
-  preguntas      Pregunta[]
-  taxonomiaBloom TextoTaxonomiaBloom[]
+  preguntas        Pregunta[]
+  taxonomiaBloom   TextoTaxonomiaBloom[]
 }
 
-// Tabla pivot para relación muchos a muchos entre Texto y TaxonomiaBloom
 model TextoTaxonomiaBloom {
   textoId          String
   taxonomiaBloomId String
-
-  texto          Texto          @relation(fields: [textoId], references: [id])
-  taxonomiaBloom TaxonomiaBloom @relation(fields: [taxonomiaBloomId], references: [id])
+  taxonomiaBloom   TaxonomiaBloom @relation(fields: [taxonomiaBloomId], references: [id])
+  texto            Texto          @relation(fields: [textoId], references: [id])
 
   @@id([textoId, taxonomiaBloomId])
 }
 
-// Modelo para preguntas del examen
 model Pregunta {
-  id             String    @id
+  id             String      @id
   areaId         String
   textoId        String?
   complejidad    String
@@ -124,25 +100,20 @@ model Pregunta {
   afirmacionId   String?
   habilidadId    String?
   taxonomiaBloom String?
-  fechaCreacion  DateTime? @default(now())
-  activo         Boolean   @default(true)
-
-  // Relaciones
-  area       Area        @relation(fields: [areaId], references: [id])
-  texto      Texto?      @relation(fields: [textoId], references: [id])
-  afirmacion Afirmacion? @relation(fields: [afirmacionId], references: [id])
-  opciones   Opcion[]
+  fechaCreacion  DateTime?   @default(now())
+  activo         Boolean     @default(true)
+  opciones       Opcion[]
+  afirmacion     Afirmacion? @relation(fields: [afirmacionId], references: [id])
+  area           Area        @relation(fields: [areaId], references: [id])
+  texto          Texto?      @relation(fields: [textoId], references: [id])
 }
 
-// Modelo para opciones de respuesta
 model Opcion {
-  id                String  @id @default(uuid())
+  id                String   @id @default(uuid())
   preguntaId        String
   textoOpcion       String
-  esCorrecta        Boolean @default(false)
+  esCorrecta        Boolean  @default(false)
   retroalimentacion String?
   orden             Int?
-
-  // Relaciones
-  pregunta Pregunta @relation(fields: [preguntaId], references: [id])
+  pregunta          Pregunta @relation(fields: [preguntaId], references: [id])
 }
