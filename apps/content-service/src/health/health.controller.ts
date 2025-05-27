@@ -1,21 +1,21 @@
-import { Controller, Get, Logger } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { HealthCheck, HealthCheckService, HealthIndicatorResult, MemoryHealthIndicator } from '@nestjs/terminus';
+import { LoggerService } from '@brainrush-nx/shared';
 import { PrismaService } from '../prisma';
 
 @Controller('health')
 export class HealthController {
-  private readonly logger = new Logger('HealthController');
-
   constructor(
     private health: HealthCheckService,
     private memory: MemoryHealthIndicator,
     private prisma: PrismaService,
+    private readonly logger: LoggerService,
   ) { }
 
   @Get()
   @HealthCheck()
   async check() {
-    this.logger.log('Checking content-service health status');
+    this.logger.log('HealthController', 'Checking content-service health status');
 
     return this.health.check([
       // Verificar memoria
@@ -39,7 +39,7 @@ export class HealthController {
         },
       };
     } catch (error) {
-      this.logger.error(`Database health check failed: ${error.message}`);
+      this.logger.error('HealthController', `Database health check failed: ${error.message}`);
       return {
         database: {
           status: 'down',

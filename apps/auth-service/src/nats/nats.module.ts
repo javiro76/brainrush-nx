@@ -12,7 +12,7 @@ import { NATS_SERVICE } from './nats.constants';
         name: NATS_SERVICE,
         transport: Transport.NATS,
         options: {
-          servers: envs.natsUrl ? [envs.natsUrl] : envs.natsServers,
+          servers: envs.natsServers,
         },
       },
     ]),

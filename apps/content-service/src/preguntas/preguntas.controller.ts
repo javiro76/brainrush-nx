@@ -1,14 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Logger, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery } from '@nestjs/swagger';
+import { LoggerService } from '@brainrush-nx/shared';
 import { PreguntasService } from './preguntas.service';
 import { CreatePreguntaDto, UpdatePreguntaDto } from './dto';
 
 @ApiTags('preguntas')
 @Controller('preguntas')
 export class PreguntasController {
-    private readonly logger = new Logger('PreguntasController');
-
-    constructor(private readonly preguntasService: PreguntasService) { }
+    constructor(
+        private readonly preguntasService: PreguntasService,
+        private readonly logger: LoggerService
+    ) { }
     @Post()
     @ApiOperation({ summary: 'Crear nueva pregunta' })
     @ApiResponse({
@@ -20,7 +22,7 @@ export class PreguntasController {
         description: 'Datos de entrada inválidos'
     })
     create(@Body() createPreguntaDto: CreatePreguntaDto) {
-        this.logger.log(`Creando nueva pregunta para el área: ${createPreguntaDto.areaId}`);
+        this.logger.log('PreguntasController', `Creando nueva pregunta para el área: ${createPreguntaDto.areaId}`);
         return this.preguntasService.create(createPreguntaDto);
     } @Get()
     @ApiOperation({ summary: 'Obtener listado de preguntas' })
@@ -32,13 +34,13 @@ export class PreguntasController {
     })
     findAll(@Query('textoId') textoId?: string, @Query('areaId') areaId?: string) {
         if (textoId) {
-            this.logger.log(`Obteniendo preguntas para el texto con ID: ${textoId}`);
+            this.logger.log('PreguntasController', `Obteniendo preguntas para el texto con ID: ${textoId}`);
         }
         if (areaId) {
-            this.logger.log(`Obteniendo preguntas para el área con ID: ${areaId}`);
+            this.logger.log('PreguntasController', `Obteniendo preguntas para el área con ID: ${areaId}`);
         }
         if (!textoId && !areaId) {
-            this.logger.log('Obteniendo todas las preguntas');
+            this.logger.log('PreguntasController', 'Obteniendo todas las preguntas');
         }
 
         return this.preguntasService.findAll(textoId, areaId);
@@ -55,7 +57,7 @@ export class PreguntasController {
         description: 'Pregunta no encontrada'
     })
     findOne(@Param('id') id: string) {
-        this.logger.log(`Buscando pregunta con ID: ${id}`);
+        this.logger.log('PreguntasController', `Buscando pregunta con ID: ${id}`);
         return this.preguntasService.findOne(id);
     }
 
@@ -75,7 +77,7 @@ export class PreguntasController {
         description: 'Pregunta no encontrada'
     })
     update(@Param('id') id: string, @Body() updatePreguntaDto: UpdatePreguntaDto) {
-        this.logger.log(`Actualizando pregunta con ID: ${id}`);
+        this.logger.log('PreguntasController', `Actualizando pregunta con ID: ${id}`);
         return this.preguntasService.update(id, updatePreguntaDto);
     }
 
@@ -91,7 +93,7 @@ export class PreguntasController {
         description: 'Pregunta no encontrada'
     })
     remove(@Param('id') id: string) {
-        this.logger.log(`Eliminando pregunta con ID: ${id}`);
+        this.logger.log('PreguntasController', `Eliminando pregunta con ID: ${id}`);
         return this.preguntasService.remove(id);
     }
 }

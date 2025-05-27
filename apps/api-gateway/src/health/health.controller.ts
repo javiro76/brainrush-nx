@@ -1,6 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import { HealthCheck, HealthCheckService, HttpHealthIndicator, MemoryHealthIndicator, DiskHealthIndicator } from '@nestjs/terminus';
-import { LoggerService } from '../common/logger.service';
+import { LoggerService } from '@brainrush-nx/shared';
 import { envs } from '../config';
 import * as os from 'os'; // Importamos el módulo os de Node.js
 
@@ -35,7 +35,7 @@ export class HealthController {
 
   // Health check específico para el servicio de autenticación
   private checkAuthService() {
-    const authServiceUrl = `http://${envs.authServiceHost}:${envs.authServicePort}/health`;
+    const authServiceUrl = `http://${envs.AUTH_SERVICE_HOST}:${envs.AUTH_SERVICE_PORT}/health`;
     this.logger.log('HealthController', `Checking auth service health at ${authServiceUrl}`);
 
     return this.http.pingCheck('auth_service', authServiceUrl);

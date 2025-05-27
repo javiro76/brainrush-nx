@@ -1,15 +1,15 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma';
 import { CreateTextoDto, UpdateTextoDto } from './dto';
 import { NatsService } from '../nats/nats.service';
+import { LoggerService } from '@brainrush-nx/shared';
 
 @Injectable()
 export class TextosService {
-  private readonly logger = new Logger('TextosService');
-
   constructor(
     private readonly prisma: PrismaService,
     private readonly natsService: NatsService,
+    private readonly logger: LoggerService,
   ) { }
 
   async create(createTextoDto: CreateTextoDto) {
@@ -45,7 +45,7 @@ export class TextosService {
         return nuevoTexto;
       });
 
-      this.logger.log(`Texto creado con ID: ${texto.id}`);
+      this.logger.log('TextosService', `Texto creado con ID: ${texto.id}`);
 
       // Emitir evento de creación
       this.natsService.emitContentCreated({
@@ -56,7 +56,7 @@ export class TextosService {
 
       return texto;
     } catch (error) {
-      this.logger.error(`Error al crear texto: ${error.message}`);
+      this.logger.error('TextosService', `Error al crear texto: ${error.message}`);
       throw error;
     }
   }
@@ -73,7 +73,7 @@ export class TextosService {
         },
       });
     } catch (error) {
-      this.logger.error(`Error al buscar textos: ${error.message}`);
+      this.logger.error('TextosService', `Error al buscar textos: ${error.message}`);
       throw error;
     }
   }
@@ -98,7 +98,7 @@ export class TextosService {
 
       return texto;
     } catch (error) {
-      this.logger.error(`Error al buscar texto con ID ${id}: ${error.message}`);
+      this.logger.error('TextosService', `Error al buscar texto con ID ${id}: ${error.message}`);
       throw error;
     }
   }
@@ -148,7 +148,7 @@ export class TextosService {
       // Obtener el texto actualizado
       const updatedTexto = await this.findOne(id);
 
-      this.logger.log(`Texto con ID ${id} actualizado`);
+      this.logger.log('TextosService', `Texto con ID ${id} actualizado`);
 
       // Emitir evento de actualización
       this.natsService.emitContentUpdated({
@@ -159,7 +159,7 @@ export class TextosService {
 
       return updatedTexto;
     } catch (error) {
-      this.logger.error(`Error al actualizar texto con ID ${id}: ${error.message}`);
+      this.logger.error('TextosService', `Error al actualizar texto con ID ${id}: ${error.message}`);
       throw error;
     }
   }
@@ -182,10 +182,10 @@ export class TextosService {
         });
       });
 
-      this.logger.log(`Texto con ID ${id} eliminado`);
+      this.logger.log('TextosService', `Texto con ID ${id} eliminado`);
       return { id, message: `Texto con ID ${id} eliminado correctamente` };
     } catch (error) {
-      this.logger.error(`Error al eliminar texto con ID ${id}: ${error.message}`);
+      this.logger.error('TextosService', `Error al eliminar texto con ID ${id}: ${error.message}`);
       throw error;
     }
   }

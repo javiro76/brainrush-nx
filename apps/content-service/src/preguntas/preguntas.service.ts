@@ -1,15 +1,15 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma';
 import { CreatePreguntaDto, UpdatePreguntaDto } from './dto';
 import { NatsService } from '../nats/nats.service';
+import { LoggerService } from '@brainrush-nx/shared';
 
 @Injectable()
 export class PreguntasService {
-  private readonly logger = new Logger('PreguntasService');
-
   constructor(
     private readonly prisma: PrismaService,
     private readonly natsService: NatsService,
+    private readonly logger: LoggerService,
   ) { }
 
   async create(createPreguntaDto: CreatePreguntaDto) {
@@ -47,7 +47,7 @@ export class PreguntasService {
         return nuevaPregunta;
       });
 
-      this.logger.log(`Pregunta creada con ID: ${pregunta.id}`);
+      this.logger.log('PreguntasService', `Pregunta creada con ID: ${pregunta.id}`);
 
       // Registrar evento
       this.natsService.emitContentCreated({
@@ -58,7 +58,7 @@ export class PreguntasService {
 
       return pregunta;
     } catch (error) {
-      this.logger.error(`Error al crear pregunta: ${error.message}`);
+      this.logger.error('PreguntasService', `Error al crear pregunta: ${error.message}`);
       throw error;
     }
   } async findAll(textoId?: string, areaId?: string) {
@@ -80,7 +80,7 @@ export class PreguntasService {
         },
       });
     } catch (error) {
-      this.logger.error(`Error al buscar preguntas: ${error.message}`);
+      this.logger.error('PreguntasService', `Error al buscar preguntas: ${error.message}`);
       throw error;
     }
   }
@@ -103,7 +103,7 @@ export class PreguntasService {
 
       return pregunta;
     } catch (error) {
-      this.logger.error(`Error al buscar pregunta con ID ${id}: ${error.message}`);
+      this.logger.error('PreguntasService', `Error al buscar pregunta con ID ${id}: ${error.message}`);
       throw error;
     }
   }
@@ -156,7 +156,7 @@ export class PreguntasService {
       // Obtener la pregunta actualizada
       const updatedPregunta = await this.findOne(id);
 
-      this.logger.log(`Pregunta con ID ${id} actualizada`);
+      this.logger.log('PreguntasService', `Pregunta con ID ${id} actualizada`);
 
       // Registrar evento
       this.natsService.emitContentUpdated({
@@ -167,7 +167,7 @@ export class PreguntasService {
 
       return updatedPregunta;
     } catch (error) {
-      this.logger.error(`Error al actualizar pregunta con ID ${id}: ${error.message}`);
+      this.logger.error('PreguntasService', `Error al actualizar pregunta con ID ${id}: ${error.message}`);
       throw error;
     }
   }
@@ -190,10 +190,10 @@ export class PreguntasService {
         });
       });
 
-      this.logger.log(`Pregunta con ID ${id} eliminada`);
+      this.logger.log('PreguntasService', `Pregunta con ID ${id} eliminada`);
       return { id, message: `Pregunta con ID ${id} eliminada correctamente` };
     } catch (error) {
-      this.logger.error(`Error al eliminar pregunta con ID ${id}: ${error.message}`);
+      this.logger.error('PreguntasService', `Error al eliminar pregunta con ID ${id}: ${error.message}`);
       throw error;
     }
   }

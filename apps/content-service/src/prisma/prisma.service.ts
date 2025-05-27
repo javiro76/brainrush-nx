@@ -1,12 +1,11 @@
-import { Injectable, OnModuleInit, OnModuleDestroy, Logger } from '@nestjs/common';
+import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
 // Importamos desde el alias configurado en tsconfig.base.json
 import { PrismaClient } from '@prisma/content-client';
+import { LoggerService } from '@brainrush-nx/shared';
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
-  private readonly logger = new Logger(PrismaService.name);
-
-  constructor() {
+  constructor(private readonly logger: LoggerService) {
     super({
       log: [
         { emit: 'event', level: 'query' },
@@ -16,11 +15,10 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
       ],
     });
   }
-
   async onModuleInit() {
-    this.logger.log('Connecting to database...');
+    this.logger.log('PrismaService', 'Connecting to database...');
     await this.$connect();
-    this.logger.log('Database connection established');
+    this.logger.log('PrismaService', 'Database connection established');
 
     // Opcional: Logging para queries (útil en desarrollo)
     // Eliminar el logging de queries temporalmente para evitar errores de compilación
@@ -29,10 +27,9 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
     //   this.logger.debug(`Duration: ${e.duration}ms`);
     // });
   }
-
   async onModuleDestroy() {
-    this.logger.log('Disconnecting from database...');
+    this.logger.log('PrismaService', 'Disconnecting from database...');
     await this.$disconnect();
-    this.logger.log('Database connection closed');
+    this.logger.log('PrismaService', 'Database connection closed');
   }
 }

@@ -1,7 +1,7 @@
-import { BadRequestException, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../prisma';
-import { JwtPayload, UserRole } from '@brainrush-nx/shared';
+import { JwtPayload, UserRole, LoggerService } from '@brainrush-nx/shared';
 import * as bcrypt from 'bcrypt';
 import { LoginUserDto, RefreshTokenDto, RegisterUserDto } from './dto';
 import { AuthResponse } from './interfaces/auth-response.interface';
@@ -11,13 +11,12 @@ import { randomUUID } from 'crypto';
 
 @Injectable()
 export class AuthService {
-  private readonly logger = new Logger('AuthService');
-
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
     private readonly natsService: NatsService,
     private readonly configService: ConfigService,
+    private readonly logger: LoggerService,
   ) { }
 
   /**
@@ -70,9 +69,8 @@ export class AuthService {
           name: newUser.name,
           role: newUser.role as UserRole,
         },
-      };
-    } catch (error) {
-      this.logger.error(`Error al registrar usuario: ${error.message}`, error.stack);
+      };    } catch (error) {
+      this.logger.error('AuthService', `Error al registrar usuario: ${error.message}`, error.stack);
       throw error;
     }
   }
@@ -121,9 +119,8 @@ export class AuthService {
           name: user.name,
           role: user.role as UserRole,
         },
-      };
-    } catch (error) {
-      this.logger.error(`Error al iniciar sesión: ${error.message}`, error.stack);
+      };    } catch (error) {
+      this.logger.error('AuthService', `Error al iniciar sesión: ${error.message}`, error.stack);
       throw error;
     }
   }
@@ -248,7 +245,7 @@ export class AuthService {
         data: { revoked: true },
       });
 
-      this.logger.log(`Refresh token revocado para el usuario: ${storedToken.userId}`);
+      this.logger.log('AuthService', `Refresh token revocado para el usuario: ${storedToken.userId}`);
     } catch (error) {
       this.logger.error(`Error al cerrar sesión: ${error.message}`, error.stack);
       throw error;
@@ -266,17 +263,16 @@ export class AuthService {
         data: { revoked: true },
       });
 
-      this.logger.log(`Todos los refresh tokens revocados para el usuario: ${userId}`);
+      this.logger.log('AuthService', `Todos los refresh tokens revocados para el usuario: ${userId}`);
     } catch (error) {
       this.logger.error(`Error al revocar todos los tokens: ${error.message}`, error.stack);
       throw error;
     }
   }
-
   /**
    * Emite evento cuando un usuario se registra
    */
-  private emitUserRegistered(user: any) {
+  private emitUserRegistered(user: { id: string; email: string; name: string; role: string }) {
     try {
       this.natsService.emitUserRegistered({
         id: user.id,
@@ -284,24 +280,24 @@ export class AuthService {
         name: user.name,
         role: user.role
       });
-      this.logger.log(`Evento user.registered emitido para ${user.email}`);
+      this.logger.log('AuthService', `Evento user.registered emitido para ${user.email}`);
     } catch (error) {
-      this.logger.error(`Error al emitir evento user.registered: ${error.message}`);
+      this.logger.error('AuthService', `Error al emitir evento user.registered: ${error.message}`);
     }
   }
 
   /**
    * Emite evento cuando un usuario inicia sesión
    */
-  private emitUserLoggedIn(user: any) {
+  private emitUserLoggedIn(user: { id: string; email: string }) {
     try {
       this.natsService.emitUserLoggedIn({
         id: user.id,
         email: user.email
       });
-      this.logger.log(`Evento user.logged_in emitido para ${user.email}`);
+      this.logger.log('AuthService', `Evento user.logged_in emitido para ${user.email}`);
     } catch (error) {
-      this.logger.error(`Error al emitir evento user.logged_in: ${error.message}`);
+      this.logger.error('AuthService', `Error al emitir evento user.logged_in: ${error.message}`);
     }
   }
 }

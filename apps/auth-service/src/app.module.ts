@@ -5,10 +5,15 @@ import { AuthModule } from './auth/auth.module';
 import { NatsModule } from './nats/nats.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { HealthModule } from './health/health.module';
+import { LoggingModule } from '@brainrush-nx/shared';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+
+    // Sistema de logging centralizado
+    LoggingModule.forRoot({ serviceName: 'Auth-Service' }),
+
     PrismaModule,
     NatsModule,
     AuthModule,

@@ -1,14 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Logger } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery } from '@nestjs/swagger';
+import { LoggerService } from '@brainrush-nx/shared';
 import { OpcionesService } from './opciones.service';
 import { CreateOpcionDto, UpdateOpcionDto } from './dto';
 
 @ApiTags('opciones')
 @Controller('opciones')
 export class OpcionesController {
-    private readonly logger = new Logger('OpcionesController');
-
-    constructor(private readonly opcionesService: OpcionesService) { }
+    constructor(
+        private readonly opcionesService: OpcionesService,
+        private readonly logger: LoggerService
+    ) { }
     @Post()
     @ApiOperation({ summary: 'Crear nueva opción' })
     @ApiResponse({
@@ -20,7 +22,7 @@ export class OpcionesController {
         description: 'Datos de entrada inválidos'
     })
     create(@Body() createOpcionDto: CreateOpcionDto) {
-        this.logger.log(`Creando nueva opción para la pregunta: ${createOpcionDto.preguntaId}`);
+        this.logger.log('OpcionesController', `Creando nueva opción para la pregunta: ${createOpcionDto.preguntaId}`);
         return this.opcionesService.create(createOpcionDto);
     }
     @Get()
@@ -36,11 +38,11 @@ export class OpcionesController {
     })
     findAll(@Query('preguntaId') preguntaId?: string) {
         if (preguntaId) {
-            this.logger.log(`Obteniendo opciones para la pregunta con ID: ${preguntaId}`);
+            this.logger.log('OpcionesController', `Obteniendo opciones para la pregunta con ID: ${preguntaId}`);
             return this.opcionesService.findAll(preguntaId);
         }
 
-        this.logger.log('Obteniendo todas las opciones');
+        this.logger.log('OpcionesController', 'Obteniendo todas las opciones');
         return this.opcionesService.findAll();
     }
     @Get(':id')
@@ -55,7 +57,7 @@ export class OpcionesController {
         description: 'Opción no encontrada'
     })
     findOne(@Param('id') id: string) {
-        this.logger.log(`Buscando opción con ID: ${id}`);
+        this.logger.log('OpcionesController', `Buscando opción con ID: ${id}`);
         return this.opcionesService.findOne(id);
     }
 
@@ -75,7 +77,7 @@ export class OpcionesController {
         description: 'Opción no encontrada'
     })
     update(@Param('id') id: string, @Body() updateOpcionDto: UpdateOpcionDto) {
-        this.logger.log(`Actualizando opción con ID: ${id}`);
+        this.logger.log('OpcionesController', `Actualizando opción con ID: ${id}`);
         return this.opcionesService.update(id, updateOpcionDto);
     }
 
@@ -91,7 +93,7 @@ export class OpcionesController {
         description: 'Opción no encontrada'
     })
     remove(@Param('id') id: string) {
-        this.logger.log(`Eliminando opción con ID: ${id}`);
+        this.logger.log('OpcionesController', `Eliminando opción con ID: ${id}`);
         return this.opcionesService.remove(id);
     }
 }

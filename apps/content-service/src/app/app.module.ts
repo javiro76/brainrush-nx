@@ -9,10 +9,15 @@ import { AreasModule } from '../areas/areas.module';
 import { TextosModule } from '../textos/textos.module';
 import { PreguntasModule } from '../preguntas/preguntas.module';
 import { OpcionesModule } from '../opciones/opciones.module';
+import { LoggingModule } from '@brainrush-nx/shared';
 
 @Module({
   imports: [
     AppConfigModule,
+
+    // Sistema de logging centralizado
+    LoggingModule.forRoot({ serviceName: 'Content-Service' }),
+
     PrismaModule,
     HealthModule,
     NatsModule,

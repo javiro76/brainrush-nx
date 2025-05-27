@@ -1,7 +1,7 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable, Logger, UnauthorizedException, HttpException, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, HttpException, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { JwtPayload } from '@brainrush-nx/shared';
+import { JwtPayload, LoggerService } from '@brainrush-nx/shared';
 import { firstValueFrom } from 'rxjs';
 import { envs } from '../config';
 import { NatsService } from '../transports/nats/nats.service';
@@ -10,12 +10,11 @@ import { AxiosError } from 'axios';
 
 @Injectable()
 export class AuthService {
-  private readonly logger = new Logger('AuthGatewayService');
-
   constructor(
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
     private readonly natsService: NatsService, // Inyección del servicio NATS
+    private readonly logger: LoggerService,
   ) { }
 
   /**
@@ -23,12 +22,11 @@ export class AuthService {
    */  async register(registerDto: RegisterUserDto) {
     try {
       const { data } = await firstValueFrom(
-        this.httpService.post(`http://${envs.authServiceHost}:${envs.authServicePort}/auth/register`, registerDto)
+        this.httpService.post(`http://${envs.AUTH_SERVICE_HOST}:${envs.AUTH_SERVICE_PORT}/auth/register`, registerDto)
       );
-      return data;
-    } catch (error: unknown) {
+      return data;    } catch (error: unknown) {
       const axiosError = error as AxiosError;
-      this.logger.error(`Error al registrar usuario: ${axiosError.message}`, axiosError.stack);
+      this.logger.error('AuthGatewayService', `Error al registrar usuario: ${axiosError.message}`, axiosError.stack);
       // Si el error tiene una respuesta HTTP con código de estado
       if (axiosError.response) {
         const statusCode = axiosError.response.status;
@@ -48,12 +46,11 @@ export class AuthService {
    */  async login(loginDto: LoginUserDto) {
     try {
       const { data } = await firstValueFrom(
-        this.httpService.post(`http://${envs.authServiceHost}:${envs.authServicePort}/auth/login`, loginDto)
+        this.httpService.post(`http://${envs.AUTH_SERVICE_HOST}:${envs.AUTH_SERVICE_PORT}/auth/login`, loginDto)
       );
-      return data;
-    } catch (error: unknown) {
+      return data;    } catch (error: unknown) {
       const axiosError = error as AxiosError;
-      this.logger.error(`Error al iniciar sesión: ${axiosError.message}`, axiosError.stack);
+      this.logger.error('AuthGatewayService', `Error al iniciar sesión: ${axiosError.message}`, axiosError.stack);
       // Si el error tiene una respuesta HTTP con código de estado
       if (axiosError.response) {
         const statusCode = axiosError.response.status;
@@ -75,7 +72,7 @@ export class AuthService {
     try {
       const { data } = await firstValueFrom(
         this.httpService.post(
-          `http://${envs.authServiceHost}:${envs.authServicePort}/auth/validate-token`,
+          `http://${envs.AUTH_SERVICE_HOST}:${envs.AUTH_SERVICE_PORT}/auth/validate-token`,
           { token }
         )
       );
@@ -93,7 +90,7 @@ export class AuthService {
     try {
       const { data } = await firstValueFrom(
         this.httpService.post(
-          `http://${envs.authServiceHost}:${envs.authServicePort}/auth/refresh-token`,
+          `http://${envs.AUTH_SERVICE_HOST}:${envs.AUTH_SERVICE_PORT}/auth/refresh-token`,
           refreshTokenDto
         )
       );
@@ -122,7 +119,7 @@ export class AuthService {
     try {
       await firstValueFrom(
         this.httpService.post(
-          `http://${envs.authServiceHost}:${envs.authServicePort}/auth/logout`,
+          `http://${envs.AUTH_SERVICE_HOST}:${envs.AUTH_SERVICE_PORT}/auth/logout`,
           { refreshToken }
         )
       );

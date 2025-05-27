@@ -1,13 +1,13 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma';
 import { CreateOpcionDto, UpdateOpcionDto } from './dto';
+import { LoggerService } from '@brainrush-nx/shared';
 
 @Injectable()
 export class OpcionesService {
-  private readonly logger = new Logger('OpcionesService');
-
   constructor(
     private readonly prisma: PrismaService,
+    private readonly logger: LoggerService,
   ) { }
 
   async create(createOpcionDto: CreateOpcionDto) {
@@ -22,11 +22,11 @@ export class OpcionesService {
         },
       });
 
-      this.logger.log(`Opción creada con ID: ${opcion.id}`);
+      this.logger.log('OpcionesService', `Opción creada con ID: ${opcion.id}`);
 
       return opcion;
     } catch (error) {
-      this.logger.error(`Error al crear opción: ${error.message}`);
+      this.logger.error('OpcionesService', `Error al crear opción: ${error.message}`);
       throw error;
     }
   }
@@ -42,7 +42,7 @@ export class OpcionesService {
         },
       });
     } catch (error) {
-      this.logger.error(`Error al buscar opciones: ${error.message}`);
+      this.logger.error('OpcionesService', `Error al buscar opciones: ${error.message}`);
       throw error;
     }
   }
@@ -62,7 +62,7 @@ export class OpcionesService {
 
       return opcion;
     } catch (error) {
-      this.logger.error(`Error al buscar opción con ID ${id}: ${error.message}`);
+      this.logger.error('OpcionesService', `Error al buscar opción con ID ${id}: ${error.message}`);
       throw error;
     }
   }
@@ -82,11 +82,11 @@ export class OpcionesService {
         },
       });
 
-      this.logger.log(`Opción con ID ${id} actualizada`);
+      this.logger.log('OpcionesService', `Opción con ID ${id} actualizada`);
 
       return updatedOpcion;
     } catch (error) {
-      this.logger.error(`Error al actualizar opción con ID ${id}: ${error.message}`);
+      this.logger.error('OpcionesService', `Error al actualizar opción con ID ${id}: ${error.message}`);
       throw error;
     }
   }
@@ -100,10 +100,10 @@ export class OpcionesService {
         where: { id },
       });
 
-      this.logger.log(`Opción con ID ${id} eliminada`);
+      this.logger.log('OpcionesService', `Opción con ID ${id} eliminada`);
       return { id, message: `Opción con ID ${id} eliminada correctamente` };
     } catch (error) {
-      this.logger.error(`Error al eliminar opción con ID ${id}: ${error.message}`);
+      this.logger.error('OpcionesService', `Error al eliminar opción con ID ${id}: ${error.message}`);
       throw error;
     }
   }

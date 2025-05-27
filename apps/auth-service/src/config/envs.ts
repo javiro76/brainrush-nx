@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import * as Joi from 'joi';
 
-interface EnvVars {
+interface EnvConfig {
   PORT: number;
   DATABASE_URL: string;
   JWT_SECRET: string;
@@ -31,7 +31,7 @@ if (error) {
   throw new Error(`[Auth-Service Config] Validation error: ${error.message}`);
 }
 
-export const EnvVars = {
+export const envs = {
   port: value.PORT,
   databaseUrl: value.DATABASE_URL,
   jwtSecret: value.JWT_SECRET,

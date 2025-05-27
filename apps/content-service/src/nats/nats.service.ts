@@ -1,7 +1,9 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { LoggerService } from '@brainrush-nx/shared';
 
 @Injectable()
-export class NatsService {  private readonly logger = new Logger('ContentEventService');
+export class NatsService {
+  constructor(private readonly logger: LoggerService) {}
 
   // No constructor needed as it doesn't do anything
   /**
@@ -12,12 +14,11 @@ export class NatsService {  private readonly logger = new Logger('ContentEventSe
     type: 'texto' | 'pregunta' | 'area' | 'competencia';
     title?: string;
   }) {
-    try {
-      // Solo registramos el evento en el log por ahora
-      this.logger.log(`Contenido creado - ${contentData.type} con ID: ${contentData.id}`);
+    try {      // Solo registramos el evento en el log por ahora
+      this.logger.log('ContentEventService', `Contenido creado - ${contentData.type} con ID: ${contentData.id}`);
       // Implementación futura de emisión de eventos
     } catch (error) {
-      this.logger.error(`Error al registrar creación de contenido: ${error.message}`);
+      this.logger.error('ContentEventService', `Error al registrar creación de contenido: ${error.message}`);
     }
   }
   /**
@@ -28,12 +29,11 @@ export class NatsService {  private readonly logger = new Logger('ContentEventSe
     type: 'texto' | 'pregunta' | 'area' | 'competencia';
     title?: string;
   }) {
-    try {
-      // Solo registramos el evento en el log por ahora
-      this.logger.log(`Contenido actualizado - ${contentData.type} con ID: ${contentData.id}`);
+    try {      // Solo registramos el evento en el log por ahora
+      this.logger.log('ContentEventService', `Contenido actualizado - ${contentData.type} con ID: ${contentData.id}`);
       // Implementación futura de emisión de eventos
     } catch (error) {
-      this.logger.error(`Error al registrar actualización de contenido: ${error.message}`);
+      this.logger.error('ContentEventService', `Error al registrar actualización de contenido: ${error.message}`);
     }
   }
 }

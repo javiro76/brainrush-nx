@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { LoggerService } from './common/logger.service';
+import { LoggerService } from '@brainrush-nx/shared';
 
 @Injectable()
 export class AppService {

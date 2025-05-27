@@ -1,8 +1,9 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable, Logger, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { firstValueFrom } from 'rxjs';
 import { AxiosError, AxiosResponse } from 'axios';
+import { LoggerService } from '@brainrush-nx/shared';
 import {
   CreatePreguntaDto, PreguntaDto, UpdatePreguntaDto,
   CreateOpcionDto, OpcionDto, UpdateOpcionDto,
@@ -18,12 +19,12 @@ interface DeleteResponse {
 
 @Injectable()
 export class ContentService {
-  private readonly logger = new Logger('ContentGatewayService');
   private readonly contentServiceUrl: string;
 
   constructor(
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
+    private readonly logger: LoggerService,
   ) {
     // Obtenemos la URL del servicio de contenido desde las variables de entorno
     const host = this.configService.get<string>('CONTENT_SERVICE_HOST', 'localhost');
@@ -55,7 +56,7 @@ export class ContentService {
       return response.data;
     } catch (error) {
       const axiosError = error as AxiosError;
-      this.logger.error(`Error en petición ${method.toUpperCase()} a ${endpoint}: ${axiosError.message}`, axiosError.stack);
+      this.logger.error('ContentGatewayService', `Error en petición ${method.toUpperCase()} a ${endpoint}: ${axiosError.message}`, axiosError.stack);
 
       // Rethrow the actual error response if available
       if (axiosError.response?.data) {

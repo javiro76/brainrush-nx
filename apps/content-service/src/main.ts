@@ -3,15 +3,16 @@
  * Servicio para gestión de contenidos de simulacros ICFES
  */
 
-import { Logger, ValidationPipe } from '@nestjs/common';
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { LoggerService } from '@brainrush-nx/shared';
 import { AppModule } from './app/app.module';
 import { envs } from './config/envs'; // Importamos la nueva configuración
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
-  const logger = new Logger('Content-Service');
   const app = await NestFactory.create(AppModule);
+  const logger = app.get(LoggerService);
 
   // Usamos las variables de envs en lugar de ConfigService
   const globalPrefix = 'api';
@@ -61,11 +62,11 @@ async function bootstrap() {
   await app.listen(port);
 
   // Log mejorado con más información
-  logger.log(`=============================================`);
-  logger.log(`🚀 Content Service is running on port: ${port}`);
-  logger.log(`📚 API Docs: http://localhost:${port}/${globalPrefix}/docs`);
-  logger.log(`🛡️  Environment: ${process.env.NODE_ENV || 'development'}`);
-  logger.log(`=============================================`);
+  logger.log('Content-Service', `=============================================`);
+  logger.log('Content-Service', `🚀 Content Service is running on port: ${port}`);
+  logger.log('Content-Service', `📚 API Docs: http://localhost:${port}/${globalPrefix}/docs`);
+  logger.log('Content-Service', `🛡️  Environment: ${process.env.NODE_ENV || 'development'}`);
+  logger.log('Content-Service', `=============================================`);
 }
 
 bootstrap();
