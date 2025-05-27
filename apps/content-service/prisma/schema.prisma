@@ -1,0 +1,148 @@
+// This is your Prisma schema file for the content-service
+// Learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider      = "prisma-client-js"
+  output        = "../../../node_modules/.prisma/content-client"
+  binaryTargets = ["native"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Áreas del examen ICFES
+model Area {
+  id          String @id
+  nombre      String
+  descripcion String
+
+  // Relaciones
+  competencias Competencia[]
+  afirmaciones Afirmacion[]
+  preguntas    Pregunta[]
+}
+
+// Competencias por área de conocimiento
+model Competencia {
+  id          String @id
+  areaId      String
+  nombre      String
+  descripcion String
+
+  // Relaciones
+  area         Area         @relation(fields: [areaId], references: [id])
+  afirmaciones Afirmacion[]
+}
+
+// Afirmaciones relacionadas a competencias
+model Afirmacion {
+  id            String @id
+  areaId        String
+  numero        Int
+  descripcion   String
+  tipo          String
+  competenciaId String
+
+  // Relaciones
+  area        Area        @relation(fields: [areaId], references: [id])
+  competencia Competencia @relation(fields: [competenciaId], references: [id])
+  preguntas   Pregunta[]
+}
+
+// Tipos de textos
+model TipoTexto {
+  id          String @id
+  nombre      String
+  descripcion String
+}
+
+// Niveles de complejidad de las preguntas
+model NivelComplejidad {
+  id          String @id
+  nombre      String
+  descripcion String
+}
+
+// Niveles de inglés
+model NivelIngles {
+  id          String @id
+  nombre      String
+  descripcion String
+}
+
+// Taxonomía de Bloom para clasificar preguntas
+model TaxonomiaBloom {
+  id          String @id
+  nombre      String
+  descripcion String
+
+  // Relación muchos a muchos con Texto
+  textos TextoTaxonomiaBloom[]
+}
+
+// Modelo para textos utilizados en las preguntas
+model Texto {
+  id               String    @id
+  fuente           String?
+  contenido        String
+  tipoTexto        String?
+  subtipo          String?
+  nivelLectura     String?
+  palabrasClave    String[]
+  fechaCreacion    DateTime? @default(now())
+  contadorPalabras Int?
+  dificultadLexica String?
+  estado           String?   @default("borrador")
+  imagen           String?
+
+  // Relaciones
+  preguntas      Pregunta[]
+  taxonomiaBloom TextoTaxonomiaBloom[]
+}
+
+// Tabla pivot para relación muchos a muchos entre Texto y TaxonomiaBloom
+model TextoTaxonomiaBloom {
+  textoId          String
+  taxonomiaBloomId String
+
+  texto          Texto          @relation(fields: [textoId], references: [id])
+  taxonomiaBloom TaxonomiaBloom @relation(fields: [taxonomiaBloomId], references: [id])
+
+  @@id([textoId, taxonomiaBloomId])
+}
+
+// Modelo para preguntas del examen
+model Pregunta {
+  id             String    @id
+  areaId         String
+  textoId        String?
+  complejidad    String
+  enunciado      String
+  justificacion  String
+  afirmacionId   String?
+  habilidadId    String?
+  taxonomiaBloom String?
+  fechaCreacion  DateTime? @default(now())
+  activo         Boolean   @default(true)
+
+  // Relaciones
+  area       Area        @relation(fields: [areaId], references: [id])
+  texto      Texto?      @relation(fields: [textoId], references: [id])
+  afirmacion Afirmacion? @relation(fields: [afirmacionId], references: [id])
+  opciones   Opcion[]
+}
+
+// Modelo para opciones de respuesta
+model Opcion {
+  id                String  @id @default(uuid())
+  preguntaId        String
+  textoOpcion       String
+  esCorrecta        Boolean @default(false)
+  retroalimentacion String?
+  orden             Int?
+
+  // Relaciones
+  pregunta Pregunta @relation(fields: [preguntaId], references: [id])
+}

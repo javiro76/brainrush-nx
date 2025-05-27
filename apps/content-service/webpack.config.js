@@ -17,4 +17,13 @@ module.exports = {
       generatePackageJson: true,
     }),
   ],
+  module: {
+    rules: [
+      {
+        test: /\.ts$/,
+        exclude: [/\.spec\.ts$/, /\.test\.ts$/],
+        use: 'ts-loader',
+      },
+    ],
+  },
 };

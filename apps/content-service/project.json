@@ -9,7 +9,10 @@
       "executor": "nx:run-commands",
       "options": {
         "command": "webpack-cli build",
-        "args": ["node-env=production"]
+        "args": [
+          "node-env=production",
+          "--env=PRISMA_CLIENT_PATH=node_modules/.prisma/content-client"
+        ]
       },
       "configurations": {
         "development": {
@@ -39,6 +42,24 @@
     "test": {
       "options": {
         "passWithNoTests": true
+      }
+    },
+    "prisma-generate": {
+      "executor": "@nx-tools/nx-prisma:generate",
+      "options": {
+        "schema": "apps/content-service/prisma/schema.prisma"
+      }
+    },
+    "prisma-migrate-dev": {
+      "executor": "@nx-tools/nx-prisma:migrate-dev",
+      "options": {
+        "schema": "apps/content-service/prisma/schema.prisma"
+      }
+    },
+    "prisma-studio": {
+      "executor": "@nx-tools/nx-prisma:studio",
+      "options": {
+        "schema": "apps/content-service/prisma/schema.prisma"
       }
     }
   }

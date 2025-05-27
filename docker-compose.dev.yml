@@ -36,7 +36,26 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+  # Base de datos para el servicio de contenido (content-service)
+  content-db:
+    image: postgres:14
+    container_name: brainrush-dev-content-db
+    environment:
+      POSTGRES_USER: content
+      POSTGRES_PASSWORD: content
+      POSTGRES_DB: content_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - content_db_dev_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U content"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   nats_dev_data:
   auth_db_dev_data:
+  content_db_dev_data:
+

@@ -11,6 +11,7 @@ import * as fs from 'fs';
 import { CommonModule } from './common/common.module';
 import { HealthModule } from './health/health.module';
 import { NatsModule } from './transports/nats/nats.module';
+import { ContentModule } from './content/content.module';
 
 // Determinar la ruta raíz del proyecto dinámicamente
 const findProjectRoot = () => {
@@ -99,14 +100,13 @@ const combinedLogPath = path.join(logDir, 'combined.log');
           ),
         }),
       ],
-    }),
-
-    // Otros módulos
+    }),    // Otros módulos
     HttpModule,
     AuthModule,
     CommonModule, // Importamos el CommonModule que contiene nuestro LoggerService
     HealthModule, // Importamos el módulo de Health Checks
     NatsModule,   // Añadimos el módulo NATS para eventos
+    ContentModule, // Módulo para el servicio de contenido
   ],
   providers: [
     AppService,
@@ -117,4 +117,4 @@ const combinedLogPath = path.join(logDir, 'combined.log');
     },
   ],
 })
-export class AppModule {}
+export class AppModule { }

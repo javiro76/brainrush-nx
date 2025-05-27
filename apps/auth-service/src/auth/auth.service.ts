@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from '../prisma';
 import { JwtPayload, UserRole } from '@brainrush-nx/shared';
 import * as bcrypt from 'bcrypt';
 import { LoginUserDto, RefreshTokenDto, RegisterUserDto } from './dto';
@@ -18,7 +18,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly natsService: NatsService,
     private readonly configService: ConfigService,
-  ) {}
+  ) { }
 
   /**
    * Registra un nuevo usuario
