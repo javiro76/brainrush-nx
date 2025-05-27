@@ -42,13 +42,12 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }),
   );
-
   // Configuración de CORS restrictiva (solo desde API Gateway)
   const isProduction = process.env.NODE_ENV === 'production';
   app.enableCors({
     origin: isProduction
-      ? [process.env.API_GATEWAY_URL || 'http://localhost:3000']
-      : ['http://localhost:3000', 'http://localhost:4200'],
+      ? [process.env.API_GATEWAY_URL || 'http://localhost:3335']
+      : ['http://localhost:3335', 'http://localhost:4200'],
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     credentials: true,
     optionsSuccessStatus: 200

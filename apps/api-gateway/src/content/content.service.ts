@@ -1,9 +1,9 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { firstValueFrom } from 'rxjs';
 import { AxiosError, AxiosResponse } from 'axios';
 import { LoggerService } from '@brainrush-nx/shared';
+import { envs } from '../config';
 import {
   CreatePreguntaDto, PreguntaDto, UpdatePreguntaDto,
   CreateOpcionDto, OpcionDto, UpdateOpcionDto,
@@ -23,17 +23,16 @@ export class ContentService {
 
   constructor(
     private readonly httpService: HttpService,
-    private readonly configService: ConfigService,
     private readonly logger: LoggerService,
   ) {
-    // Obtenemos la URL del servicio de contenido desde las variables de entorno
-    const host = this.configService.get<string>('CONTENT_SERVICE_HOST', 'localhost');
-    const port = this.configService.get<string>('CONTENT_SERVICE_PORT', '3335');
-    this.contentServiceUrl = `http://${host}:${port}/api`;
+    // Usar envs directamente en lugar de ConfigService
+    this.contentServiceUrl = envs.CONTENT_SERVICE_URL;
   }
+
   /**
    * Método genérico para realizar peticiones HTTP al content-service
-   */  private async makeRequest<T>(method: 'get' | 'post' | 'patch' | 'delete', endpoint: string, data?: unknown): Promise<T> {
+   */
+  private async makeRequest<T>(method: 'get' | 'post' | 'patch' | 'delete', endpoint: string, data?: unknown): Promise<T> {
     try {
       let request;
 
@@ -66,6 +65,7 @@ export class ContentService {
       throw new InternalServerErrorException('Error al comunicarse con el servicio de contenido');
     }
   }
+
   // Métodos para áreas
   async getAllAreas(): Promise<AreaDto[]> {
     return this.makeRequest<AreaDto[]>('get', 'areas');
@@ -86,6 +86,7 @@ export class ContentService {
   async deleteArea(id: string): Promise<DeleteResponse> {
     return this.makeRequest<DeleteResponse>('delete', `areas/${id}`);
   }
+
   // Métodos para textos
   async getAllTextos(): Promise<TextoDto[]> {
     return this.makeRequest<TextoDto[]>('get', 'textos');
@@ -106,6 +107,7 @@ export class ContentService {
   async deleteTexto(id: string): Promise<DeleteResponse> {
     return this.makeRequest<DeleteResponse>('delete', `textos/${id}`);
   }
+
   // Métodos para preguntas
   async getAllPreguntas(textoId?: string, areaId?: string): Promise<PreguntaDto[]> {
     let endpoint = 'preguntas';
@@ -137,6 +139,7 @@ export class ContentService {
   async deletePregunta(id: string): Promise<DeleteResponse> {
     return this.makeRequest<DeleteResponse>('delete', `preguntas/${id}`);
   }
+
   // Métodos para opciones
   async getAllOpciones(preguntaId?: string): Promise<OpcionDto[]> {
     let endpoint = 'opciones';
