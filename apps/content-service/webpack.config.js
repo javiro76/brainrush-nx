@@ -17,13 +17,24 @@ module.exports = {
       generatePackageJson: true,
     }),
   ],
+  // Añade esta configuración
   module: {
     rules: [
       {
-        test: /\.ts$/,
-        exclude: [/\.spec\.ts$/, /\.test\.ts$/],
-        use: 'ts-loader',
+        test: /\.js$/,
+        enforce: 'pre',
+        use: ['source-map-loader'],
+        exclude: [
+          /node_modules\/\.prisma/,
+          /node_modules\/@prisma/
+        ],
       },
     ],
   },
+  ignoreWarnings: [
+    {
+      module: /node_modules\/\.prisma/,
+      message: /Failed to parse source map/
+    }
+  ],
 };
