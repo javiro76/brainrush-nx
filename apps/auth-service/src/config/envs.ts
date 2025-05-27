@@ -31,10 +31,10 @@ if (error) {
   throw new Error(`[Auth-Service Config] Validation error: ${error.message}`);
 }
 
-export const envs = {
-  port: value.PORT,
-  databaseUrl: value.DATABASE_URL,
-  jwtSecret: value.JWT_SECRET,
-  jwtExpiresIn: value.JWT_EXPIRES_IN,
-  natsServers: value.NATS_SERVERS
+export const envs: EnvConfig = {
+  PORT: value.PORT,
+  DATABASE_URL: value.DATABASE_URL,
+  JWT_SECRET: value.JWT_SECRET,
+  JWT_EXPIRES_IN: value.JWT_EXPIRES_IN,
+  NATS_SERVERS: value.NATS_SERVERS
 };

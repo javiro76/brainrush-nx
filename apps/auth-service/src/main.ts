@@ -24,8 +24,9 @@ async function bootstrap() {
     credentials: true,
   });
 
-  await app.listen(envs.port);
-  logger.log(`Auth Service is running on: http://localhost:${envs.port}`);
+  await app.listen(envs.PORT);
+  logger.log(`Auth Service is running on: http://localhost:${envs.PORT}`);
 }
+
 
 void bootstrap();

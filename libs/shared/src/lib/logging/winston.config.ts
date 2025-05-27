@@ -43,7 +43,7 @@ export const ensureLogDirectory = (projectRoot: string): string => {
 /**
  * Configuración de Winston para el sistema de logging
  */
-export const createWinstonConfig = (serviceName: string = 'App') => {
+export const createWinstonConfig = (serviceName = 'App') => {
   const projectRoot = findProjectRoot();
   const logDir = ensureLogDirectory(projectRoot);
 
