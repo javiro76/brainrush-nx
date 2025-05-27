@@ -9,17 +9,33 @@ import { LoggerService } from '@brainrush-nx/shared';
 import { AppModule } from './app/app.module';
 import { envs } from './config/envs'; // Importamos la nueva configuración
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const logger = app.get(LoggerService);
 
+  // Configuración de seguridad con Helmet
+  app.use(helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        scriptSrc: ["'self'"],
+        imgSrc: ["'self'", "data:", "https:"],
+      },
+    },
+    hsts: {
+      maxAge: 31536000,
+      includeSubDomains: true,
+      preload: true
+    }
+  }));
+
   // Usamos las variables de envs en lugar de ConfigService
-  const globalPrefix = 'api';
   const port = envs.PORT; // Obtenemos el puerto de envs
 
-  // Configuración global
-  app.setGlobalPrefix(globalPrefix);
+  // Configuración global (sin prefijo global - se maneja desde API Gateway)
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -27,11 +43,15 @@ async function bootstrap() {
     }),
   );
 
-  // Configuración de CORS (mejorada con variables de entorno)
+  // Configuración de CORS restrictiva (solo desde API Gateway)
+  const isProduction = process.env.NODE_ENV === 'production';
   app.enableCors({
-    origin: process.env.CORS_ORIGIN || true, // Puedes mover esto a envs si lo necesitas
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    origin: isProduction
+      ? [process.env.API_GATEWAY_URL || 'http://localhost:3000']
+      : ['http://localhost:3000', 'http://localhost:4200'],
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     credentials: true,
+    optionsSuccessStatus: 200
   });
 
   // Configuración de Swagger
@@ -52,7 +72,7 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup(`${globalPrefix}/docs`, app, document, {
+  SwaggerModule.setup('docs', app, document, {
     swaggerOptions: {
       filter: true,
       showRequestDuration: true,
@@ -64,7 +84,7 @@ async function bootstrap() {
   // Log mejorado con más información
   logger.log('Content-Service', `=============================================`);
   logger.log('Content-Service', `🚀 Content Service is running on port: ${port}`);
-  logger.log('Content-Service', `📚 API Docs: http://localhost:${port}/${globalPrefix}/docs`);
+  logger.log('Content-Service', `📚 API Docs: http://localhost:${port}/docs`);
   logger.log('Content-Service', `🛡️  Environment: ${process.env.NODE_ENV || 'development'}`);
   logger.log('Content-Service', `=============================================`);
 }
