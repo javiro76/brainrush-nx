@@ -1,284 +1,290 @@
-import { PrismaClient } from '@prisma/client';
+// Para evitar problemas con las rutas de importación, usamos require dinámico para Prisma
 import * as fs from 'fs';
 import * as path from 'path';
 
-// Función para leer los archivos JSON de ejemplo
-const loadJSON = (fileName: string) => {
+// Importamos los tipos para cada entidad
+interface Area {
+  id: string;
+  nombre: string;
+  descripcion: string;
+}
+
+interface Competencia {
+  id: string;
+  areaId: string;
+  nombre: string;
+  descripcion: string;
+}
+
+interface Afirmacion {
+  id: string;
+  areaId: string;
+  numero: number;
+  descripcion: string;
+  tipo: string;
+  competenciaId: string;
+}
+
+interface TipoTexto {
+  id: string;
+  nombre: string;
+  descripcion: string;
+}
+
+interface NivelComplejidad {
+  id: string;
+  nombre: string;
+  descripcion: string;
+}
+
+interface NivelIngles {
+  id: string;
+  nombre: string;
+  descripcion: string;
+}
+
+interface TaxonomiaBloom {
+  id: string;
+  nombre: string;
+  descripcion: string;
+}
+
+interface Texto {
+  id: string;
+  fuente?: string;
+  contenido: string;
+  tipoTexto?: string;
+  subtipo?: string;
+  nivelLectura?: string;
+  palabrasClave: string[];
+  fechaCreacion?: string | Date;
+  contadorPalabras?: number;
+  dificultadLexica?: string;
+  estado?: string;
+  imagen?: any;
+  vinculaciones?: {
+    afirmaciones: string[];
+    competencias: string[];
+    taxonomiaBloom: string[];
+  };
+}
+
+interface Pregunta {
+  id: string;
+  areaId: string;
+  textoId?: string;
+  complejidad: string;
+  enunciado: string;
+  justificacion: string;
+  afirmacionId?: string;
+  habilidadId?: string;
+  taxonomiaBloom?: string;
+  fechaCreacion?: string | Date;
+  activo: boolean;
+}
+
+interface Opcion {
+  id: string;
+  preguntaId: string;
+  clave?: string;
+  texto: string;
+  correcta: boolean;
+  retroalimentacion?: string;
+}
+
+// Función para cargar los archivos JSON
+function loadJsonFile<T>(filePath: string): T {
+  const absolutePath = path.resolve(__dirname, filePath);
+  console.log(`Cargando datos desde: ${absolutePath}`);
+  const fileContent = fs.readFileSync(absolutePath, 'utf-8');
+  return JSON.parse(fileContent);
+}
+
+// Usar path directo a la salida del cliente de Prisma para evitar problemas con la configuración Nx
+const { PrismaClient } = require('../../../node_modules/.prisma/content-client');
+const prisma = new PrismaClient();
+
+// Función principal de seeding
+async function main() {
+  console.log('🌱 Iniciando proceso de seeding...');
+
   try {
-    const filePath = path.join(__dirname, '..', 'exampleData', fileName);
-    const fileContent = fs.readFileSync(filePath, 'utf8');
-    return JSON.parse(fileContent);
-  } catch (error) {
-    console.error(`Error al leer archivo ${fileName}:`, error);
-    return null;
-  }
-};
-
-// Función principal para sembrar datos
-async function seed() {
-  const prisma = new PrismaClient();
-
-  try {
-    console.log('Iniciando proceso de sembrado de datos...');
-
-    // Cargar datos de los archivos JSON
-    const areasData = loadJSON('areas.json');
-    const competenciasData = loadJSON('competencias.json');
-    const afirmacionesData = loadJSON('afirmaciones.json');
-    const tiposTextosData = loadJSON('tiposTextos.json');
-    const textosData = loadJSON('textos.json');
-    const taxonomiaBloomData = loadJSON('taxonomiaBloom.json');
-    const preguntasData = loadJSON('preguntas.json');
-    const opcionesData = loadJSON('opciones.json');
-    const nivelesComplejidadData = loadJSON('nivelesComplejidad.json');
-
-    // Sembrar datos de Áreas
-    if (areasData && areasData.areas) {
-      console.log('Sembrando áreas...');
-      for (const area of areasData.areas) {
-        await prisma.area.upsert({
-          where: { id: area.id },
-          update: area,
-          create: area,
-        });
-      }
-      console.log(`${areasData.areas.length} áreas sembradas`);
+    // 1. Seed Areas
+    console.log('Sembrando Áreas...');
+    const areasData = loadJsonFile<{ areas: Area[] }>('./seeds/areas.json');
+    for (const area of areasData.areas) {
+      await prisma.area.upsert({
+        where: { id: area.id },
+        update: area,
+        create: area,
+      });
     }
 
-    // Sembrar datos de Taxonomía Bloom
-    if (taxonomiaBloomData && taxonomiaBloomData.taxonomiaBloom) {
-      console.log('Sembrando taxonomía Bloom...');
-      for (const bloom of taxonomiaBloomData.taxonomiaBloom) {
-        await prisma.taxonomiaBloom.upsert({
-          where: { id: bloom.id },
-          update: bloom,
-          create: bloom,
-        });
-      }
-      console.log(`${taxonomiaBloomData.taxonomiaBloom.length} elementos de taxonomía Bloom sembrados`);
+    // 2. Seed TipoTexto
+    console.log('Sembrando Tipos de Texto...');
+    const tiposTextoData = loadJsonFile<{ tiposTexto: TipoTexto[] }>('./seeds/tiposTextos.json');
+    for (const tipoTexto of tiposTextoData.tiposTexto) {
+      await prisma.tipoTexto.upsert({
+        where: { id: tipoTexto.id },
+        update: tipoTexto,
+        create: tipoTexto,
+      });
     }
 
-    // Sembrar datos de Competencias
-    if (competenciasData && competenciasData.competencias) {
-      console.log('Sembrando competencias...');
-      for (const competencia of competenciasData.competencias) {
-        await prisma.competencia.upsert({
-          where: { id: competencia.id },
-          update: competencia,
-          create: competencia,
-        });
-      }
-      console.log(`${competenciasData.competencias.length} competencias sembradas`);
+    // 3. Seed NivelesComplejidad y NivelesIngles
+    console.log('Sembrando Niveles de Complejidad e Inglés...');
+    const nivelesData = loadJsonFile<{
+      nivelesComplejidad: NivelComplejidad[];
+      nivelesIngles: NivelIngles[];
+    }>('./seeds/nivelesComplejidad.json');
+
+    for (const nivel of nivelesData.nivelesComplejidad) {
+      await prisma.nivelComplejidad.upsert({
+        where: { id: nivel.id },
+        update: nivel,
+        create: nivel,
+      });
     }
 
-    // Sembrar datos de Afirmaciones
-    if (afirmacionesData && afirmacionesData.afirmaciones) {
-      console.log('Sembrando afirmaciones...');
-      for (const afirmacion of afirmacionesData.afirmaciones) {
-        await prisma.afirmacion.upsert({
-          where: { id: afirmacion.id },
-          update: afirmacion,
-          create: afirmacion,
-        });
-      }
-      console.log(`${afirmacionesData.afirmaciones.length} afirmaciones sembradas`);
+    for (const nivel of nivelesData.nivelesIngles) {
+      await prisma.nivelIngles.upsert({
+        where: { id: nivel.id },
+        update: nivel,
+        create: nivel,
+      });
     }
 
-    // Sembrar datos de Tipos de Texto
-    if (tiposTextosData && tiposTextosData.tiposTexto) {
-      console.log('Sembrando tipos de texto...');
-      for (const tipoTexto of tiposTextosData.tiposTexto) {
-        await prisma.tipoTexto.upsert({
-          where: { id: tipoTexto.id },
-          update: tipoTexto,
-          create: tipoTexto,
-        });
-      }
-      console.log(`${tiposTextosData.tiposTexto.length} tipos de texto sembrados`);
+    // 4. Seed TaxonomiaBloom
+    console.log('Sembrando Taxonomía de Bloom...');
+    const taxonomiaBloomData = loadJsonFile<{ taxonomiaBloom: TaxonomiaBloom[] }>('./seeds/taxonomiaBloom.json');
+    for (const taxonomia of taxonomiaBloomData.taxonomiaBloom) {
+      await prisma.taxonomiaBloom.upsert({
+        where: { id: taxonomia.id },
+        update: taxonomia,
+        create: taxonomia,
+      });
     }
 
-    // Sembrar datos de Niveles de Complejidad
-    if (nivelesComplejidadData && nivelesComplejidadData.nivelesComplejidad) {
-      console.log('Sembrando niveles de complejidad...');
-      for (const nivel of nivelesComplejidadData.nivelesComplejidad) {
-        await prisma.nivelComplejidad.upsert({
-          where: { id: nivel.id },
-          update: nivel,
-          create: nivel,
-        });
-      }
-      console.log(`${nivelesComplejidadData.nivelesComplejidad.length} niveles de complejidad sembrados`);
+    // 5. Seed Competencias (dependen de Áreas)
+    console.log('Sembrando Competencias...');
+    const competenciasData = loadJsonFile<{ competencias: Competencia[] }>('./seeds/competencias.json');
+    for (const competencia of competenciasData.competencias) {
+      await prisma.competencia.upsert({
+        where: { id: competencia.id },
+        update: competencia,
+        create: competencia,
+      });
     }
 
-    // Sembrar datos de Niveles de Inglés
-    if (nivelesComplejidadData && nivelesComplejidadData.nivelesIngles) {
-      console.log('Sembrando niveles de inglés...');
-      for (const nivel of nivelesComplejidadData.nivelesIngles) {
-        await prisma.nivelIngles.upsert({
-          where: { id: nivel.id },
-          update: nivel,
-          create: nivel,
-        });
-      }
-      console.log(`${nivelesComplejidadData.nivelesIngles.length} niveles de inglés sembrados`);
+    // 6. Seed Afirmaciones (dependen de Áreas y Competencias)
+    console.log('Sembrando Afirmaciones...');
+    const afirmacionesData = loadJsonFile<{ afirmaciones: Afirmacion[] }>('./seeds/afirmaciones.json');
+    for (const afirmacion of afirmacionesData.afirmaciones) {
+      await prisma.afirmacion.upsert({
+        where: { id: afirmacion.id },
+        update: afirmacion,
+        create: afirmacion,
+      });
     }
 
-    // Sembrar datos de Textos
-    if (textosData && textosData.textos) {
-      console.log('Sembrando textos...');
-      let contadorTextos = 0;
+    // 7. Seed Textos
+    console.log('Sembrando Textos...');
+    const textosData = loadJsonFile<{ textos: Texto[] }>('./seeds/textos.json');
+    for (const texto of textosData.textos) {
+      // Extraer las vinculaciones para procesarlas después
+      const vinculaciones = texto.vinculaciones;
 
-      for (const texto of textosData.textos) {
-        // Verificar que el texto tiene los datos mínimos requeridos
-        if (texto.id && texto.contenido) {
-          await prisma.texto.upsert({
-            where: { id: texto.id },
-            update: {
-              fuente: texto.fuente || null,
-              contenido: texto.contenido,
-              tipoTexto: texto.tipoTexto || null,
-              subtipo: texto.subtipo || null,
-              nivelLectura: texto.nivelLectura || null,
-              palabrasClave: texto.palabrasClave || [],
-              fechaCreacion: texto.fechaCreacion ? new Date(texto.fechaCreacion) : new Date(),
-              contadorPalabras: texto.contadorPalabras || null,
-              dificultadLexica: texto.dificultadLexica || null,
-              estado: texto.estado || 'borrador',
-              imagen: texto.imagen || null,
-            },
-            create: {
-              id: texto.id,
-              fuente: texto.fuente || null,
-              contenido: texto.contenido,
-              tipoTexto: texto.tipoTexto || null,
-              subtipo: texto.subtipo || null,
-              nivelLectura: texto.nivelLectura || null,
-              palabrasClave: texto.palabrasClave || [],
-              fechaCreacion: texto.fechaCreacion ? new Date(texto.fechaCreacion) : new Date(),
-              contadorPalabras: texto.contadorPalabras || null,
-              dificultadLexica: texto.dificultadLexica || null,
-              estado: texto.estado || 'borrador',
-              imagen: texto.imagen || null,
-            },
-          });
+      // Eliminar vinculaciones del objeto para la creación del texto
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { vinculaciones: _, ...textoData } = texto;
+      // Crear fecha si viene como string
+      if (typeof textoData.fechaCreacion === 'string') {
+        textoData.fechaCreacion = new Date(textoData.fechaCreacion);
+      }
 
-          // Crear vinculaciones con taxonomía Bloom si existen
-          if (texto.vinculaciones && texto.vinculaciones.taxonomiaBloom && texto.vinculaciones.taxonomiaBloom.length > 0) {
-            for (const bloomId of texto.vinculaciones.taxonomiaBloom) {
-              await prisma.textoTaxonomiaBloom.upsert({
-                where: {
-                  textoId_taxonomiaBloomId: {
-                    textoId: texto.id,
-                    taxonomiaBloomId: bloomId,
-                  },
-                },
-                update: {},
-                create: {
-                  textoId: texto.id,
-                  taxonomiaBloomId: bloomId,
-                },
-              });
-            }
+      // Convertir el campo imagen a JSON string si es un objeto
+      if (textoData.imagen && typeof textoData.imagen === 'object') {
+        textoData.imagen = JSON.stringify(textoData.imagen);
+      }
+
+      // Crear/actualizar el texto
+      await prisma.texto.upsert({
+        where: { id: textoData.id },
+        update: textoData,
+        create: textoData,
+      });
+
+      // Procesar vinculaciones de taxonomía de Bloom si existen
+      if (vinculaciones && vinculaciones.taxonomiaBloom) {
+        // Primero eliminar vinculaciones existentes para este texto
+        await prisma.textoTaxonomiaBloom.deleteMany({
+          where: {
+            textoId: textoData.id
           }
+        });
 
-          contadorTextos++;
-        }
-      }
-
-      console.log(`${contadorTextos} textos sembrados`);
-    }
-
-    // Sembrar datos de Preguntas
-    if (preguntasData && preguntasData.preguntas) {
-      console.log('Sembrando preguntas...');
-      let contadorPreguntas = 0;
-
-      for (const pregunta of preguntasData.preguntas) {
-        // Verificar que la pregunta tiene los datos mínimos requeridos
-        if (pregunta.id && pregunta.enunciado && pregunta.areaId && pregunta.complejidad) {
-          await prisma.pregunta.upsert({
-            where: { id: pregunta.id },
-            update: {
-              areaId: pregunta.areaId,
-              textoId: pregunta.textoId || null,
-              complejidad: pregunta.complejidad,
-              enunciado: pregunta.enunciado,
-              justificacion: pregunta.justificacion || '',
-              afirmacionId: pregunta.afirmacionId || null,
-              habilidadId: pregunta.habilidadId || null,
-              taxonomiaBloom: pregunta.taxonomiaBloom || null,
-              fechaCreacion: pregunta.fechaCreacion ? new Date(pregunta.fechaCreacion) : new Date(),
-              activo: pregunta.activo !== undefined ? pregunta.activo : true,
-            },
-            create: {
-              id: pregunta.id,
-              areaId: pregunta.areaId,
-              textoId: pregunta.textoId || null,
-              complejidad: pregunta.complejidad,
-              enunciado: pregunta.enunciado,
-              justificacion: pregunta.justificacion || '',
-              afirmacionId: pregunta.afirmacionId || null,
-              habilidadId: pregunta.habilidadId || null,
-              taxonomiaBloom: pregunta.taxonomiaBloom || null,
-              fechaCreacion: pregunta.fechaCreacion ? new Date(pregunta.fechaCreacion) : new Date(),
-              activo: pregunta.activo !== undefined ? pregunta.activo : true,
-            },
+        // Crear nuevas vinculaciones
+        for (const taxonomiaId of vinculaciones.taxonomiaBloom) {
+          await prisma.textoTaxonomiaBloom.create({
+            data: {
+              textoId: textoData.id,
+              taxonomiaBloomId: taxonomiaId
+            }
           });
-
-          contadorPreguntas++;
         }
       }
-      console.log(`${contadorPreguntas} preguntas sembradas`);
     }
 
-    // Sembrar datos de Opciones
-    if (opcionesData && opcionesData.opciones) {
-      console.log('Sembrando opciones...');
-      let contadorOpciones = 0;
-
-      for (const opcion of opcionesData.opciones) {
-        // Verificar que la opción tiene los datos mínimos requeridos
-        if (opcion.id && opcion.preguntaId && opcion.contenido !== undefined) {
-          await prisma.opcion.upsert({
-            where: { id: opcion.id },
-            update: {
-              preguntaId: opcion.preguntaId,
-              textoOpcion: opcion.texto || opcion.contenido,
-              esCorrecta: opcion.esCorrecta || false,
-              retroalimentacion: opcion.retroalimentacion || opcion.explicacion || null,
-              orden: opcion.orden || 0,
-            },
-            create: {
-              id: opcion.id,
-              preguntaId: opcion.preguntaId,
-              textoOpcion: opcion.texto || opcion.contenido,
-              esCorrecta: opcion.esCorrecta || false,
-              retroalimentacion: opcion.retroalimentacion || opcion.explicacion || null,
-              orden: opcion.orden || 0,
-            },
-          });
-
-          contadorOpciones++;
-        }
+    // 8. Seed Preguntas (dependen de Áreas, Textos, Afirmaciones)
+    console.log('Sembrando Preguntas...');
+    const preguntasData = loadJsonFile<{ preguntas: Pregunta[] }>('./seeds/preguntas.json');
+    for (const pregunta of preguntasData.preguntas) {
+      // Crear fecha si viene como string
+      if (typeof pregunta.fechaCreacion === 'string') {
+        pregunta.fechaCreacion = new Date(pregunta.fechaCreacion);
       }
 
-      console.log(`${contadorOpciones} opciones sembradas`);
+      await prisma.pregunta.upsert({
+        where: { id: pregunta.id },
+        update: pregunta,
+        create: pregunta,
+      });
     }
 
-    console.log('Proceso de sembrado completado exitosamente');
+    // 9. Seed Opciones (dependen de Preguntas)
+    console.log('Sembrando Opciones...');
+    const opcionesData = loadJsonFile<{ opciones: Opcion[] }>('./seeds/opciones.json');
+    for (const opcionRaw of opcionesData.opciones) {
+      // Transformar la estructura para que coincida con el esquema
+      const opcion = {
+        id: opcionRaw.id,
+        preguntaId: opcionRaw.preguntaId,
+        textoOpcion: opcionRaw.texto,
+        esCorrecta: opcionRaw.correcta,
+        retroalimentacion: opcionRaw.retroalimentacion,
+        orden: opcionRaw.clave ? opcionRaw.clave.charCodeAt(0) - 65 : undefined // Convertir A, B, C, D a 0, 1, 2, 3
+      };
+
+      await prisma.opcion.upsert({
+        where: { id: opcion.id },
+        update: opcion,
+        create: opcion,
+      });
+    }
+
+    console.log('✅ Proceso de seeding completado exitosamente!');
+
   } catch (error) {
-    console.error('Error durante el proceso de sembrado:', error);
+    console.error('❌ Error durante el proceso de seeding:', error);
+    throw error;
   } finally {
     await prisma.$disconnect();
   }
 }
 
-// Ejecutar la función de sembrado
-seed()
+// Ejecutar la función principal
+main()
   .catch((e) => {
     console.error(e);
     process.exit(1);
-  })
-  .finally(() => {
-    console.log('Finalizando proceso de sembrado');
   });
