@@ -4,38 +4,37 @@ import * as Joi from 'joi';
 interface EnvVars {
   PORT: number;
   DATABASE_URL: string;
+  JWT_SECRET: string;
+  JWT_EXPIRES_IN: string;
   NATS_SERVERS: string[];
-  NATS_URL: string;
 }
 
-// Schema para validar variables de entorno
 const envsSchema = Joi.object({
-  PORT: Joi.number().default(3001),
-  DATABASE_URL: Joi.string().required(),
-  NATS_SERVERS: Joi.string().optional(),
-  NATS_URL: Joi.string().optional(),
-}).unknown(true); // Permitir variables adicionales
+  PORT: Joi.number().default(3334),
+  DATABASE_URL: Joi.string().required()
+    .description('URL de conexión a la base de datos de autenticación'),
+  JWT_SECRET: Joi.string().required()
+    .description('Secreto para firmar los tokens JWT'),
+  JWT_EXPIRES_IN: Joi.string().default('30m')
+    .description('Tiempo de expiración de los tokens (ej: 30m, 1h, 7d)'),
+  NATS_SERVERS: Joi.array()
+    .items(Joi.string().uri({ scheme: ['nats'] }))
+    .default(['nats://localhost:4222'])
+}).unknown(true); // Permite otras variables no validadas
 
-// Validar todas las variables de entorno
 const { error, value } = envsSchema.validate({
   ...process.env,
+  NATS_SERVERS: process.env.NATS_SERVERS?.split(',')
 });
 
 if (error) {
-  throw new Error(`Config validation error: ${error.message}`);
+  throw new Error(`[Auth-Service Config] Validation error: ${error.message}`);
 }
 
-// Procesar después de la validación
-const envVars: EnvVars = {
-  PORT: value.PORT,
-  DATABASE_URL: value.DATABASE_URL,
-  NATS_SERVERS: value.NATS_SERVERS?.split(',') || [],
-  NATS_URL: value.NATS_URL || ''
-};
-
-export const envs = {
-  port: envVars.PORT,
-  databaseUrl: envVars.DATABASE_URL,
-  natsServers: envVars.NATS_SERVERS,
-  natsUrl: envVars.NATS_URL,
+export const EnvVars = {
+  port: value.PORT,
+  databaseUrl: value.DATABASE_URL,
+  jwtSecret: value.JWT_SECRET,
+  jwtExpiresIn: value.JWT_EXPIRES_IN,
+  natsServers: value.NATS_SERVERS
 };

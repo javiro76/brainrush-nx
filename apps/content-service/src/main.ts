@@ -6,16 +6,16 @@
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
-import { ConfigService } from '@nestjs/config';
+import { envs } from './config/envs'; // Importamos la nueva configuración
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const logger = new Logger('Content-Service');
   const app = await NestFactory.create(AppModule);
 
-  const configService = app.get(ConfigService);
+  // Usamos las variables de envs en lugar de ConfigService
   const globalPrefix = 'api';
-  const port = configService.get<number>('PORT', 3335);
+  const port = envs.PORT; // Obtenemos el puerto de envs
 
   // Configuración global
   app.setGlobalPrefix(globalPrefix);
@@ -26,9 +26,9 @@ async function bootstrap() {
     }),
   );
 
-  // Configuración de CORS
+  // Configuración de CORS (mejorada con variables de entorno)
   app.enableCors({
-    origin: true,
+    origin: process.env.CORS_ORIGIN || true, // Puedes mover esto a envs si lo necesitas
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
@@ -42,18 +42,30 @@ async function bootstrap() {
     .addTag('textos', 'Endpoints para gestionar textos')
     .addTag('preguntas', 'Endpoints para gestionar preguntas')
     .addTag('opciones', 'Endpoints para gestionar opciones')
-    .addBearerAuth()
+    .addBearerAuth({
+      type: 'http',
+      scheme: 'bearer',
+      bearerFormat: 'JWT',
+      description: 'Ingrese el token JWT'
+    })
     .build();
+
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup(`${globalPrefix}/docs`, app, document);
+  SwaggerModule.setup(`${globalPrefix}/docs`, app, document, {
+    swaggerOptions: {
+      filter: true,
+      showRequestDuration: true,
+    },
+  });
 
   await app.listen(port);
-  logger.log(
-    `🚀 Content Service is running on: http://localhost:${port}/${globalPrefix}`
-  );
-  logger.log(
-    `📚 Swagger documentation available at: http://localhost:${port}/${globalPrefix}/docs`
-  );
+
+  // Log mejorado con más información
+  logger.log(`=============================================`);
+  logger.log(`🚀 Content Service is running on port: ${port}`);
+  logger.log(`📚 API Docs: http://localhost:${port}/${globalPrefix}/docs`);
+  logger.log(`🛡️  Environment: ${process.env.NODE_ENV || 'development'}`);
+  logger.log(`=============================================`);
 }
 
 bootstrap();
