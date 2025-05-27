@@ -7,6 +7,8 @@ interface EnvVars {
   PORT: number;
   AUTH_SERVICE_HOST: string;
   AUTH_SERVICE_PORT: number;
+  CONTENT_SERVICE_HOST: string;
+  CONTENT_SERVICE_PORT: number;
   NATS_SERVERS: string[];
   API_PREFIX?: string;
 }
@@ -15,6 +17,8 @@ const envsSchema = joi.object({
   PORT: joi.number().required(),
   AUTH_SERVICE_HOST: joi.string().hostname().required(),
   AUTH_SERVICE_PORT: joi.number().port().required(),
+  CONTENT_SERVICE_HOST: joi.string().hostname().required(),
+  CONTENT_SERVICE_PORT: joi.number().port().required(),
   NATS_SERVERS: joi.array().items(joi.string().uri()).required(),
   API_PREFIX: joi.string().optional().default('/api')
 }).unknown(true);
@@ -30,8 +34,10 @@ if (error) {
 
 export const envs: EnvVars = {
   PORT: value.PORT,
-   AUTH_SERVICE_HOST: value.AUTH_SERVICE_HOST,
+  AUTH_SERVICE_HOST: value.AUTH_SERVICE_HOST,
   AUTH_SERVICE_PORT: value.AUTH_SERVICE_PORT,
+  CONTENT_SERVICE_HOST: value.CONTENT_SERVICE_HOST,
+  CONTENT_SERVICE_PORT: value.CONTENT_SERVICE_PORT,
   NATS_SERVERS: value.NATS_SERVERS,
   API_PREFIX: value.API_PREFIX
 };

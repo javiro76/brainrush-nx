@@ -5,6 +5,7 @@ import { HttpExceptionFilter } from '@brainrush-nx/shared';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import helmet from 'helmet';
+import { envs } from './config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -104,10 +105,9 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);
-
-  await app.listen(process.env.PORT ?? 3333);
-  logger.log(`API Gateway is running on: http://localhost:${process.env.PORT ?? 3333}`);
-  logger.log(`Swagger documentation available at: http://localhost:${process.env.PORT ?? 3333}/api/docs`);
-  logger.log(`Health check available at: http://localhost:${process.env.PORT ?? 3333}/health`);
+  await app.listen(envs.PORT);
+  logger.log(`API Gateway is running on: http://localhost:${envs.PORT}`);
+  logger.log(`Swagger documentation available at: http://localhost:${envs.PORT}/api/docs`);
+  logger.log(`Health check available at: http://localhost:${envs.PORT}/health`);
 }
 void bootstrap();

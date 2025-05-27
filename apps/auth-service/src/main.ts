@@ -39,15 +39,14 @@ async function bootstrap() {
     }),
   );
   app.useGlobalFilters(new HttpExceptionFilter());
-
   // Configuración de CORS - Restrictivo para servicio interno
   app.enableCors({
     origin: isProduction ? [
       // Solo API Gateway en producción
-      process.env.API_GATEWAY_URL || 'http://localhost:3333',
+      process.env.API_GATEWAY_URL || 'http://localhost:3335',
     ] : [
       // Desarrollo: API Gateway y localhost
-      'http://localhost:3333',
+      'http://localhost:3335',
       'http://localhost:3000',
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
