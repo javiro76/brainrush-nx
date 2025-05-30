@@ -16,7 +16,8 @@ export class AuthController {
 
   @ApiOperation({ summary: 'Registro de nuevo usuario' })
   @ApiResponse({ status: 201, description: 'Usuario registrado correctamente' })
-  @ApiResponse({ status: 400, description: 'Datos de registro inválidos o usuario ya existe' })  @Post('register')
+  @ApiResponse({ status: 400, description: 'Datos de registro inválidos o usuario ya existe' })
+  @Post('register')
   async register(@Body() registerDto: RegisterUserDto) {
     this.logger.log('AuthController', `Registrando usuario: ${registerDto.email}`);
     return this.authService.register(registerDto);
@@ -24,7 +25,8 @@ export class AuthController {
 
   @ApiOperation({ summary: 'Inicio de sesión de usuario' })
   @ApiResponse({ status: 200, description: 'Inicio de sesión exitoso' })
-  @ApiResponse({ status: 401, description: 'Credenciales inválidas' })  @Post('login')
+  @ApiResponse({ status: 401, description: 'Credenciales inválidas' })
+  @Post('login')
   async login(@Body() loginDto: LoginUserDto) {
     this.logger.log('AuthController', `Intento de inicio de sesión: ${loginDto.email}`);
     return this.authService.login(loginDto);
