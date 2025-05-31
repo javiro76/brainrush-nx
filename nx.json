@@ -37,7 +37,8 @@
         "apps/auth-service-e2e/**/*",
         "apps/api-gateway-e2e/**/*",
         "content-service-e2e/**/*",
-        "apps/content-service-e2e/**/*"
+        "apps/content-service-e2e/**/*",
+        "apps/exams-service-e2e/**/*"
       ]
     },
     {
