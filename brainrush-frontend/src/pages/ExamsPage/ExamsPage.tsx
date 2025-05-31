@@ -6,7 +6,7 @@ import {
 } from '@mui/material';
 import { ArrowBack } from '@mui/icons-material';
 
-import { useExamsLogic } from './useExamsLogic';
+import { useExamsLogic } from '../../hooks/exams/useExamsLogic';
 import ExamSearch from '../../components/exams/ExamSearch';
 import ExamTabs from '../../components/exams/ExamTabs';
 import ExamList from '../../components/exams/ExamList';
