@@ -57,17 +57,19 @@ export const useExamsLogic = (): UseExamsLogicReturn => {
   /**
    * Filtra exámenes por categoría (tab)
    * @param tab - Índice del tab seleccionado
-   */
-  const filterByTab = (tab: number) => {
+   */  const filterByTab = (tab: number) => {
     setCurrentTab(tab);
 
     if (tab === 0) {
       // "Todos" tab
       applyFilters(exams);
-    } else {
-      // Filter by exam type
+    } else if (tab > 0 && tab < tabs.length) {
+      // Filter by exam type - only if tab is in valid range
       const examType = tabs[tab].value as 'Simulacro' | 'Práctica' | 'Quiz';
       applyFilters(exams.filter(exam => exam.type === examType));
+    } else {
+      // Out of range tab - show all exams
+      applyFilters(exams);
     }
   };
 
