@@ -53,9 +53,27 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+  # Base de datos para el servicio de examenes (exams-service)
+  exams-db:
+    image: postgres:14
+    container_name: brainrush-dev-exams-db
+    environment:
+      POSTGRES_USER: exams
+      POSTGRES_PASSWORD: exams
+      POSTGRES_DB: exams_db
+    ports:
+      - "5434:5432"
+    volumes:
+      - exams_db_dev_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U content"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   nats_dev_data:
   auth_db_dev_data:
   content_db_dev_data:
+  exams_db_dev_data:
 
