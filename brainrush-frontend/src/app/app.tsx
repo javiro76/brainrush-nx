@@ -12,7 +12,8 @@ import NotFoundPage from '../pages/NotFoundPage';
 import ProtectedRoute from '../components/common/ProtectedRoute';
 
 // Páginas de exámenes
-import { ExamStartPage, ExamsPage } from '../pages/exams';
+import { ExamStartPage } from '../pages/exams';
+import ExamsPage from '../pages/ExamsPage';
 
 // Páginas de cursos
 import { CourseDetailPage, CoursesPage } from '../pages/courses';
