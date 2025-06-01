@@ -18,7 +18,8 @@
       "@brainrush-nx/common": ["libs/common/src/index.ts"],
       "@brainrush-nx/shared": ["libs/shared/src/index.ts"],
       "@prisma/auth-client": ["node_modules/.prisma/auth-client/index"],
-      "@prisma/content-client": ["node_modules/.prisma/content-client/index"]
+      "@prisma/content-client": ["node_modules/.prisma/content-client/index"],
+      "@prisma/exams-client": ["node_modules/.prisma/exams-client/index"]
     }
   },
   "exclude": ["node_modules", "tmp"]

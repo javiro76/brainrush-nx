@@ -52,8 +52,7 @@ services:
       test: ["CMD-SHELL", "pg_isready -U content"]
       interval: 10s
       timeout: 5s
-      retries: 5
-  # Base de datos para el servicio de examenes (exams-service)
+      retries: 5  # Base de datos para el servicio de examenes (exams-service)
   exams-db:
     image: postgres:14
     container_name: brainrush-dev-exams-db
@@ -66,7 +65,7 @@ services:
     volumes:
       - exams_db_dev_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U content"]
+      test: ["CMD-SHELL", "pg_isready -U exams -d exams_db"]
       interval: 10s
       timeout: 5s
       retries: 5
