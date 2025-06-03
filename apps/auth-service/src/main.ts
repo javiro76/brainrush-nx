@@ -1,35 +1,32 @@
+/**
+ * auth Service - BrainRush
+ * Servicio para gestión de autenticación de simulacros ICFES
+ */
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import { HttpExceptionFilter, LoggerService } from '@brainrush-nx/shared';
+import { HttpExceptionFilter, LoggerService, securityConfig } from '@brainrush-nx/shared';
 import { envs } from './config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  // 1. Obtener la instancia
   const logger = app.get(LoggerService);
+  // 2. Establecer como logger global (IMPORTANTE)
+  app.useLogger(logger);
+
 
   // Determinar el entorno de ejecución
   const isProduction = process.env.NODE_ENV === 'production';
-  logger.log('Auth-Service', `🚀 Auth Service iniciando en modo: ${isProduction ? 'PRODUCCIÓN' : 'DESARROLLO'}`);
+  logger.log('Auth-Service', `🚀 Auth-Service iniciando en modo: ${isProduction ? 'PRODUCCIÓN' : 'DESARROLLO'}`);
 
-  // Implementar Helmet - Seguridad básica para servicio interno
-  app.use(
-    helmet({
-      contentSecurityPolicy: false, // Deshabilitado para servicios internos
-      crossOriginEmbedderPolicy: false,
-      crossOriginResourcePolicy: { policy: 'cross-origin' },
-      // HSTS solo en producción
-      ...(isProduction && {
-        strictTransportSecurity: {
-          maxAge: 31536000, // 1 año
-          includeSubDomains: true,
-        },
-      }),
-    })
-  );
-  logger.log('Auth-Service', '🛡️  Helmet aplicado para seguridad básica');
+ // Configuración de seguridad para servicio interno
+  app.use(securityConfig({
+    isPublic: false,
+    hasFrontend: false,
+     allowSwagger: process.env.ENABLE_SWAGGER === 'true',
+  }));
 
   // Configuración global
   app.useGlobalPipes(
@@ -39,6 +36,8 @@ async function bootstrap() {
     }),
   );
   app.useGlobalFilters(new HttpExceptionFilter());
+
+  
   // Configuración de CORS - Restrictivo para servicio interno
   app.enableCors({
     origin: isProduction ? [

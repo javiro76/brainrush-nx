@@ -3,40 +3,35 @@
  * Servicio para gestión de exámenes de simulacros ICFES
  */
 
-import { Logger, ValidationPipe, VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { Transport, MicroserviceOptions } from '@nestjs/microservices';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app/app.module';
+import { ValidationPipe } from '@nestjs/common';
+import { HttpExceptionFilter, LoggerService, securityConfig } from '@brainrush-nx/shared';
 import { envs } from './config/envs';
-import helmet from 'helmet';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+
+import { Transport, MicroserviceOptions } from '@nestjs/microservices';
 import * as compression from 'compression';
 
 async function bootstrap() {
-  const logger = new Logger('ExamsService');
+   const app = await NestFactory.create(AppModule);
+  // 1. Obtener la instancia
+  const logger = app.get(LoggerService);
+  // 2. Establecer como logger global (IMPORTANTE)
+  app.useLogger(logger);
 
-  try {
-    // Crear aplicación NestJS
-    const app = await NestFactory.create(AppModule, {
-      logger: ['error', 'warn', 'log', 'debug', 'verbose'],
-    });
+     // Determinar el entorno de ejecución
+  const isProduction = process.env.NODE_ENV === 'production';
+  logger.log('Exams-Service', `🚀 Exams-Service iniciando en modo: ${isProduction ? 'PRODUCCIÓN' : 'DESARROLLO'}`);
 
-    // ====================================
-    // CONFIGURACIÓN DE SEGURIDAD
-    // ====================================
 
-    // Helmet - Headers de seguridad
-    app.use(helmet({
-      crossOriginEmbedderPolicy: false,
-      contentSecurityPolicy: {
-        directives: {
-          defaultSrc: ["'self'"],
-          styleSrc: ["'self'", "'unsafe-inline'"],
-          scriptSrc: ["'self'"],
-          imgSrc: ["'self'", "data:", "https:"],
-        },
-      },
-    }));
+    // Configuración de seguridad para servicio interno
+  app.use(securityConfig({
+    isPublic: false,
+    hasFrontend: false,
+     allowSwagger: process.env.ENABLE_SWAGGER === 'true',
+  }));
+
 
     // Compresión GZIP
     app.use(compression());    // CORS configurado
@@ -68,10 +63,10 @@ async function bootstrap() {
     app.setGlobalPrefix('api/v1');
 
     // Versionado de API
-    app.enableVersioning({
-      type: VersioningType.URI,
-      defaultVersion: '1',
-    });
+    // app.enableVersioning({
+    //   type: VersioningType.URI,
+    //   defaultVersion: '1',
+    // });
 
     // ====================================
     // DOCUMENTACIÓN SWAGGER
@@ -188,31 +183,31 @@ async function bootstrap() {
     ===================================
     `);
 
-  } catch (error) {
-    logger.error('❌ Failed to start Exams Service:', error);
-    process.exit(1);
-  }
+  // } catch (error) {
+  //   logger.error('❌ Failed to start Exams Service:', error);
+  //   process.exit(1);
+  // }
 }
 
 // Manejo de señales para cierre graceful
-process.on('SIGTERM', () => {
-  Logger.log('🛑 SIGTERM received, shutting down gracefully...');
-  process.exit(0);
-});
+// process.on('SIGTERM', () => {
+//   Logger.log('🛑 SIGTERM received, shutting down gracefully...');
+//   process.exit(0);
+// });
 
-process.on('SIGINT', () => {
-  Logger.log('🛑 SIGINT received, shutting down gracefully...');
-  process.exit(0);
-});
+// process.on('SIGINT', () => {
+//   Logger.log('🛑 SIGINT received, shutting down gracefully...');
+//   process.exit(0);
+// });
 
 // Manejo de excepciones no capturadas
-process.on('unhandledRejection', (reason, promise) => {
-  Logger.error('🚨 Unhandled Rejection at:', promise, 'reason:', reason);
-});
+// process.on('unhandledRejection', (reason, promise) => {
+//   Logger.error('🚨 Unhandled Rejection at:', promise, 'reason:', reason);
+// });
 
-process.on('uncaughtException', (error) => {
-  Logger.error('🚨 Uncaught Exception:', error);
-  process.exit(1);
-});
+// process.on('uncaughtException', (error) => {
+//   Logger.error('🚨 Uncaught Exception:', error);
+//   process.exit(1);
+// });
 
 bootstrap();

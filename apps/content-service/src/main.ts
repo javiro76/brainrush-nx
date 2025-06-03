@@ -2,34 +2,29 @@
  * Content Service - BrainRush
  * Servicio para gestión de contenidos de simulacros ICFES
  */
-
-import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { LoggerService } from '@brainrush-nx/shared';
 import { AppModule } from './app/app.module';
+import { ValidationPipe } from '@nestjs/common';
+import { HttpExceptionFilter, LoggerService, securityConfig } from '@brainrush-nx/shared';
 import { envs } from './config/envs'; // Importamos la nueva configuración
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  // 1. Obtener la instancia
   const logger = app.get(LoggerService);
+  // 2. Establecer como logger global (IMPORTANTE)
+  app.useLogger(logger);
 
-  // Configuración de seguridad con Helmet
-  app.use(helmet({
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-        styleSrc: ["'self'", "'unsafe-inline'"],
-        scriptSrc: ["'self'"],
-        imgSrc: ["'self'", "data:", "https:"],
-      },
-    },
-    hsts: {
-      maxAge: 31536000,
-      includeSubDomains: true,
-      preload: true
-    }
+  // Determinar el entorno de ejecución
+  const isProduction = process.env.NODE_ENV === 'production';
+  logger.log('Content-Service', `🚀 Content Service iniciando en modo: ${isProduction ? 'PRODUCCIÓN' : 'DESARROLLO'}`);
+
+  // Configuración de seguridad para servicio interno
+  app.use(securityConfig({
+    isPublic: false,
+    hasFrontend: false,
+     allowSwagger: process.env.ENABLE_SWAGGER === 'true',
   }));
 
   // Usamos las variables de envs en lugar de ConfigService
