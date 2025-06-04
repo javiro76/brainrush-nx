@@ -5,7 +5,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import { HttpExceptionFilter, LoggerService, securityConfig } from '@brainrush-nx/shared';
+import { HttpExceptionFilter, LoggerService, securityConfigApp } from '@brainrush-nx/shared';
 import { envs } from './config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
@@ -22,7 +22,7 @@ async function bootstrap() {
   logger.log('Auth-Service', `🚀 Auth-Service iniciando en modo: ${isProduction ? 'PRODUCCIÓN' : 'DESARROLLO'}`);
 
  // Configuración de seguridad para servicio interno
-  app.use(securityConfig({
+  app.use(securityConfigApp({
     isPublic: false,
     hasFrontend: false,
      allowSwagger: process.env.ENABLE_SWAGGER === 'true',
@@ -37,7 +37,7 @@ async function bootstrap() {
   );
   app.useGlobalFilters(new HttpExceptionFilter());
 
-  
+
   // Configuración de CORS - Restrictivo para servicio interno
   app.enableCors({
     origin: isProduction ? [

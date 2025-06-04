@@ -7,9 +7,9 @@ interface SecurityConfigOptions {
   allowSwagger?: boolean;
 }
 
-export const securityConfig = (options: SecurityConfigOptions): RequestHandler[] => {
+export const securityConfigApp = (options: SecurityConfigOptions): RequestHandler[] => {
   const { isPublic = false, hasFrontend = false, allowSwagger = false } = options;
-  const isProduction = process.env.NODE_ENV === 'production';
+  const isProduction = process.env['NODE_ENV'] === 'production';
 
   // Configuración base común para todos los servicios
   const baseHelmet = helmet({

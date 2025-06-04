@@ -5,7 +5,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
 import { ValidationPipe } from '@nestjs/common';
-import { HttpExceptionFilter, LoggerService, securityConfig } from '@brainrush-nx/shared';
+import { HttpExceptionFilter, LoggerService, securityConfigApp } from '@brainrush-nx/shared';
 import { envs } from './config/envs'; // Importamos la nueva configuración
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
@@ -21,7 +21,7 @@ async function bootstrap() {
   logger.log('Content-Service', `🚀 Content Service iniciando en modo: ${isProduction ? 'PRODUCCIÓN' : 'DESARROLLO'}`);
 
   // Configuración de seguridad para servicio interno
-  app.use(securityConfig({
+  app.use(securityConfigApp({
     isPublic: false,
     hasFrontend: false,
      allowSwagger: process.env.ENABLE_SWAGGER === 'true',

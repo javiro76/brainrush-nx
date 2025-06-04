@@ -5,9 +5,9 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import { HttpExceptionFilter, LoggerService, securityConfig } from '@brainrush-nx/shared';
+import { HttpExceptionFilter, LoggerService, securityConfigApp } from '@brainrush-nx/shared';
 import { envs } from './config';
-import { DocumentBuilder, SwaggerModule,securityConfig } from '@nestjs/swagger';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 
 async function bootstrap() {
@@ -22,7 +22,7 @@ async function bootstrap() {
   logger.log('API-Gateway', `🚀 API-Gateway iniciando en modo: ${isProduction ? 'PRODUCCIÓN' : 'DESARROLLO'}`);
 
   // Configuración de seguridad
-  app.use(securityConfig({
+  app.use(securityConfigApp({
     isPublic: true,
     hasFrontend: true,
     allowSwagger: process.env.ENABLE_SWAGGER === 'true',
