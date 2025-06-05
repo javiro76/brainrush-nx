@@ -4,8 +4,7 @@
  */
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
-import { ValidationPipe } from '@nestjs/common';
-import { HttpExceptionFilter, LoggerService, securityConfigApp } from '@brainrush-nx/shared';
+import { configureApp, LoggerService, securityConfigApp, getServiceConfig } from '@brainrush-nx/shared';
 import { envs } from './config/envs'; // Importamos la nueva configuración
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
@@ -24,19 +23,16 @@ async function bootstrap() {
   app.use(securityConfigApp({
     isPublic: false,
     hasFrontend: false,
-     allowSwagger: process.env.ENABLE_SWAGGER === 'true',
+    allowSwagger: process.env.ENABLE_SWAGGER === 'true',
   }));
 
   // Usamos las variables de envs en lugar de ConfigService
   const port = envs.PORT; // Obtenemos el puerto de envs
 
-  // Configuración global (sin prefijo global - se maneja desde API Gateway)
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
-    }),
-  );
+  // Configuración global
+  configureApp(app, getServiceConfig('content-service'));
+
+
   // Configuración de CORS restrictiva (solo desde API Gateway)
   const isProduction = process.env.NODE_ENV === 'production';
   app.enableCors({

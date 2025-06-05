@@ -4,8 +4,7 @@
  */
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
-import { HttpExceptionFilter, LoggerService, securityConfigApp } from '@brainrush-nx/shared';
+import { configureApp, LoggerService, securityConfigApp, getServiceConfig } from '@brainrush-nx/shared';
 import { envs } from './config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
@@ -29,16 +28,8 @@ async function bootstrap() {
   }));
 
   // Configuración global
-  app.setGlobalPrefix('api', {
-    exclude: ['/health'], // Excluir health check del prefijo global
-  });
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
-    }),
-  );
-  app.useGlobalFilters(new HttpExceptionFilter());
+  configureApp(app, getServiceConfig('api-gateway'));
+
 
   // Configuración de CORS
   app.enableCors({

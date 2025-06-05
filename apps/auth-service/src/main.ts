@@ -4,8 +4,7 @@
  */
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
-import { HttpExceptionFilter, LoggerService, securityConfigApp } from '@brainrush-nx/shared';
+import { LoggerService, securityConfigApp, configureApp, getServiceConfig } from '@brainrush-nx/shared';
 import { envs } from './config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
@@ -28,14 +27,11 @@ async function bootstrap() {
      allowSwagger: process.env.ENABLE_SWAGGER === 'true',
   }));
 
+
   // Configuración global
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
-    }),
-  );
-  app.useGlobalFilters(new HttpExceptionFilter());
+  configureApp(app, getServiceConfig('auth-service'));
+
+
 
 
   // Configuración de CORS - Restrictivo para servicio interno
