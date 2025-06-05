@@ -4,7 +4,7 @@
  */
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
-import { configureApp, LoggerService, securityConfigApp, getServiceConfig } from '@brainrush-nx/shared';
+import { configureApp, LoggerService, securityConfigApp, getServiceConfig,corsConfigs } from '@brainrush-nx/shared';
 import { envs } from './config/envs'; // Importamos la nueva configuración
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
@@ -33,16 +33,9 @@ async function bootstrap() {
   configureApp(app, getServiceConfig('content-service'));
 
 
-  // Configuración de CORS restrictiva (solo desde API Gateway)
-  const isProduction = process.env.NODE_ENV === 'production';
-  app.enableCors({
-    origin: isProduction
-      ? [process.env.API_GATEWAY_URL || 'http://localhost:3335']
-      : ['http://localhost:3335', 'http://localhost:4200'],
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-    credentials: true,
-    optionsSuccessStatus: 200
-  });
+  // Configuración de CORS para servicio interno
+  app.enableCors(corsConfigs.internalService());
+  logger.log('Content-Service', '🌐 CORS configurado para servicio interno');
 
   // Configuración de Swagger
   const config = new DocumentBuilder()

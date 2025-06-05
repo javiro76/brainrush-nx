@@ -4,7 +4,7 @@
  */
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { configureApp, LoggerService, securityConfigApp, getServiceConfig } from '@brainrush-nx/shared';
+import { configureApp, LoggerService, securityConfigApp, getServiceConfig, corsConfigs,compressionConfigs, logCompressionConfig} from '@brainrush-nx/shared';
 import { envs } from './config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
@@ -30,17 +30,16 @@ async function bootstrap() {
   // Configuración global
   configureApp(app, getServiceConfig('api-gateway'));
 
+    // Compresión para API Gateway
+  app.use(compressionConfigs.apiGateway());
+  logCompressionConfig('API-Gateway', 6, 1024, logger);
 
   // Configuración de CORS
-  app.enableCors({
-    origin: isProduction ? [
-      // Lista de dominios permitidos en producción
-      'https://brainrush.com',
-      'https://api.brainrush.com'
-    ] : true, // En desarrollo, permitir todos los orígenes
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,
-  });
+  app.enableCors(corsConfigs.apiGateway([
+    // Dominios adicionales específicos si es necesario
+    // 'https://admin.brainrush.com'
+  ]));
+  logger.log('API-Gateway', '🌐 CORS configurado para servicio público');
 
   // Configuración de Swagger
   const config = new DocumentBuilder()

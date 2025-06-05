@@ -5,12 +5,11 @@
 
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
-import { configureApp, LoggerService, securityConfigApp, getServiceConfig } from '@brainrush-nx/shared';
+import { configureApp, LoggerService, securityConfigApp, getServiceConfig, corsConfigs } from '@brainrush-nx/shared';
 import { envs } from './config/envs';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import { Transport, MicroserviceOptions } from '@nestjs/microservices';
-import * as compression from 'compression';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -32,16 +31,13 @@ async function bootstrap() {
   }));
 
   // Configuración global
-  configureApp(app, getServiceConfig('content-service'));
+  configureApp(app, getServiceConfig('exams-service'));
 
 
-  // Compresión GZIP
-  app.use(compression());    // CORS configurado
-  app.enableCors({
-    origin: envs.CORS_ORIGINS.split(','),
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-    credentials: true,
-  });
+
+  // Configuración de CORS para servicio interno
+  app.enableCors(corsConfigs.internalService());
+  logger.log('Exams-Service', '🌐 CORS configurado para servicio interno');
 
   // ====================================
   // DOCUMENTACIÓN SWAGGER
