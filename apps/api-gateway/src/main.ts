@@ -4,9 +4,8 @@
  */
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { configureApp, LoggerService, securityConfigApp, getServiceConfig, corsConfigs,compressionConfigs, logCompressionConfig} from '@brainrush-nx/shared';
+import { configureApp, LoggerService, securityConfigApp, getServiceConfig, corsConfigs, compressionConfigs, logCompressionConfig, setupSwagger, swaggerConfigs } from '@brainrush-nx/shared';
 import { envs } from './config';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 
 async function bootstrap() {
@@ -30,7 +29,7 @@ async function bootstrap() {
   // Configuración global
   configureApp(app, getServiceConfig('api-gateway'));
 
-    // Compresión para API Gateway
+  // Compresión para API Gateway
   app.use(compressionConfigs.apiGateway());
   logCompressionConfig('API-Gateway', 6, 1024, logger);
 
@@ -41,17 +40,13 @@ async function bootstrap() {
   ]));
   logger.log('API-Gateway', '🌐 CORS configurado para servicio público');
 
-  // Configuración de Swagger
-  const config = new DocumentBuilder()
-    .setTitle('BrainRush API Gateway')
-    .setDescription('API Gateway para el ecosistema de microservicios BrainRush')
-    .setVersion('1.0')
-    .addBearerAuth()
-    .build();
+  // Configuración de Swagger centralizada
+  setupSwagger(app, swaggerConfigs.apiGateway(), logger);
 
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/docs', app, document);
+  // Iniciar el servidor
   await app.listen(envs.PORT);
+
+  
   logger.log(`API Gateway is running on: http://localhost:${envs.PORT}`);
   logger.log(`Swagger documentation available at: http://localhost:${envs.PORT}/api/docs`);
   logger.log(`Health check available at: http://localhost:${envs.PORT}/health`);

@@ -4,7 +4,7 @@
  */
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { LoggerService, securityConfigApp, configureApp, getServiceConfig,corsConfigs } from '@brainrush-nx/shared';
+import { LoggerService, securityConfigApp, configureApp, getServiceConfig,corsConfigs, setupSwagger, swaggerConfigs  } from '@brainrush-nx/shared';
 import { envs } from './config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
@@ -38,28 +38,12 @@ async function bootstrap() {
   app.enableCors(corsConfigs.internalService());
   logger.log('Auth-Service', '🌐 CORS configurado para servicio interno');
 
-  
-  // Configuración de Swagger para documentación interna
-  const config = new DocumentBuilder()
-    .setTitle('Auth Service API')
-    .setDescription('Servicio de autenticación para el ecosistema BrainRush')
-    .setVersion('1.0')
-    .addTag('auth', 'Endpoints de autenticación')
-    .addBearerAuth({
-      type: 'http',
-      scheme: 'bearer',
-      bearerFormat: 'JWT',
-      description: 'Ingrese el token JWT'
-    })
-    .build();
 
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('docs', app, document, {
-    swaggerOptions: {
-      filter: true,
-      showRequestDuration: true,
-    },
-  });
+  // Configuración de Swagger centralizada
+  setupSwagger(app, swaggerConfigs.authService(), logger);
+
+
+
 
   await app.listen(envs.PORT);
 
