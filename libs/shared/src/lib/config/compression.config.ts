@@ -1,4 +1,5 @@
-import * as compression from 'compression';
+// import * as compression from 'compression';
+const compression = require('compression');
 import { RequestHandler } from 'express';
 import { constants } from 'zlib';
 

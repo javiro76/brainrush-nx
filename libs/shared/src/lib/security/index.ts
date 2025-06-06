@@ -1,1 +1,1 @@
-export * from './security-config.ts';
+export * from './security-config';

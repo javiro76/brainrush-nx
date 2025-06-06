@@ -46,9 +46,12 @@ async function bootstrap() {
   // Iniciar el servidor
   await app.listen(envs.PORT);
 
-  
-  logger.log(`API Gateway is running on: http://localhost:${envs.PORT}`);
-  logger.log(`Swagger documentation available at: http://localhost:${envs.PORT}/api/docs`);
-  logger.log(`Health check available at: http://localhost:${envs.PORT}/health`);
+    // Banner de inicio
+  logger.serviceBanner('API-Gateway', envs.PORT, 'api/docs');
+
+
+  // logger.log(`API Gateway is running on: http://localhost:${envs.PORT}`);
+  // logger.log(`Swagger documentation available at: http://localhost:${envs.PORT}/api/docs`);
+  // logger.log(`Health check available at: http://localhost:${envs.PORT}/health`);
 }
 void bootstrap();
