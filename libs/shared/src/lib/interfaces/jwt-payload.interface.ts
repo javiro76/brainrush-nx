@@ -1,4 +1,4 @@
-import { UserRole } from '../enums/user-role.enum';
+import { UserRole } from '@brainrush-nx/shared';
 
 export interface JwtPayload {
   sub: string;         // ID del usuario

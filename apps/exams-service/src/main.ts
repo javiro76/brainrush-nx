@@ -46,17 +46,17 @@ async function bootstrap() {
   // ====================================
 
   // Configurar como microservicio NATS
-  const natsApp = await NestFactory.createMicroservice<MicroserviceOptions>(
-    AppModule,
-    {
-      transport: Transport.NATS,
-      options: {
-        servers: [envs.NATS_SERVERS],
-        queue: 'exams-service',
-      },
-    }
-  ); await natsApp.listen();
-  logger.log(`🔌 NATS Microservice listening on: ${envs.NATS_SERVERS}`);
+  // const natsApp = await NestFactory.createMicroservice<MicroserviceOptions>(
+  //   AppModule,
+  //   {
+  //     transport: Transport.NATS,
+  //     options: {
+  //       servers: [envs.NATS_SERVERS],
+  //       queue: 'exams-service',
+  //     },
+  //   }
+  // ); await natsApp.listen();
+  // logger.log(`🔌 NATS Microservice listening on:, ${envs.NATS_SERVERS}`);
 
   // ====================================
   // INICIO DEL SERVIDOR HTTP
