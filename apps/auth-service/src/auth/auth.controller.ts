@@ -11,10 +11,12 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly logger: LoggerService
-  ) { } @ApiOperation({ summary: 'Registrar nuevo usuario' })
+  ) { }
+
+  @Post('register')
+  @ApiOperation({ summary: 'Registrar nuevo usuario' })
   @ApiResponse({ status: 201, description: 'Usuario registrado correctamente', type: AuthResponseDto })
   @ApiResponse({ status: 400, description: 'Datos de registro inválidos o usuario ya existe' })
-  @Post('register')
   async register(@Body() registerDto: RegisterUserDto): Promise<AuthResponse> {
     this.logger.log('AuthController', `Registrando usuario: ${registerDto.email}`);
     return this.authService.register(registerDto);
