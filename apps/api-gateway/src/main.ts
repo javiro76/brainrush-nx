@@ -29,6 +29,13 @@ async function bootstrap() {
   // Configuración global
   configureApp(app, getServiceConfig('api-gateway'));
 
+  // Configurar el prefix global desde la configuración
+  if (envs.API_PREFIX) {
+    // Remover las barras del prefix para setGlobalPrefix
+    const prefix = envs.API_PREFIX.replace(/^\/|\/$/g, '');
+    app.setGlobalPrefix(prefix);
+  }
+
   // Compresión para API Gateway
   app.use(compressionConfigs.apiGateway());
   logCompressionConfig('API-Gateway', 6, 1024, logger);

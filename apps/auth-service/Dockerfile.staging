@@ -1,0 +1,73 @@
+# ==========================================
+# Multi-stage build - Auth Service
+# ==========================================
+
+FROM node:22-alpine AS builder
+
+WORKDIR /app
+
+# Copia dependencias necesarias para instalar
+COPY package*.json nx.json tsconfig.base.json ./
+COPY apps/auth-service/project.json ./apps/auth-service/
+COPY libs/ ./libs/
+
+# Instala dependencias completas (dev y prod)
+RUN npm install --legacy-peer-deps
+
+# Copia los schemas Prisma
+COPY apps/auth-service/prisma ./apps/auth-service/prisma/
+COPY apps/content-service/prisma ./apps/content-service/prisma/
+
+# ⚠️ IMPORTANTE: Copia todo el código antes de generar los clientes, para evitar errores de imports
+COPY . .
+
+# ✅ Genera ambos Prisma Clients
+RUN npx prisma generate --schema=./apps/auth-service/prisma/schema.prisma
+RUN npx prisma generate --schema=./apps/content-service/prisma/schema.prisma
+
+# ✅ Compila el microservicio
+RUN npx nx build auth-service
+
+# ✅ PRESERVE los Prisma clients generados antes de limpiar node_modules
+RUN cp -r /app/node_modules/.prisma /tmp/prisma-backup
+
+# ✅ Limpia devDeps y vuelve a instalar solo prod
+RUN rm -rf node_modules \
+  && npm ci --omit=dev --legacy-peer-deps
+
+# ✅ RESTORE los Prisma clients preservados
+RUN rm -rf /app/node_modules/.prisma && mv /tmp/prisma-backup /app/node_modules/.prisma
+
+# ===============================
+# Runtime Stage
+# ===============================
+FROM node:22-alpine
+
+WORKDIR /app
+
+# Runtime tools básicos
+RUN apk add --no-cache curl dumb-init openssl postgresql-client
+
+# ✅ Copia dist del servicio
+COPY --from=builder /app/dist/apps/auth-service ./
+
+# ✅ Copia node_modules ya con Prisma Client
+COPY --from=builder /app/node_modules ./node_modules
+
+# ✅ Copia los esquemas Prisma (si haces migraciones o seeds)
+COPY --from=builder /app/apps/auth-service/prisma ./prisma
+
+# Copiar el script de entrada para migraciones automáticas
+COPY apps/auth-service/docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+
+ENV NODE_ENV=development
+EXPOSE 3334
+
+# Healthcheck
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:3334/health || exit 1
+
+# ✅ Usar script de entrada para migraciones automáticas
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["dumb-init", "node", "main.js"]

@@ -1,0 +1,166 @@
+version: '3.8'
+
+services:
+  # NATS Server for microservice communication
+  nats:
+    image: nats:latest
+    container_name: brainrush-local-nats
+    ports:
+      - "4222:4222"  # Cliente
+      - "8222:8222"  # HTTP Monitor
+    volumes:
+      - nats_local_data:/data
+    command: -js  # Habilitar JetStream
+    networks:
+      - brainrush-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8222/varz"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+  # Frontend (cambiar a build para consistencia)
+  frontend:
+    build:
+      context: .
+      dockerfile: brainrush-frontend/Dockerfile.staging
+    ports:
+      - "3000:80"
+    depends_on:
+      - api-gateway
+    networks:
+      - brainrush-network
+
+  # API Gateway
+  api-gateway:
+    build:
+      context: .
+      dockerfile: apps/api-gateway/Dockerfile.staging
+    ports:
+      - "3335:3335"
+    environment:
+      - NODE_ENV=development
+      - PORT=3335
+      - AUTH_SERVICE_HOST=auth-service
+      - AUTH_SERVICE_PORT=3334
+      - AUTH_SERVICE_URL=http://auth-service:3334
+      - CONTENT_SERVICE_HOST=content-service
+      - CONTENT_SERVICE_PORT=3336
+      - CONTENT_SERVICE_URL=http://content-service:3336
+      - NATS_SERVERS=nats://nats:4222
+      - API_PREFIX=/api/v1
+      - ENABLE_SWAGGER=true
+    depends_on:
+      - auth-service
+      - content-service
+      - nats
+    networks:
+      - brainrush-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3335/v1/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Auth Service
+  auth-service:
+    build:
+      context: .
+      dockerfile: apps/auth-service/Dockerfile
+    ports:
+      - "3334:3334"
+    environment:
+      - NODE_ENV=development
+      - PORT=3334
+      - DATABASE_URL=postgresql://postgres:password@auth-db:5432/auth_db
+      - JWT_SECRET=mi_super_secret_key_temporal_local
+      - JWT_EXPIRES_IN=30m
+      - NATS_SERVERS=nats://nats:4222
+    depends_on:
+      - auth-db
+      - nats
+    networks:
+      - brainrush-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3334/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Content Service
+  content-service:
+    build:
+      context: .
+      dockerfile: apps/content-service/Dockerfile.staging
+    ports:
+      - "3336:3336"
+    environment:
+      - NODE_ENV=development
+      - PORT=3336
+      - DATABASE_URL=postgresql://content:content@content-db:5432/content_db
+      - NATS_SERVERS=nats://nats:4222
+      - JWT_SECRET=mi_super_secret_key_temporal_local_content
+      - JWT_EXPIRES_IN=30m
+    depends_on:
+      - content-db
+      - nats
+    networks:
+      - brainrush-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3336/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Auth Database
+  auth-db:
+    image: postgres:15-alpine
+    container_name: brainrush-local-auth-db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=auth_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - auth_db_local_data:/var/lib/postgresql/data
+    networks:
+      - brainrush-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d auth_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Content Database
+  content-db:
+    image: postgres:15-alpine
+    container_name: brainrush-local-content-db
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_DB=content_db
+      - POSTGRES_USER=content
+      - POSTGRES_PASSWORD=content
+    volumes:
+      - content_db_local_data:/var/lib/postgresql/data
+    networks:
+      - brainrush-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U content -d content_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  nats_local_data:
+  auth_db_local_data:
+  content_db_local_data:
+
+networks:
+  brainrush-network:
+    driver: bridge

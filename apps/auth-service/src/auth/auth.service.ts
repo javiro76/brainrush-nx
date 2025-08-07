@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../prisma';
 import { JwtPayload, UserRole, LoggerService } from '@brainrush-nx/shared';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import { LoginUserDto, RefreshTokenDto, RegisterUserDto } from './dto';
 import { AuthResponse } from './interfaces/auth-response.interface';
 import { NatsService } from '../nats/nats.service';

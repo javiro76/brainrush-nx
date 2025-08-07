@@ -45,8 +45,11 @@ export class AuthService {
    * Inicia sesión a través del Auth Service
    */  async login(loginDto: LoginUserDto) {
     try {
+      const authUrl = `http://${envs.AUTH_SERVICE_HOST}:${envs.AUTH_SERVICE_PORT}/auth/login`;
+      this.logger.log('AuthGatewayService', `Intentando conectar a Auth Service en: ${authUrl}`);
+
       const { data } = await firstValueFrom(
-        this.httpService.post(`http://${envs.AUTH_SERVICE_HOST}:${envs.AUTH_SERVICE_PORT}/auth/login`, loginDto)
+        this.httpService.post(authUrl, loginDto)
       );
       return data;    } catch (error: unknown) {
       const axiosError = error as AxiosError;

@@ -6,8 +6,9 @@
 // Optimizado para dashboard y estadísticas detalladas
 
 generator client {
-  provider = "prisma-client-js"
-  output   = "../../../node_modules/.prisma/exams-client"
+  provider      = "prisma-client-js"
+  output        = "../../../node_modules/.prisma/exams-client"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
 }
 
 datasource db {
@@ -20,30 +21,30 @@ datasource db {
 //=====================================
 
 enum ExamType {
-  SIMULACRO       // Simulacro ICFES completo (todas las áreas)
-  PRACTICA        // Examen de práctica por área específica
-  QUIZ            // Quiz corto de pocas preguntas
-  DIAGNOSTICO     // Examen diagnóstico inicial
-  SEGUIMIENTO     // Examen de seguimiento/progreso
-  PERSONALIZADO   // Examen personalizado por el profesor
-  
+  SIMULACRO // Simulacro ICFES completo (todas las áreas)
+  PRACTICA // Examen de práctica por área específica
+  QUIZ // Quiz corto de pocas preguntas
+  DIAGNOSTICO // Examen diagnóstico inicial
+  SEGUIMIENTO // Examen de seguimiento/progreso
+  PERSONALIZADO // Examen personalizado por el profesor
+
   @@map("exam_types")
 }
 
 enum ExamStatus {
-  DRAFT           // Borrador (profesores pueden editar)
-  PUBLISHED       // Publicado (disponible para estudiantes)
-  ARCHIVED        // Archivado (no disponible)
-  
+  DRAFT // Borrador (profesores pueden editar)
+  PUBLISHED // Publicado (disponible para estudiantes)
+  ARCHIVED // Archivado (no disponible)
+
   @@map("exam_statuses")
 }
 
 enum AttemptStatus {
-  IN_PROGRESS     // En progreso
-  COMPLETED       // Completado
-  ABANDONED       // Abandonado (tiempo agotado sin finalizar)
-  PAUSED          // Pausado temporalmente
-  
+  IN_PROGRESS // En progreso
+  COMPLETED // Completado
+  ABANDONED // Abandonado (tiempo agotado sin finalizar)
+  PAUSED // Pausado temporalmente
+
   @@map("attempt_statuses")
 }
 
@@ -51,7 +52,7 @@ enum DifficultyLevel {
   BASICO
   INTERMEDIO
   AVANZADO
-  
+
   @@map("difficulty_levels")
 }
 
@@ -60,34 +61,34 @@ enum DifficultyLevel {
 //=====================================
 
 model Exam {
-  id          String     @id @default(uuid())
-  title       String     @db.VarChar(255)
-  description String?    @db.Text
+  id          String          @id @default(uuid())
+  title       String          @db.VarChar(255)
+  description String?         @db.Text
   type        ExamType
-  status      ExamStatus @default(DRAFT)
+  status      ExamStatus      @default(DRAFT)
   difficulty  DifficultyLevel @default(INTERMEDIO)
-  
+
   // Referencias a entidades externas (solo IDs)
-  createdBy   String?    // ID del profesor que creó el examen
-  areaId      String?    // ID del área principal (del content-service)
-  
+  createdBy String? // ID del profesor que creó el examen
+  areaId    String? // ID del área principal (del content-service)
+
   // Configuración del examen
-  timeLimit   Int?       // Tiempo límite en minutos (null = sin límite)
-  totalQuestions Int     @default(0) // Número total de preguntas
-  passingScore   Int?    // Puntaje mínimo para aprobar
-  maxAttempts    Int     @default(1) // Número máximo de intentos permitidos
-  showResults    Boolean @default(true) // Mostrar resultados al finalizar
+  timeLimit        Int? // Tiempo límite en minutos (null = sin límite)
+  totalQuestions   Int     @default(0) // Número total de preguntas
+  passingScore     Int? // Puntaje mínimo para aprobar
+  maxAttempts      Int     @default(1) // Número máximo de intentos permitidos
+  showResults      Boolean @default(true) // Mostrar resultados al finalizar
   shuffleQuestions Boolean @default(false) // Mezclar orden de preguntas
   shuffleOptions   Boolean @default(false) // Mezclar opciones de respuesta
-  
+
   // Metadatos temporales
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
   publishedAt DateTime? // Fecha de publicación
-  
+
   // Relaciones
-  questions ExamQuestion[]
-  attempts  ExamAttempt[]
+  questions  ExamQuestion[]
+  attempts   ExamAttempt[]
   statistics ExamStatistics?
 
   // Índices para optimización
@@ -104,28 +105,28 @@ model Exam {
 //=====================================
 
 model ExamQuestion {
-  id         String @id @default(uuid())
-  examId     String
-  
+  id     String @id @default(uuid())
+  examId String
+
   // Referencia al content-service (solo ID)
-  questionId String  // ID de la pregunta del content-service
-  
+  questionId String // ID de la pregunta del content-service
+
   // Configuración específica para este examen
-  order      Int     // Orden de la pregunta en el examen
-  points     Int     @default(1) // Puntos que vale esta pregunta
-  required   Boolean @default(true) // Si es obligatoria responder
-  
+  order    Int // Orden de la pregunta en el examen
+  points   Int     @default(1) // Puntos que vale esta pregunta
+  required Boolean @default(true) // Si es obligatoria responder
+
   // Snapshot de datos críticos para consistencia
   // (en caso de que la pregunta original cambie)
   questionSnapshot Json? // Copia de la pregunta y opciones al momento de crear el examen
-  
+
   // Relaciones
-  exam      Exam @relation(fields: [examId], references: [id], onDelete: Cascade)
+  exam      Exam           @relation(fields: [examId], references: [id], onDelete: Cascade)
   responses ExamResponse[]
 
   // Índices y restricciones
   @@unique([examId, questionId]) // No duplicar preguntas en un examen
-  @@unique([examId, order])      // Orden único dentro del examen
+  @@unique([examId, order]) // Orden único dentro del examen
   @@index([examId])
   @@index([questionId])
   @@map("exam_questions")
@@ -136,35 +137,35 @@ model ExamQuestion {
 //=====================================
 
 model ExamAttempt {
-  id        String        @id @default(uuid())
+  id        String @id @default(uuid())
   examId    String
-  studentId String        // ID del estudiante
-  
+  studentId String // ID del estudiante
+
   // Estado del intento
-  status    AttemptStatus @default(IN_PROGRESS)
-  attempt   Int           // Número de intento (1, 2, 3...)
-  
+  status  AttemptStatus @default(IN_PROGRESS)
+  attempt Int // Número de intento (1, 2, 3...)
+
   // Tiempo y puntajes
-  startedAt   DateTime    @default(now())
+  startedAt   DateTime  @default(now())
   completedAt DateTime?
-  timeSpent   Int?        // Tiempo total en segundos
-  
+  timeSpent   Int? // Tiempo total en segundos
+
   // Resultados del intento
-  totalQuestions Int       @default(0)
-  answeredQuestions Int    @default(0)
-  correctAnswers Int       @default(0)
-  incorrectAnswers Int     @default(0)
-  skippedQuestions Int     @default(0)
-  totalScore    Float      @default(0)
-  percentage    Float      @default(0)
-  passed        Boolean    @default(false)
-  
+  totalQuestions    Int     @default(0)
+  answeredQuestions Int     @default(0)
+  correctAnswers    Int     @default(0)
+  incorrectAnswers  Int     @default(0)
+  skippedQuestions  Int     @default(0)
+  totalScore        Float   @default(0)
+  percentage        Float   @default(0)
+  passed            Boolean @default(false)
+
   // Metadata del intento
-  ipAddress     String?    @db.Inet
-  userAgent     String?    @db.Text
-  
+  ipAddress String? @db.Inet
+  userAgent String? @db.Text
+
   // Relaciones
-  exam      Exam @relation(fields: [examId], references: [id])
+  exam      Exam           @relation(fields: [examId], references: [id])
   responses ExamResponse[]
 
   // Índices
@@ -182,25 +183,25 @@ model ExamAttempt {
 //=====================================
 
 model ExamResponse {
-  id               String @id @default(uuid())
-  attemptId        String
-  examQuestionId   String
-  
+  id             String @id @default(uuid())
+  attemptId      String
+  examQuestionId String
+
   // Respuesta del estudiante
   selectedOptionId String? // ID de la opción seleccionada (del content-service)
   responseText     String? @db.Text // Para preguntas abiertas (futuro)
-  
+
   // Evaluación automática
-  isCorrect        Boolean? // null = no evaluado aún
-  pointsEarned     Float    @default(0)
-  
+  isCorrect    Boolean? // null = no evaluado aún
+  pointsEarned Float    @default(0)
+
   // Tiempo de respuesta
-  timeSpent        Int?     // Tiempo en segundos para responder esta pregunta
-  answeredAt       DateTime @default(now())
-  
+  timeSpent  Int? // Tiempo en segundos para responder esta pregunta
+  answeredAt DateTime @default(now())
+
   // Relaciones
-  attempt      ExamAttempt   @relation(fields: [attemptId], references: [id], onDelete: Cascade)
-  examQuestion ExamQuestion  @relation(fields: [examQuestionId], references: [id])
+  attempt      ExamAttempt  @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  examQuestion ExamQuestion @relation(fields: [examQuestionId], references: [id])
 
   // Índices y restricciones
   @@unique([attemptId, examQuestionId]) // Una respuesta por pregunta por intento
@@ -215,35 +216,35 @@ model ExamResponse {
 //=====================================
 
 model ExamStatistics {
-  id      String @id @default(uuid())
-  examId  String @unique
-  
+  id     String @id @default(uuid())
+  examId String @unique
+
   // Estadísticas generales
-  totalAttempts     Int     @default(0)
-  totalStudents     Int     @default(0)
-  completedAttempts Int     @default(0)
-  abandonedAttempts Int     @default(0)
-  
+  totalAttempts     Int @default(0)
+  totalStudents     Int @default(0)
+  completedAttempts Int @default(0)
+  abandonedAttempts Int @default(0)
+
   // Estadísticas de puntajes
-  averageScore      Float   @default(0)
-  highestScore      Float   @default(0)
-  lowestScore       Float   @default(0)
-  medianScore       Float   @default(0)
-  passingRate       Float   @default(0) // Porcentaje de estudiantes que aprobaron
-  
+  averageScore Float @default(0)
+  highestScore Float @default(0)
+  lowestScore  Float @default(0)
+  medianScore  Float @default(0)
+  passingRate  Float @default(0) // Porcentaje de estudiantes que aprobaron
+
   // Estadísticas de tiempo
-  averageTimeSpent  Int     @default(0) // En segundos
-  fastestCompletion Int     @default(0) // En segundos
-  slowestCompletion Int     @default(0) // En segundos
-  
+  averageTimeSpent  Int @default(0) // En segundos
+  fastestCompletion Int @default(0) // En segundos
+  slowestCompletion Int @default(0) // En segundos
+
   // Análisis por dificultad
   basicQuestions_AvgScore        Float @default(0)
   intermediateQuestions_AvgScore Float @default(0)
   advancedQuestions_AvgScore     Float @default(0)
-  
+
   // Metadatos
   lastCalculated DateTime @default(now())
-  
+
   // Relación
   exam Exam @relation(fields: [examId], references: [id], onDelete: Cascade)
 
@@ -261,28 +262,28 @@ model StudentAreaStatistics {
   id        String @id @default(uuid())
   studentId String
   areaId    String // ID del área del content-service
-  
+
   // Contadores generales
-  totalExamsTaken     Int   @default(0)
-  totalExamsCompleted Int   @default(0)
-  totalExamsPassed    Int   @default(0)
-  
+  totalExamsTaken     Int @default(0)
+  totalExamsCompleted Int @default(0)
+  totalExamsPassed    Int @default(0)
+
   // Puntajes por área
-  averageScore        Float @default(0)
-  bestScore          Float @default(0)
-  worstScore         Float @default(0)
-  lastScore          Float @default(0)
-  
+  averageScore Float @default(0)
+  bestScore    Float @default(0)
+  worstScore   Float @default(0)
+  lastScore    Float @default(0)
+
   // Progreso temporal
-  firstExamDate      DateTime?
-  lastExamDate       DateTime?
-  
+  firstExamDate DateTime?
+  lastExamDate  DateTime?
+
   // Tendencia de mejora (calculada)
-  improvementTrend   Float @default(0) // Valor positivo = mejorando, negativo = empeorando
-  
+  improvementTrend Float @default(0) // Valor positivo = mejorando, negativo = empeorando
+
   // Metadatos
-  lastUpdated        DateTime @default(now())
-  
+  lastUpdated DateTime @default(now())
+
   @@unique([studentId, areaId])
   @@index([studentId])
   @@index([areaId])
@@ -298,30 +299,30 @@ model StudentAreaStatistics {
 model StudentProgress {
   id        String @id @default(uuid())
   studentId String @unique
-  
+
   // Estadísticas globales
-  totalExamsTaken        Int   @default(0)
-  totalExamsCompleted    Int   @default(0)
-  totalExamsPassed       Int   @default(0)
-  totalTimeSpent         Int   @default(0) // En segundos
-  
+  totalExamsTaken     Int @default(0)
+  totalExamsCompleted Int @default(0)
+  totalExamsPassed    Int @default(0)
+  totalTimeSpent      Int @default(0) // En segundos
+
   // Puntajes globales
-  overallAverageScore    Float @default(0)
-  bestOverallScore       Float @default(0)
-  
+  overallAverageScore Float @default(0)
+  bestOverallScore    Float @default(0)
+
   // Actividad reciente
-  lastActivityDate       DateTime?
-  currentStreak          Int   @default(0) // Días consecutivos con actividad
-  longestStreak          Int   @default(0)
-  
+  lastActivityDate DateTime?
+  currentStreak    Int       @default(0) // Días consecutivos con actividad
+  longestStreak    Int       @default(0)
+
   // Objetivos y metas
-  weeklyExamGoal         Int   @default(3) // Meta de exámenes por semana
-  currentWeekExams       Int   @default(0)
-  
+  weeklyExamGoal   Int @default(3) // Meta de exámenes por semana
+  currentWeekExams Int @default(0)
+
   // Metadatos
-  createdAt              DateTime @default(now())
-  lastUpdated            DateTime @default(now())
-  
+  createdAt   DateTime @default(now())
+  lastUpdated DateTime @default(now())
+
   @@index([studentId])
   @@index([overallAverageScore])
   @@index([lastActivityDate])
@@ -336,27 +337,27 @@ model StudentProgress {
 model QuestionAnalytics {
   id         String @id @default(uuid())
   questionId String @unique // ID de la pregunta del content-service
-  
+
   // Estadísticas de respuesta
-  totalResponses     Int   @default(0)
-  correctResponses   Int   @default(0)
-  incorrectResponses Int   @default(0)
-  skippedResponses   Int   @default(0)
-  
+  totalResponses     Int @default(0)
+  correctResponses   Int @default(0)
+  incorrectResponses Int @default(0)
+  skippedResponses   Int @default(0)
+
   // Métricas de dificultad
-  difficultyIndex    Float @default(0) // 0-1 (1 = muy fácil, 0 = muy difícil)
+  difficultyIndex     Float @default(0) // 0-1 (1 = muy fácil, 0 = muy difícil)
   discriminationIndex Float @default(0) // Capacidad de discriminar entre estudiantes buenos y malos
-  
+
   // Tiempo promedio
-  averageTimeSpent   Int   @default(0) // En segundos
-  
+  averageTimeSpent Int @default(0) // En segundos
+
   // Análisis por opción (para preguntas de opción múltiple)
-  optionAnalysis     Json? // {"optionA": 25, "optionB": 50, "optionC": 15, "optionD": 10}
-  
+  optionAnalysis Json? // {"optionA": 25, "optionB": 50, "optionC": 15, "optionD": 10}
+
   // Metadatos
-  lastCalculated     DateTime @default(now())
-  sampleSize         Int      @default(0) // Número de respuestas usadas para el cálculo
-  
+  lastCalculated DateTime @default(now())
+  sampleSize     Int      @default(0) // Número de respuestas usadas para el cálculo
+
   @@index([questionId])
   @@index([difficultyIndex])
   @@index([discriminationIndex])
