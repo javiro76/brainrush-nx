@@ -25,6 +25,10 @@ services:
     build:
       context: .
       dockerfile: brainrush-frontend/Dockerfile.staging
+      args:
+        - REACT_APP_API_URL=http://localhost:3335/api
+    environment:
+      - REACT_APP_API_URL=http://localhost:3335/api
     ports:
       - "3000:80"
     depends_on:
@@ -49,7 +53,7 @@ services:
       - CONTENT_SERVICE_PORT=3336
       - CONTENT_SERVICE_URL=http://content-service:3336
       - NATS_SERVERS=nats://nats:4222
-      - API_PREFIX=/api/v1
+      - API_PREFIX=api
       - ENABLE_SWAGGER=true
     depends_on:
       - auth-service
@@ -58,7 +62,7 @@ services:
     networks:
       - brainrush-network
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3335/v1/health"]
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3335/health"]
       interval: 30s
       timeout: 10s
       retries: 3

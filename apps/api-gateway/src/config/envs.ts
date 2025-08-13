@@ -13,6 +13,7 @@ interface EnvVars {
   CONTENT_SERVICE_URL: string;
   NATS_SERVERS: string[];
   API_PREFIX?: string;
+  ENABLE_SWAGGER: boolean;
 }
 
 const envsSchema = joi.object({
@@ -24,7 +25,8 @@ const envsSchema = joi.object({
   CONTENT_SERVICE_PORT: joi.number().port().required(),
   CONTENT_SERVICE_URL: joi.string().uri().default('http://localhost:3336'),
   NATS_SERVERS: joi.array().items(joi.string().uri()).required(),
-  API_PREFIX: joi.string().optional().default('/api')
+  API_PREFIX: joi.string().optional().default('/api'),
+  ENABLE_SWAGGER: joi.boolean().required()
 }).unknown(true);
 
 const { error, value } = envsSchema.validate({
@@ -45,5 +47,6 @@ export const envs: EnvVars = {
   CONTENT_SERVICE_PORT: value.CONTENT_SERVICE_PORT,
   CONTENT_SERVICE_URL: value.CONTENT_SERVICE_URL,
   NATS_SERVERS: value.NATS_SERVERS,
-  API_PREFIX: value.API_PREFIX
+  API_PREFIX: value.API_PREFIX,
+  ENABLE_SWAGGER: value.ENABLE_SWAGGER,
 };

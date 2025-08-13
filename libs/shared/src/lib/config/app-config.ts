@@ -1,6 +1,8 @@
 import { INestApplication, ValidationPipe,VersioningType } from '@nestjs/common';
 import { MicroserviceExceptionFilter, HttpExceptionFilter } from '../filters';
 
+
+
 export interface AppConfigOptions {
   serviceName: string;
   apiPrefix?: string;
@@ -23,7 +25,7 @@ export const configureApp = (
 ): void => {
   const {
     serviceName,
-    apiPrefix = 'api',
+    apiPrefix = '/api',
     excludeFromPrefix = ['/health'],
     enableVersioning = false,
     defaultVersion = '1',

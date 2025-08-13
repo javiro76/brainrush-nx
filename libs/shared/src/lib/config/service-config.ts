@@ -6,30 +6,30 @@ import { AppConfigOptions } from './app-config';
 
 export const API_GATEWAY_CONFIG: AppConfigOptions = {
   serviceName: 'API-Gateway',
-  apiPrefix: 'api',
-  excludeFromPrefix: ['/health', '/docs'],
-  enableVersioning: true,
+  apiPrefix: process.env['API_PREFIX'],
+  excludeFromPrefix: ['/health'],
+  enableVersioning: false,
   defaultVersion: '1',
 };
 
 export const AUTH_SERVICE_CONFIG: AppConfigOptions = {
   serviceName: 'Auth-Service',
   apiPrefix: '',
-  excludeFromPrefix: ['/health','/docs'],
+  excludeFromPrefix: ['/health', '/docs'],
   enableVersioning: false,
 };
 
 export const CONTENT_SERVICE_CONFIG: AppConfigOptions = {
   serviceName: 'Content-Service',
   apiPrefix: '',
-  excludeFromPrefix: ['/health','/docs'],
+  excludeFromPrefix: ['/health', '/docs'],
   enableVersioning: false,
 };
 
 export const EXAMS_SERVICE_CONFIG: AppConfigOptions = {
   serviceName: 'Exams-Service',
   apiPrefix: '',
-  excludeFromPrefix: ['/health','/docs'],
+  excludeFromPrefix: ['/health', '/docs'],
   enableVersioning: false,
 };
 

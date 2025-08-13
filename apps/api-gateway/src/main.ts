@@ -4,8 +4,9 @@
  */
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { configureApp, LoggerService, securityConfigApp, getServiceConfig, corsConfigs, compressionConfigs, logCompressionConfig, setupSwagger, swaggerConfigs } from '@brainrush-nx/shared';
+import { configureApp, LoggerService, securityConfigApp, getServiceConfig, corsConfigs, compressionConfigs, logCompressionConfig } from '@brainrush-nx/shared';
 import { envs } from './config';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 
 async function bootstrap() {
@@ -26,15 +27,13 @@ async function bootstrap() {
     allowSwagger: process.env.ENABLE_SWAGGER === 'true',
   }));
 
-  // Configuración global
+  // Configuración global (incluye prefix desde getServiceConfig)
   configureApp(app, getServiceConfig('api-gateway'));
 
-  // Configurar el prefix global desde la configuración
-  if (envs.API_PREFIX) {
-    // Remover las barras del prefix para setGlobalPrefix
-    const prefix = envs.API_PREFIX.replace(/^\/|\/$/g, '');
-    app.setGlobalPrefix(prefix);
-  }
+  // ====================================
+  // NOTA: NO configurar prefix manualmente aquí
+  // La configuración del prefix se maneja en getServiceConfig()
+  // ====================================
 
   // Compresión para API Gateway
   app.use(compressionConfigs.apiGateway());
@@ -47,14 +46,28 @@ async function bootstrap() {
   ]));
   logger.log('API-Gateway', '🌐 CORS configurado para servicio público');
 
-  // Configuración de Swagger centralizada
-  setupSwagger(app, swaggerConfigs.apiGateway(), logger);
+
+  // Configuración de Swagger simplificada
+  if (envs.ENABLE_SWAGGER) {
+    const config = new DocumentBuilder()
+      .setTitle('BrainRush API Gateway')
+      .setDescription('API Gateway para simulacros ICFES')
+      .setVersion('1.0')
+      .addBearerAuth()
+      .build();
+
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup(`${envs.API_PREFIX}/docs`, app, document);
+
+    // logger.log('API-Gateway', `📚 Swagger disponible en: ${envs.API_PREFIX}/docs`);
+  }
+
 
   // Iniciar el servidor
   await app.listen(envs.PORT);
 
     // Banner de inicio
-  logger.serviceBanner('API-Gateway', envs.PORT, 'api/docs');
+  logger.serviceBanner('API-Gateway', envs.PORT, `${envs.API_PREFIX}/docs`);
 
 }
 void bootstrap();
