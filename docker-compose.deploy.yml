@@ -4,12 +4,12 @@ services:
   # NATS Server for microservice communication
   nats:
     image: nats:latest
-    container_name: brainrush-local-nats
+    container_name: brainrush-deploy-nats
     ports:
       - "4222:4222"  # Cliente
       - "8222:8222"  # HTTP Monitor
     volumes:
-      - nats_local_data:/data
+      - nats_deploy_data:/data
     command: -js  # Habilitar JetStream
     networks:
       - brainrush-network
@@ -20,41 +20,40 @@ services:
       retries: 3
       start_period: 5s
 
-  # Frontend (cambiar a build para consistencia)
+  # Frontend - Optimizado para deployment
   frontend:
     build:
       context: .
-      dockerfile: brainrush-frontend/Dockerfile.staging
-      args:
-        - REACT_APP_API_URL=http://localhost:3335/api
+      dockerfile: brainrush-frontend/Dockerfile.deploy
     environment:
-      - REACT_APP_API_URL=http://localhost:3335/api
+      - REACT_APP_API_URL=${REACT_APP_API_URL}
     ports:
       - "3000:80"
     depends_on:
       - api-gateway
     networks:
       - brainrush-network
+    restart: unless-stopped
 
-  # API Gateway
+  # API Gateway - Optimizado para deployment
   api-gateway:
     build:
       context: .
-      dockerfile: apps/api-gateway/Dockerfile.staging
+      dockerfile: apps/api-gateway/Dockerfile.deploy
     ports:
       - "3335:3335"
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=${NODE_ENV}
       - PORT=3335
       - AUTH_SERVICE_HOST=auth-service
       - AUTH_SERVICE_PORT=3334
-      - AUTH_SERVICE_URL=http://auth-service:3334
+      - AUTH_SERVICE_URL=${AUTH_SERVICE_URL}
       - CONTENT_SERVICE_HOST=content-service
       - CONTENT_SERVICE_PORT=3336
-      - CONTENT_SERVICE_URL=http://content-service:3336
-      - NATS_SERVERS=nats://nats:4222
+      - CONTENT_SERVICE_URL=${CONTENT_SERVICE_URL}
+      - NATS_SERVERS=${NATS_SERVERS}
       - API_PREFIX=api
-      - ENABLE_SWAGGER=true
+      - ENABLE_SWAGGER=${ENABLE_SWAGGER}
     depends_on:
       - auth-service
       - content-service
@@ -67,21 +66,22 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+    restart: unless-stopped
 
-  # Auth Service
+  # Auth Service - Optimizado para deployment
   auth-service:
     build:
       context: .
-      dockerfile: apps/auth-service/Dockerfile.staging
+      dockerfile: apps/auth-service/Dockerfile.deploy
     ports:
       - "3334:3334"
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=${NODE_ENV}
       - PORT=3334
-      - DATABASE_URL=postgresql://postgres:password@auth-db:5432/auth_db
-      - JWT_SECRET=mi_super_secret_key_temporal_local
-      - JWT_EXPIRES_IN=30m
-      - NATS_SERVERS=nats://nats:4222
+      - DATABASE_URL=${AUTH_DATABASE_URL}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRES_IN=${JWT_EXPIRES_IN}
+      - NATS_SERVERS=${NATS_SERVERS}
     depends_on:
       - auth-db
       - nats
@@ -93,21 +93,22 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+    restart: unless-stopped
 
-  # Content Service
+  # Content Service - Optimizado para deployment
   content-service:
     build:
       context: .
-      dockerfile: apps/content-service/Dockerfile.staging
+      dockerfile: apps/content-service/Dockerfile.deploy
     ports:
       - "3336:3336"
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=${NODE_ENV}
       - PORT=3336
-      - DATABASE_URL=postgresql://content:content@content-db:5432/content_db
-      - NATS_SERVERS=nats://nats:4222
-      - JWT_SECRET=mi_super_secret_key_temporal_local_content
-      - JWT_EXPIRES_IN=30m
+      - DATABASE_URL=${CONTENT_DATABASE_URL}
+      - NATS_SERVERS=${NATS_SERVERS}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRES_IN=${JWT_EXPIRES_IN}
     depends_on:
       - content-db
       - nats
@@ -119,51 +120,54 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+    restart: unless-stopped
 
   # Auth Database
   auth-db:
     image: postgres:15-alpine
-    container_name: brainrush-local-auth-db
+    container_name: brainrush-deploy-auth-db
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_DB=auth_db
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=${AUTH_DB_NAME}
+      - POSTGRES_USER=${AUTH_DB_USER}
+      - POSTGRES_PASSWORD=${AUTH_DB_PASSWORD}
     volumes:
-      - auth_db_local_data:/var/lib/postgresql/data
+      - auth_db_deploy_data:/var/lib/postgresql/data
     networks:
       - brainrush-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d auth_db"]
+      test: ["CMD-SHELL", "pg_isready -U ${AUTH_DB_USER} -d ${AUTH_DB_NAME}"]
       interval: 10s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
 
   # Content Database
   content-db:
     image: postgres:15-alpine
-    container_name: brainrush-local-content-db
+    container_name: brainrush-deploy-content-db
     ports:
       - "5433:5432"
     environment:
-      - POSTGRES_DB=content_db
-      - POSTGRES_USER=content
-      - POSTGRES_PASSWORD=content
+      - POSTGRES_DB=${CONTENT_DB_NAME}
+      - POSTGRES_USER=${CONTENT_DB_USER}
+      - POSTGRES_PASSWORD=${CONTENT_DB_PASSWORD}
     volumes:
-      - content_db_local_data:/var/lib/postgresql/data
+      - content_db_deploy_data:/var/lib/postgresql/data
     networks:
       - brainrush-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U content -d content_db"]
+      test: ["CMD-SHELL", "pg_isready -U ${CONTENT_DB_USER} -d ${CONTENT_DB_NAME}"]
       interval: 10s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
 
 volumes:
-  nats_local_data:
-  auth_db_local_data:
-  content_db_local_data:
+  nats_deploy_data:
+  auth_db_deploy_data:
+  content_db_deploy_data:
 
 networks:
   brainrush-network:

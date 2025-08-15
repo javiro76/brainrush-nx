@@ -46,3 +46,5 @@ Thumbs.db
 
 /apps/*/node_modules/
 /libs/*/node_modules/
+
+.secrets

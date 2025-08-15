@@ -1,10 +1,10 @@
-name: Deploy to Digital Ocean
+name: Deploy to Digital Ocean (Development)
 
 on:
   push:
-    branches: [main] # Cambia a 'master' si usas esa rama como principal
+    branches: [front-end] # Changed from main to front-end for development
     paths-ignore:
-      - '**.md' # Ignora cambios en archivos markdown
+      - '**.md'
 
 jobs:
   deploy:
@@ -23,86 +23,104 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build applications
+      - name: Build applications (Development)
         run: |
+          echo "Generating Prisma clients..."
+          cd apps/auth-service && npx prisma generate && cd ../..
+          cd apps/content-service && npx prisma generate && cd ../..
+          #cd apps/exams-service && npx prisma generate && cd ../..
+
           echo "Building API Gateway..."
-          npx nx build api-gateway --prod
+          npx nx build api-gateway
 
           echo "Building Auth Service..."
-          npx nx build auth-service --prod
+          npx nx build auth-service
+
+          echo "Building Content Service..."
+          npx nx build content-service
+
+          echo "Building Frontend..."
+          npx nx build brainrush-frontend
 
           echo "Verifying build artifacts..."
-          ls -la dist/apps/api-gateway
-          ls -la dist/apps/auth-service
+          ls -la dist/
 
-      - name: Create .env file
+      - name: Create .env file for development
         run: |
-          echo "DB_USER=${{ secrets.DB_USER }}" > .env.prod
-          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env.prod
-          echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env.prod
-          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env.prod
-          echo "JWT_EXPIRES_IN=${{ secrets.JWT_EXPIRES_IN }}" >> .env.prod
+          # Variables generales
+          echo "NODE_ENV=development" > .env
+          echo "ENABLE_SWAGGER=true" >> .env
+          echo "REACT_APP_API_URL=http://${{ secrets.DIGITALOCEAN_HOST }}:3335/api" >> .env
+
+          # Auth Service Database
+          echo "AUTH_DB_HOST=auth-db" >> .env
+          echo "AUTH_DB_PORT=5432" >> .env
+          echo "AUTH_DB_USER=${{ secrets.DB_USER }}" >> .env
+          echo "AUTH_DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+          echo "AUTH_DB_NAME=${{ secrets.DB_NAME }}" >> .env
+          echo "AUTH_DATABASE_URL=postgresql://${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@auth-db:5432/${{ secrets.DB_NAME }}?schema=public" >> .env
+
+          # Content Service Database
+          echo "CONTENT_DB_HOST=content-db" >> .env
+          echo "CONTENT_DB_PORT=5432" >> .env
+          echo "CONTENT_DB_USER=${{ secrets.CONTENT_DB_USER }}" >> .env
+          echo "CONTENT_DB_PASSWORD=${{ secrets.CONTENT_DB_PASSWORD }}" >> .env
+          echo "CONTENT_DB_NAME=${{ secrets.CONTENT_DB_NAME }}" >> .env
+          echo "CONTENT_DATABASE_URL=postgresql://${{ secrets.CONTENT_DB_USER }}:${{ secrets.CONTENT_DB_PASSWORD }}@content-db:5432/${{ secrets.CONTENT_DB_NAME }}?schema=public" >> .env
+
+          # Exams Service Database (si existe)
+          # echo "EXAMS_DB_HOST=exams-db" >> .env
+          # echo "EXAMS_DB_PORT=5432" >> .env
+          # echo "EXAMS_DB_USER=${{ secrets.EXAMS_DB_USER }}" >> .env
+          # echo "EXAMS_DB_PASSWORD=${{ secrets.EXAMS_DB_PASSWORD }}" >> .env
+          # echo "EXAMS_DB_NAME=${{ secrets.EXAMS_DB_NAME }}" >> .env
+          # echo "EXAMS_DATABASE_URL=postgresql://${{ secrets.EXAMS_DB_USER }}:${{ secrets.EXAMS_DB_PASSWORD }}@exams-db:5432/${{ secrets.EXAMS_DB_NAME }}?schema=public" >> .env
+
+          # JWT
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+          echo "JWT_EXPIRES_IN=${{ secrets.JWT_EXPIRES_IN }}" >> .env
+
+          # Services URLs
+          echo "AUTH_SERVICE_URL=http://auth-service:3334" >> .env
+          echo "CONTENT_SERVICE_URL=http://content-service:3336" >> .env
+          #echo "EXAMS_SERVICE_URL=http://exams-service:3337" >> .env
+          echo "NATS_SERVERS=nats://nats:4222" >> .env
+          # Add other necessary development environment variables here
 
       - name: Validate Secrets
         run: |
-          if [ -z "${{ secrets.DIGITALOCEAN_HOST }}" ]; then
-              echo "Error: DIGITALOCEAN_HOST is not set."
-              exit 1
-          fi
-          if [ -z "${{ secrets.DIGITALOCEAN_USERNAME }}" ]; then
-              echo "Error: DIGITALOCEAN_USERNAME is not set."
-              exit 1
-          fi
-          if [ -z "${{ secrets.DIGITALOCEAN_SSH_KEY }}" ]; then
-              echo "Error: DIGITALOCEAN_SSH_KEY is not set."
-              exit 1
-          fi
-          # La validación de SSH_PASSPHRASE ya no es necesaria
-
-      - name: List workspace contents before creating package
-        run: |
-          echo "Listing root directory:"
-          ls -la
-          echo "---"
-          echo "Listing dist/ directory (if it exists):"
-          ls -la dist/ || echo "dist/ directory not found"
-          echo "---"
-          echo "Listing apps/ directory (if it exists):"
-          ls -la apps/ || echo "apps/ directory not found"
-          echo "---"
-          echo "Listing apps/auth-service/ directory (if it exists):"
-          ls -la apps/auth-service/ || echo "apps/auth-service/ directory not found"
-          echo "---"
-          echo "Listing apps/api-gateway/ directory (if it exists):"
-          ls -la apps/api-gateway/ || echo "apps/api-gateway/ directory not found"
+          if [ -z "${{ secrets.DIGITALOCEAN_HOST }}" ]; then echo "Error: DIGITALOCEAN_HOST is not set."; exit 1; fi
+          if [ -z "${{ secrets.DIGITALOCEAN_USERNAME }}" ]; then echo "Error: DIGITALOCEAN_USERNAME is not set."; exit 1; fi
+          if [ -z "${{ secrets.DIGITALOCEAN_SSH_KEY }}" ]; then echo "Error: DIGITALOCEAN_SSH_KEY is not set."; exit 1; fi
 
       - name: Create deployment package
         run: |
           tar -zcvf deployment.tar.gz \
             dist/ \
-            docker-compose.prod.yml \
-            .env.prod \
+            docker-compose.deploy.yml \
+            .env \
             package.json \
             package-lock.json \
             nx.json \
             tsconfig.base.json \
-            apps/auth-service/ \
+            eslint.config.mjs \
             apps/api-gateway/ \
+            apps/auth-service/ \
+            apps/content-service/ \
+            brainrush-frontend/ \
             libs/
           echo "--- Deployment package contents (deployment.tar.gz) ---"
           tar -ztvf deployment.tar.gz
 
-      - name: Deploy to Digital Ocean (Create Directory)
+      - name: Deploy to Digital Ocean
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.DIGITALOCEAN_HOST }}
           username: ${{ secrets.DIGITALOCEAN_USERNAME }}
           key: ${{ secrets.DIGITALOCEAN_SSH_KEY }}
-          debug: true # Mantenido para diagnósticos si es necesario
           script: |
-            # Crear directorio del proyecto si no existe
+            # Create directory for the app
             mkdir -p /home/brainrush/brainrush-app
-            # Ir al directorio del proyecto
             cd /home/brainrush/brainrush-app
 
       - name: Copy deployment package to server
@@ -111,11 +129,10 @@ jobs:
           host: ${{ secrets.DIGITALOCEAN_HOST }}
           username: ${{ secrets.DIGITALOCEAN_USERNAME }}
           key: ${{ secrets.DIGITALOCEAN_SSH_KEY }}
-          source: 'deployment.tar.gz' # Solo copiamos el archivo tar
+          source: 'deployment.tar.gz'
           target: '/home/brainrush/brainrush-app'
-          strip_components: 0
 
-      - name: Extract deployment package on server
+      - name: Deploy and Start Services
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.DIGITALOCEAN_HOST }}
@@ -123,40 +140,32 @@ jobs:
           key: ${{ secrets.DIGITALOCEAN_SSH_KEY }}
           script: |
             cd /home/brainrush/brainrush-app
+
+            # Extract package
             tar -zxvf deployment.tar.gz
-            rm deployment.tar.gz # Opcional: eliminar el tar después de extraer
+            rm deployment.tar.gz
 
-      - name: Start Docker containers
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.DIGITALOCEAN_HOST }}
-          username: ${{ secrets.DIGITALOCEAN_USERNAME }}
-          key: ${{ secrets.DIGITALOCEAN_SSH_KEY }}
-          script: |
-            cd /home/brainrush/brainrush-app
+            # Start containers
+            echo "Starting containers with docker-compose.deploy.yml"
+            docker-compose -f docker-compose.deploy.yml down
+            docker-compose -f docker-compose.deploy.yml up -d --build
 
-            # Primero, intenta usar la configuración pre-construida
-            if [ -f "docker-compose.pre-built.yml" ]; then
-              echo "Usando la versión pre-construida (optimizada)"
-              docker-compose -f docker-compose.pre-built.yml down
-              docker-compose -f docker-compose.pre-built.yml up -d --build
-              DOCKER_EXIT_CODE=$?
-            else
-              echo "Versión pre-construida no disponible, usando configuración estándar"
-              docker-compose -f docker-compose.prod.yml down
-              docker-compose -f docker-compose.prod.yml up -d --build
-              DOCKER_EXIT_CODE=$?
-            fi
-
-            # Verificar si Docker Compose ha funcionado correctamente
+            DOCKER_EXIT_CODE=$?
             if [ $DOCKER_EXIT_CODE -ne 0 ]; then
-              echo "Error al iniciar los contenedores, intentando con la configuración estándar"
-              docker-compose -f docker-compose.prod.yml down
-              docker-compose -f docker-compose.prod.yml up -d --build
+              echo "Error starting containers with docker-compose."
+              exit 1
             fi
 
-            # Ejecutar migraciones de Prisma (si aplica)
-            docker-compose -f docker-compose.prod.yml exec -T auth-service npx prisma migrate deploy
+            # Wait for the database to be ready
+            echo "Waiting for database to be ready..."
+            sleep 15
 
-            # Eliminar imágenes antiguas (limpieza)
+            # Run Prisma migrations for development
+            echo "Running Prisma migrations for development..."
+            docker-compose -f docker-compose.deploy.yml exec -T auth-service npx prisma migrate dev --name init || echo "Auth migration failed or already applied."
+            docker-compose -f docker-compose.deploy.yml exec -T content-service npx prisma migrate dev --name init || echo "Content migration failed or already applied."
+            #docker-compose -f docker-compose.local.yml exec -T exams-service npx prisma migrate dev --name init || echo "Exams migration failed or already applied."
+
+            # Clean up old Docker images
+            echo "Pruning old Docker images..."
             docker image prune -af

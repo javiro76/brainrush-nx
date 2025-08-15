@@ -11,8 +11,9 @@ WORKDIR /app
 RUN apk add --no-cache python3 make g++ openssl
 
 # Copy package files
-COPY package*.json nx.json tsconfig.base.json ./
+COPY package*.json nx.json tsconfig.base.json eslint.config.mjs ./
 COPY apps/auth-service/project.json ./apps/auth-service/
+COPY apps/content-service/eslint.config.mjs ./apps/content-service/
 COPY apps/content-service/project.json ./apps/content-service/
 COPY libs/ ./libs/
 

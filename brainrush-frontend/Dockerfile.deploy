@@ -1,0 +1,22 @@
+# ==========================================
+# Frontend optimizado para DEPLOYMENT
+# Usa builds pre-hechos del pipeline
+# ==========================================
+
+# Production stage con Nginx
+FROM nginx:alpine
+
+# Install curl for health checks
+RUN apk add --no-cache curl
+
+# Copy nginx config
+COPY brainrush-frontend/nginx.staging.conf /etc/nginx/nginx.conf
+
+# Copy pre-built application from pipeline
+COPY dist/brainrush-frontend /usr/share/nginx/html
+
+# Expose port
+EXPOSE 80
+
+# Start Nginx
+CMD ["nginx", "-g", "daemon off;"]

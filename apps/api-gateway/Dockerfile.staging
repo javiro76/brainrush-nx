@@ -11,7 +11,8 @@ WORKDIR /app
 RUN apk add --no-cache python3 make g++
 
 # Copy package files and nx config
-COPY package*.json nx.json tsconfig.base.json ./
+COPY package*.json nx.json tsconfig.base.json eslint.config.mjs ./
+COPY apps/api-gateway/eslint.config.mjs ./apps/api-gateway/
 COPY apps/api-gateway/project.json ./apps/api-gateway/
 COPY apps/auth-service/project.json ./apps/auth-service/
 COPY libs/ ./libs/

@@ -1,0 +1,24 @@
+# ==========================================
+# Ultra-optimized deployment - NO NPM INSTALL
+# Solo usa artifacts pre-buildeados del pipeline
+# ==========================================
+
+FROM node:22-alpine
+
+WORKDIR /app
+
+# Runtime dependencies
+RUN apk add --no-cache curl dumb-init openssl postgresql-client
+
+# Copy pre-built application from pipeline
+COPY dist/apps/auth-service ./
+
+# Copy entrypoint
+COPY apps/auth-service/docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+
+ENV NODE_ENV=development
+EXPOSE 3334
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["dumb-init", "node", "main.js"]
