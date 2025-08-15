@@ -97,7 +97,7 @@ jobs:
         run: |
           tar -zcvf deployment.tar.gz \
             dist/ \
-            docker-compose.deploy.yml \
+            docker-compose.local.yml \
             .env \
             package.json \
             package-lock.json \
@@ -146,9 +146,9 @@ jobs:
             rm deployment.tar.gz
 
             # Start containers
-            echo "Starting containers with docker-compose.deploy.yml"
-            docker-compose -f docker-compose.deploy.yml down
-            docker-compose -f docker-compose.deploy.yml up -d --build
+            echo "Starting containers with docker-compose.local.yml"
+            docker-compose -f docker-compose.local.yml down
+            docker-compose -f docker-compose.local.yml up -d --build
 
             DOCKER_EXIT_CODE=$?
             if [ $DOCKER_EXIT_CODE -ne 0 ]; then
@@ -162,8 +162,8 @@ jobs:
 
             # Run Prisma migrations for development
             echo "Running Prisma migrations for development..."
-            docker-compose -f docker-compose.deploy.yml exec -T auth-service npx prisma migrate dev --name init || echo "Auth migration failed or already applied."
-            docker-compose -f docker-compose.deploy.yml exec -T content-service npx prisma migrate dev --name init || echo "Content migration failed or already applied."
+            docker-compose -f docker-compose.local.yml exec -T auth-service npx prisma migrate dev --name init || echo "Auth migration failed or already applied."
+            docker-compose -f docker-compose.local.yml exec -T content-service npx prisma migrate dev --name init || echo "Content migration failed or already applied."
             #docker-compose -f docker-compose.local.yml exec -T exams-service npx prisma migrate dev --name init || echo "Exams migration failed or already applied."
 
             # Clean up old Docker images
