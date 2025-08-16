@@ -52,21 +52,27 @@ jobs:
           echo "ENABLE_SWAGGER=true" >> .env
           echo "REACT_APP_API_URL=http://${{ secrets.DIGITALOCEAN_HOST }}:3335/api" >> .env
 
-          # Auth Service Database
+          # Auth Service Database (escapar caracteres especiales)
           echo "AUTH_DB_HOST=auth-db" >> .env
           echo "AUTH_DB_PORT=5432" >> .env
-          echo "AUTH_DB_USER=${{ secrets.DB_USER }}" >> .env
-          echo "AUTH_DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
-          echo "AUTH_DB_NAME=${{ secrets.DB_NAME }}" >> .env
-          echo "AUTH_DATABASE_URL=postgresql://${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@auth-db:5432/${{ secrets.DB_NAME }}?schema=public" >> .env
+          DB_USER="${{ secrets.DB_USER }}"
+          DB_PASSWORD="${{ secrets.DB_PASSWORD }}"
+          DB_NAME="${{ secrets.DB_NAME }}"
+          echo "AUTH_DB_USER=${DB_USER}" >> .env
+          echo "AUTH_DB_PASSWORD=${DB_PASSWORD}" >> .env
+          echo "AUTH_DB_NAME=${DB_NAME}" >> .env
+          echo "AUTH_DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@auth-db:5432/${DB_NAME}?schema=public" >> .env
 
-          # Content Service Database
+          # Content Service Database (escapar caracteres especiales)
           echo "CONTENT_DB_HOST=content-db" >> .env
           echo "CONTENT_DB_PORT=5432" >> .env
-          echo "CONTENT_DB_USER=${{ secrets.CONTENT_DB_USER }}" >> .env
-          echo "CONTENT_DB_PASSWORD=${{ secrets.CONTENT_DB_PASSWORD }}" >> .env
-          echo "CONTENT_DB_NAME=${{ secrets.CONTENT_DB_NAME }}" >> .env
-          echo "CONTENT_DATABASE_URL=postgresql://${{ secrets.CONTENT_DB_USER }}:${{ secrets.CONTENT_DB_PASSWORD }}@content-db:5432/${{ secrets.CONTENT_DB_NAME }}?schema=public" >> .env
+          CONTENT_DB_USER="${{ secrets.CONTENT_DB_USER }}"
+          CONTENT_DB_PASSWORD="${{ secrets.CONTENT_DB_PASSWORD }}"
+          CONTENT_DB_NAME="${{ secrets.CONTENT_DB_NAME }}"
+          echo "CONTENT_DB_USER=${CONTENT_DB_USER}" >> .env
+          echo "CONTENT_DB_PASSWORD=${CONTENT_DB_PASSWORD}" >> .env
+          echo "CONTENT_DB_NAME=${CONTENT_DB_NAME}" >> .env
+          echo "CONTENT_DATABASE_URL=postgresql://${CONTENT_DB_USER}:${CONTENT_DB_PASSWORD}@content-db:5432/${CONTENT_DB_NAME}?schema=public" >> .env
 
           # Exams Service Database (si existe)
           # echo "EXAMS_DB_HOST=exams-db" >> .env
