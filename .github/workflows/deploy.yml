@@ -24,7 +24,12 @@ jobs:
         run: npm ci
 
       - name: Build applications (Development)
+        env:
+          REACT_APP_API_URL: http://${{ secrets.DIGITALOCEAN_HOST }}:3335/api
         run: |
+          echo "Setting environment variables for build..."
+          echo "REACT_APP_API_URL=${REACT_APP_API_URL}"
+          
           echo "Generating Prisma clients..."
           cd apps/auth-service && npx prisma generate && cd ../..
           cd apps/content-service && npx prisma generate && cd ../..
@@ -39,7 +44,7 @@ jobs:
           echo "Building Content Service..."
           npx nx build content-service
 
-          echo "Building Frontend..."
+          echo "Building Frontend with API URL: ${REACT_APP_API_URL}..."
           npx nx build brainrush-frontend
 
           echo "Verifying build artifacts..."
