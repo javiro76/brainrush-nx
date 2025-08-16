@@ -1,6 +1,7 @@
 const { NxAppWebpackPlugin } = require('@nx/webpack/app-plugin');
 const { NxReactWebpackPlugin } = require('@nx/react/webpack-plugin');
 const { join } = require('path');
+const webpack = require('webpack');
 
 module.exports = {
   output: {
@@ -30,6 +31,15 @@ module.exports = {
       // Uncomment this line if you don't want to use SVGR
       // See: https://react-svgr.com/
       // svgr: false
+    }),
+    // Plugin para inyectar variables de entorno
+    new webpack.DefinePlugin({
+      'process.env.REACT_APP_API_URL': JSON.stringify(
+        process.env.REACT_APP_API_URL
+      ),
+      'process.env.NODE_ENV': JSON.stringify(
+        process.env.NODE_ENV || 'development'
+      ),
     }),
   ],
 };

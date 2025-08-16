@@ -4,7 +4,14 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 // URL base de la API
+console.log('🔧 Environment variables:', {
+  REACT_APP_API_URL: process.env.REACT_APP_API_URL,
+  NODE_ENV: process.env.NODE_ENV
+});
+
 export const BASE_API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3335/api';
+
+console.log('🌐 Using API Base URL:', BASE_API_URL);
 
 // Clase base para los servicios API
 export class ApiService {
