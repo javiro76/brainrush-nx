@@ -1,8 +1,28 @@
 # ==========================================
-# Ultra-optimized deployment - NO NPM INSTALL
-# Solo usa artifacts pre-buildeados del pipeline
+# Optimized deployment con dependencies mínimas
 # ==========================================
 
+# Stage 1: Dependencies
+FROM node:22-alpine AS deps
+
+WORKDIR /app
+
+# Build dependencies para Prisma
+RUN apk add --no-cache openssl
+
+# Copy package files
+COPY package*.json ./
+
+# Install ONLY production dependencies (sin build tools pesados)
+RUN npm ci --omit=dev --ignore-scripts --no-audit --no-fund
+
+# Generate Prisma clients (auth + content)
+COPY apps/auth-service/prisma ./apps/auth-service/prisma/
+COPY apps/content-service/prisma ./apps/content-service/prisma/
+RUN npx prisma generate --schema=./apps/auth-service/prisma/schema.prisma
+RUN npx prisma generate --schema=./apps/content-service/prisma/schema.prisma
+
+# Stage 2: Runtime
 FROM node:22-alpine
 
 WORKDIR /app
@@ -13,7 +33,11 @@ RUN apk add --no-cache curl dumb-init openssl postgresql-client
 # Copy pre-built application from pipeline
 COPY dist/apps/content-service ./
 
-# Copy entrypoint
+# Copy ONLY production node_modules (necesarios para runtime)
+COPY --from=deps /app/node_modules ./node_modules
+
+# Copy Prisma schemas and entrypoint
+COPY --from=deps /app/apps/content-service/prisma ./prisma
 COPY apps/content-service/docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
 
