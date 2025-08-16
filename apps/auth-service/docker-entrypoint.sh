@@ -6,7 +6,14 @@ echo "🔐 Starting Auth Service..."
 # Función para verificar la conexión a la base de datos
 wait_for_db() {
     echo "⏳ Waiting for PostgreSQL database to be ready..."
-    until pg_isready -h auth-db -p 5432 -U ${POSTGRES_USER:-auth_user} -d ${POSTGRES_DB:-auth_db}; do
+    echo "🔧 Database Configuration:"
+    echo "   Host: ${AUTH_DB_HOST:-auth-db}"
+    echo "   Port: ${AUTH_DB_PORT:-5432}"
+    echo "   User: ${AUTH_DB_USER:-postgres}"
+    echo "   Database: ${AUTH_DB_NAME:-auth_db}"
+    echo "🔍 Using DATABASE_URL: $DATABASE_URL"
+    
+    until pg_isready -h ${AUTH_DB_HOST:-auth-db} -p ${AUTH_DB_PORT:-5432} -U ${AUTH_DB_USER:-postgres}; do
         echo "PostgreSQL is unavailable - sleeping"
         sleep 2
     done
