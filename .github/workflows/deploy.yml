@@ -24,11 +24,10 @@ jobs:
         run: npm ci
 
       - name: Build applications (Development)
-        env:
-          REACT_APP_API_URL: http://${{ secrets.DIGITALOCEAN_HOST }}:3335/api
         run: |
           echo "Setting environment variables for build..."
-          echo "REACT_APP_API_URL=${REACT_APP_API_URL}"
+          export REACT_APP_API_URL=http://${{ secrets.DIGITALOCEAN_HOST }}:3335/api
+          echo "REACT_APP_API_URL=$REACT_APP_API_URL"
           
           echo "Generating Prisma clients..."
           cd apps/auth-service && npx prisma generate && cd ../..
@@ -44,11 +43,23 @@ jobs:
           echo "Building Content Service..."
           npx nx build content-service
 
-          echo "Building Frontend with API URL: ${REACT_APP_API_URL}..."
-          npx nx build brainrush-frontend
+          echo "Building Frontend with API URL: $REACT_APP_API_URL..."
+          REACT_APP_API_URL=http://${{ secrets.DIGITALOCEAN_HOST }}:3335/api npx nx build brainrush-frontend
 
           echo "Verifying build artifacts..."
           ls -la dist/
+
+      - name: Verify Frontend Build Configuration
+        run: |
+          echo "Verifying that frontend build contains correct API URL..."
+          if grep -q "${{ secrets.DIGITALOCEAN_HOST }}:3335" dist/brainrush-frontend/main.*.js; then
+            echo "✅ Frontend build contains correct API URL"
+          else
+            echo "❌ Frontend build does NOT contain correct API URL"
+            echo "Checking what URLs are present:"
+            grep -o 'localhost:[0-9]*\|[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}:[0-9]*' dist/brainrush-frontend/main.*.js | head -5 || echo "No URLs found"
+            exit 1
+          fi
 
       - name: Create .env file for development
         run: |
