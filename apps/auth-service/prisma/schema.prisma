@@ -12,7 +12,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = env("DATABASE_URL")//se usa para utilizar .env  y no hardcodear la url
 }
 
 enum UserRole {
