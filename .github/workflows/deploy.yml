@@ -44,11 +44,12 @@ jobs:
           npx nx build content-service
 
           echo "Building Frontend with API URL: $REACT_APP_API_URL..."
-        env:
-          REACT_APP_API_URL: /api npx nx build brainrush-frontend
+          npx nx build brainrush-frontend
 
           echo "Verifying build artifacts..."
           ls -la dist/
+        env:
+          REACT_APP_API_URL: /api
 
       - name: Verify Frontend Build Configuration
         run: |
