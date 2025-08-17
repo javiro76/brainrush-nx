@@ -26,9 +26,9 @@ jobs:
       - name: Build applications (Development)
         run: |
           echo "Setting environment variables for build..."
-          export REACT_APP_API_URL=http://${{ secrets.DIGITALOCEAN_HOST }}:3335/api
+          export REACT_APP_API_URL=${{ secrets.DIGITALOCEAN_HOST }}:3335/api
           echo "REACT_APP_API_URL=$REACT_APP_API_URL"
-          
+
           echo "Generating Prisma clients..."
           cd apps/auth-service && npx prisma generate && cd ../..
           cd apps/content-service && npx prisma generate && cd ../..
