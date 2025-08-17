@@ -26,7 +26,7 @@ jobs:
       - name: Build applications (Development)
         run: |
           echo "Setting environment variables for build..."
-          export REACT_APP_API_URL=${{ secrets.DIGITALOCEAN_HOST }}
+          export REACT_APP_API_URL="${{ secrets.API_DOMAIN }}/api"
           echo "REACT_APP_API_URL=$REACT_APP_API_URL"
 
           echo "Generating Prisma clients..."
@@ -52,8 +52,8 @@ jobs:
       - name: Verify Frontend Build Configuration
         run: |
           echo "Verifying that frontend build contains correct API URL..."
-          if grep -q "brain" dist/brainrush-frontend/main.*.js; then
-            echo "✅ Frontend build contains correct API URL (brain.me)"
+          if grep -q "${{ secrets.API_DOMAIN }}/api" dist/brainrush-frontend/main.*.js; then
+            echo "✅ Frontend build contains correct API URL (${{ secrets.API_DOMAIN }}/api)"
           else
             echo "❌ Frontend build does NOT contain correct API URL"
             echo "Checking what URLs are present:"
@@ -66,7 +66,7 @@ jobs:
           # Variables generales
           echo "NODE_ENV=development" > .env
           echo "ENABLE_SWAGGER=true" >> .env
-          echo "REACT_APP_API_URL=${{ secrets.DIGITALOCEAN_HOST }}:3335/api" >> .env
+          echo "REACT_APP_API_URL=${{ secrets.API_DOMAIN }}/api" >> .env
 
           # Auth Service Database (escapar caracteres especiales)
           echo "AUTH_DB_HOST=auth-db" >> .env
