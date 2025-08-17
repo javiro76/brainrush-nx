@@ -44,7 +44,7 @@ jobs:
           npx nx build content-service
 
           echo "Building Frontend with API URL: $REACT_APP_API_URL..."
-          REACT_APP_API_URL=http://${{ secrets.DIGITALOCEAN_HOST }}:3335/api npx nx build brainrush-frontend
+          REACT_APP_API_URL=${{ secrets.DIGITALOCEAN_HOST }}:3335/api npx nx build brainrush-frontend
 
           echo "Verifying build artifacts..."
           ls -la dist/
@@ -66,7 +66,7 @@ jobs:
           # Variables generales
           echo "NODE_ENV=development" > .env
           echo "ENABLE_SWAGGER=true" >> .env
-          echo "REACT_APP_API_URL=http://${{ secrets.DIGITALOCEAN_HOST }}:3335/api" >> .env
+          echo "REACT_APP_API_URL=${{ secrets.DIGITALOCEAN_HOST }}:3335/api" >> .env
 
           # Auth Service Database (escapar caracteres especiales)
           echo "AUTH_DB_HOST=auth-db" >> .env
