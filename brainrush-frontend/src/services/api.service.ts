@@ -9,7 +9,7 @@ console.log('🔧 Environment variables:', {
   NODE_ENV: process.env.NODE_ENV
 });
 
-export const BASE_API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3335/api';
+export const BASE_API_URL = process.env.REACT_APP_API_URL || '/api';
 
 console.log('🌐 Using API Base URL:', BASE_API_URL);
 

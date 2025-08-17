@@ -26,7 +26,7 @@ jobs:
       - name: Build applications (Development)
         run: |
           echo "Setting environment variables for build..."
-          export REACT_APP_API_URL=${{ secrets.DIGITALOCEAN_HOST }}:3335/api
+          export REACT_APP_API_URL=https://api.brainrush.me/api
           echo "REACT_APP_API_URL=$REACT_APP_API_URL"
 
           echo "Generating Prisma clients..."
@@ -44,7 +44,8 @@ jobs:
           npx nx build content-service
 
           echo "Building Frontend with API URL: $REACT_APP_API_URL..."
-          REACT_APP_API_URL=${{ secrets.DIGITALOCEAN_HOST }}:3335/api npx nx build brainrush-frontend
+        env:
+          REACT_APP_API_URL: /api npx nx build brainrush-frontend
 
           echo "Verifying build artifacts..."
           ls -la dist/
@@ -52,12 +53,12 @@ jobs:
       - name: Verify Frontend Build Configuration
         run: |
           echo "Verifying that frontend build contains correct API URL..."
-          if grep -q "${{ secrets.DIGITALOCEAN_HOST }}:3335" dist/brainrush-frontend/main.*.js; then
-            echo "✅ Frontend build contains correct API URL"
+          if grep -q "https://www.brainrush.me:3335/api" dist/brainrush-frontend/main.*.js; then
+            echo "✅ Frontend build contains correct API URL (https://www.brainrush.me:3335/api)"
           else
             echo "❌ Frontend build does NOT contain correct API URL"
             echo "Checking what URLs are present:"
-            grep -o 'localhost:[0-9]*\|[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}:[0-9]*' dist/brainrush-frontend/main.*.js | head -5 || echo "No URLs found"
+            grep -o '"https://[^"]*"\|"http://[^"]*"\|"/api[^"]*"' dist/brainrush-frontend/main.*.js | head -5 || echo "No URLs found"
             exit 1
           fi
 
