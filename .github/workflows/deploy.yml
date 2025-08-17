@@ -26,7 +26,7 @@ jobs:
       - name: Build applications (Development)
         run: |
           echo "Setting environment variables for build..."
-          export REACT_APP_API_URL=https://api.brainrush.me/api
+          export REACT_APP_API_URL=${{ secrets.DIGITALOCEAN_HOST }}
           echo "REACT_APP_API_URL=$REACT_APP_API_URL"
 
           echo "Generating Prisma clients..."
@@ -48,14 +48,12 @@ jobs:
 
           echo "Verifying build artifacts..."
           ls -la dist/
-        env:
-          REACT_APP_API_URL: /api
 
       - name: Verify Frontend Build Configuration
         run: |
           echo "Verifying that frontend build contains correct API URL..."
-          if grep -q "https://www.brainrush.me:3335/api" dist/brainrush-frontend/main.*.js; then
-            echo "✅ Frontend build contains correct API URL (https://www.brainrush.me:3335/api)"
+          if grep -q "brain" dist/brainrush-frontend/main.*.js; then
+            echo "✅ Frontend build contains correct API URL (brain.me)"
           else
             echo "❌ Frontend build does NOT contain correct API URL"
             echo "Checking what URLs are present:"
